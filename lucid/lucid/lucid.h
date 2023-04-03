@@ -8,6 +8,7 @@
 
 #include <Windows.h>
 #include <iostream>
+#include <vector>
 
 template <typename T>
 class singleton
@@ -32,6 +33,13 @@ public:
 /* lucid engine backend */
 #include "window/wnd.h"
 #include "graphics/graphics.h"
+#include "renderer/color/color.h"
+
+#include "renderer/vertex/vertex2d.h"
+#include "renderer/vertex/vertex3d.h"
+#include "renderer/vector/vector2d.h"
+#include "renderer/vector/vector3d.h"
+#include "renderer/renderer.h"
 
 namespace lucid_engine {
 

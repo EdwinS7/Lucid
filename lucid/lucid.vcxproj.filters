@@ -24,6 +24,9 @@
     <ClCompile Include="lucid\graphics\graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lucid\renderer\renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\lucid.h">
@@ -33,6 +36,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\graphics\graphics.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vertex\vertex3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vertex\vertex2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\color\color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vector\vector2d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vector\vector3d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

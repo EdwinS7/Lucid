@@ -11,7 +11,7 @@ int main() {
 
         lucid_engine::graphics::get_instance().begin_scene();
         {
-
+            lucid_engine::renderer::get_instance().filled_rectangle(vec2_t(0, 0), vec2_t(100, 100), color_t(255, 255, 255, 255));
         }
         lucid_engine::graphics::get_instance().end_scene();
     }
