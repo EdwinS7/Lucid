@@ -62,7 +62,7 @@ bool lucid_engine::graphics::create_device() {
 }
 
 bool lucid_engine::graphics::begin_scene() {
-    direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(0, 0, 0, NULL), 1.f, 0);
+    direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(0, 0, 255, NULL), 1.f, 0);
     direct_3d_device->BeginScene();
 
     return true;
@@ -73,4 +73,14 @@ bool lucid_engine::graphics::end_scene() {
     direct_3d_device->Present(NULL, NULL, NULL, NULL);
 
     return true;
+}
+
+void lucid_engine::graphics::reset_device() {
+    direct_3d_device->Release();
+    create_device();
+}
+
+void lucid_engine::graphics::release() {
+    direct_3d_device->Release();
+    direct_3d->Release();
 }

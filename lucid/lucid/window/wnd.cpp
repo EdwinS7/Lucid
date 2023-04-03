@@ -2,6 +2,15 @@
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	switch (msg) {
+	case WM_SIZE:
+		if (lucid_engine::graphics::get_instance().direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
+			lucid_engine::graphics::get_instance().direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
+			lucid_engine::graphics::get_instance().direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
+			lucid_engine::graphics::get_instance().reset_device();
+		}
+
+		return 0;
+
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;

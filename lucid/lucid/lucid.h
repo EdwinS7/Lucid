@@ -35,10 +35,11 @@ public:
 #include "graphics/graphics.h"
 #include "renderer/color/color.h"
 
-#include "renderer/vertex/vertex2d.h"
-#include "renderer/vertex/vertex3d.h"
+#include "renderer/vertex/vertex.h"
 #include "renderer/vector/vector2d.h"
 #include "renderer/vector/vector3d.h"
+#include "renderer/drawdata/draw_data.h"
+#include "renderer/drawdata/compiled_draw_data.h"
 #include "renderer/renderer.h"
 
 namespace lucid_engine {

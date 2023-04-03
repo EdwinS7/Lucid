@@ -17,5 +17,8 @@ namespace lucid_engine {
 
 		bool begin_scene();
 		bool end_scene();
+
+		void reset_device();
+		void release();
 	};
 }

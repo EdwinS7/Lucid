@@ -172,11 +172,12 @@
     <ClInclude Include="lucid\graphics\graphics.h" />
     <ClInclude Include="lucid\lucid.h" />
     <ClInclude Include="lucid\renderer\color\color.h" />
+    <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
+    <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\vector\vector2d.h" />
     <ClInclude Include="lucid\renderer\vector\vector3d.h" />
-    <ClInclude Include="lucid\renderer\vertex\vertex2d.h" />
-    <ClInclude Include="lucid\renderer\vertex\vertex3d.h" />
+    <ClInclude Include="lucid\renderer\vertex\vertex.h" />
     <ClInclude Include="lucid\window\wnd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -38,10 +38,7 @@
     <ClInclude Include="lucid\graphics\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lucid\renderer\vertex\vertex3d.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lucid\renderer\vertex\vertex2d.h">
+    <ClInclude Include="lucid\renderer\vertex\vertex.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\renderer\color\color.h">
@@ -54,6 +51,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\renderer\vector\vector3d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\drawdata\draw_data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,4 +1,4 @@
-#include "lucid/window/wnd.h"
+#include "lucid/lucid.h"
 
 int main() {
     lucid_engine::window::get_instance().create_window("lucid engine", 100, 100, 1280, 720);
