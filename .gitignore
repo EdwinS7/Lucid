@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+*.vsidx
+*.ipch
+*.tlog
+*.ilk
+Compiled
+.vs
+*.iobj
+
+# Folders
+lucid/output/
