@@ -9,6 +9,9 @@
 #include <Windows.h>
 #include <iostream>
 #include <vector>
+#include <chrono>
+#include <format>
+#include <map>
 
 template <typename T>
 class singleton
@@ -33,8 +36,8 @@ public:
 /* lucid engine backend */
 #include "window/wnd.h"
 #include "graphics/graphics.h"
-#include "renderer/color/color.h"
 
+#include "renderer/color/color.h"
 #include "renderer/vertex/vertex.h"
 #include "renderer/vector/vector2d.h"
 #include "renderer/vector/vector3d.h"
@@ -42,8 +45,19 @@ public:
 #include "renderer/matrix/matrix.h"
 #include "renderer/drawdata/draw_data.h"
 #include "renderer/drawdata/compiled_draw_data.h"
+
+#include "input/input.h"
 #include "renderer/renderer.h"
 
 namespace lucid_engine {
+	class io : public singleton<io> {
+	public:
+		void create();
+		void update();
+		void reset();
 
-}
+		float delta_time;
+		float real_time;
+		int frame_rate;
+	};
+};

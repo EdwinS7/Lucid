@@ -1,6 +1,8 @@
 #include "wnd.h"
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	float mouse_wheel_delta = 0.f;
+
 	switch (msg) {
 	case WM_SIZE:
 		if (lucid_engine::graphics::get_instance().direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
@@ -10,9 +12,25 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		return 0;
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].style = (msg == WM_KEYUP ? key_style::press : key_style::hold);
+		lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].on = true;
 
+		break;
+	case WM_MOUSEMOVE:
+		const POINTS p = MAKEPOINTS(lParam);
+		lucid_engine::input::get_instance().mouse_pos = vec2_t(p.x, p.y);
+
+		break;
+	case WM_MOUSEWHEEL:
+		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0 ? 8 : -8;
+		lucid_engine::input::get_instance().mouse_wheel_delta = mouse_wheel_delta;
+
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
+
 		return 0;
 	}
 
@@ -57,6 +75,10 @@ bool lucid_engine::window::dispatch_messages() {
 	}
 
 	return true;
+}
+
+void lucid_engine::window::set_window_title(const char* title) {
+	SetWindowTextA(hwnd, title);
 }
 
 HWND lucid_engine::window::get_hwnd() {

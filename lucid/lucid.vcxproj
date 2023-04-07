@@ -163,13 +163,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lucid.cpp" />
+    <ClCompile Include="lol.cpp" />
     <ClCompile Include="lucid\graphics\graphics.cpp" />
+    <ClCompile Include="lucid\input\input.cpp" />
+    <ClCompile Include="lucid\lucid.cpp" />
     <ClCompile Include="lucid\renderer\renderer.cpp" />
     <ClCompile Include="lucid\window\wnd.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\graphics\graphics.h" />
+    <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
