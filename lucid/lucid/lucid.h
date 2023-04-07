@@ -38,6 +38,8 @@ public:
 #include "renderer/vertex/vertex.h"
 #include "renderer/vector/vector2d.h"
 #include "renderer/vector/vector3d.h"
+#include "renderer/vector/vector4d.h"
+#include "renderer/matrix/matrix.h"
 #include "renderer/drawdata/draw_data.h"
 #include "renderer/drawdata/compiled_draw_data.h"
 #include "renderer/renderer.h"

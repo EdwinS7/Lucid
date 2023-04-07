@@ -76,11 +76,14 @@ bool lucid_engine::graphics::end_scene() {
 }
 
 void lucid_engine::graphics::reset_device() {
+    lucid_engine::renderer::get_instance().destroy_objects();
+    lucid_engine::renderer::get_instance().create_objects();
     direct_3d_device->Release();
     create_device();
 }
 
 void lucid_engine::graphics::release() {
+    lucid_engine::renderer::get_instance().destroy_objects();
     direct_3d_device->Release();
     direct_3d->Release();
 }

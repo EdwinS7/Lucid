@@ -174,9 +174,11 @@
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
+    <ClInclude Include="lucid\renderer\matrix\matrix.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\vector\vector2d.h" />
     <ClInclude Include="lucid\renderer\vector\vector3d.h" />
+    <ClInclude Include="lucid\renderer\vector\vector4d.h" />
     <ClInclude Include="lucid\renderer\vertex\vertex.h" />
     <ClInclude Include="lucid\window\wnd.h" />
   </ItemGroup>

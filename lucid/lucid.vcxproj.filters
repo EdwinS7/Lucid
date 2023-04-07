@@ -59,5 +59,11 @@
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="lucid\renderer\matrix\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vector\vector4d.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
