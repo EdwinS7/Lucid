@@ -13,6 +13,16 @@ void lucid_engine::io::update() {
 	old_frame_time = high_resolution_clock;
 
 	frame_rate = static_cast<int>(1.f / delta_time);
+	
+	static auto frame_rate_avg = 60.f;
+	static auto frame_rate_update = real_time + 1.f;
+	if (real_time > frame_rate_update) {
+		frame_rate_average = frame_rate_avg;
+		frame_rate_update = real_time + 1;
+		frame_rate_avg = 0.f;
+	}
+	else
+		frame_rate_avg++;
 }
 
 void lucid_engine::io::reset() {

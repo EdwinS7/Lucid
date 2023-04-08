@@ -9,7 +9,7 @@ bool lucid_engine::graphics::create_direct_3d() {
     direct_3d_paramaters.EnableAutoDepthStencil = TRUE;
     direct_3d_paramaters.AutoDepthStencilFormat = D3DFMT_D16;
 
-    /* to use VSync, use D3DPRESENT_INTERVAL_ONE */
+    /* to use VSync, use D3DPRESENT_INTERVAL_DEFAULT. to use NVSync use, D3DPRESENT_INTERVAL_IMMEDIATE */
     direct_3d_paramaters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
     direct_3d_paramaters.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
@@ -61,8 +61,8 @@ bool lucid_engine::graphics::create_device() {
     return true;
 }
 
-bool lucid_engine::graphics::begin_scene() {
-    direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(0, 0, 255, NULL), 1.f, 0);
+bool lucid_engine::graphics::begin_scene(int r, int g, int b) {
+    direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(r, g, b, NULL), 1.f, 0);
     direct_3d_device->BeginScene();
 
     return true;

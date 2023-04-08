@@ -56,8 +56,22 @@ namespace lucid_engine {
 		void update();
 		void reset();
 
+		template<class T>
+		constexpr const T& map(const T& x, const T& in_min, const T& in_max, const T& out_min, const T& out_max) {
+			return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+		}
+
+		int random_int(int min, int max) {
+			return rand() % max + min;
+		}
+
+		float random_float(float min, float max) {
+			return static_cast<float>(rand() % static_cast<int>(max) + static_cast<int>(min));
+		}
+
 		float delta_time;
 		float real_time;
 		int frame_rate;
+		int frame_rate_average;
 	};
-};
+}

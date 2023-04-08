@@ -15,7 +15,7 @@ namespace lucid_engine {
 		bool create_direct_3d();
 		bool create_device();
 
-		bool begin_scene();
+		bool begin_scene(int r = 0, int g = 0, int b = 0);
 		bool end_scene();
 
 		void reset_device();

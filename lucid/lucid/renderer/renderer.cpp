@@ -3,24 +3,12 @@
 void lucid_engine::renderer::create_objects() {
 	if (!lucid_engine::graphics::get_instance().direct_3d_device)
 		return;
-
-	if (!vertex_declaration) {
-		constexpr D3DVERTEXELEMENT9 elements[] {
-				{ 0, 0, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0 },
-				{ 0, 8, D3DDECLTYPE_FLOAT2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0 },
-				{ 0, 16, D3DDECLTYPE_D3DCOLOR, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0 },
-				D3DDECL_END()
-		};
-
-		lucid_engine::graphics::get_instance().direct_3d_device->CreateVertexDeclaration(elements, &vertex_declaration);
-	}
 }
 
 void lucid_engine::renderer::destroy_objects() {
 	if (!lucid_engine::graphics::get_instance().direct_3d_device)
 		return;
 
-	if (vertex_declaration) { vertex_declaration->Release(); vertex_declaration = nullptr; }
 	if (vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 	if (index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
 }
@@ -29,9 +17,15 @@ void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
 	
 	//compile our draw data.
-	for (const draw_data_t& draw_data : draw_data) {
-		compiled_draw_data.total_index_count += draw_data.index_count;
-		compiled_draw_data.total_vertex_count += draw_data.vertex_count;
+	for (const draw_data_t& data : draw_data) {
+		for (vertex_t vertex : data.vertices)
+			compiled_draw_data.vertices.push_back(vertex);
+
+		for (std::uint32_t indice : data.indices)
+			compiled_draw_data.indices.push_back(indice);
+
+		compiled_draw_data.total_index_count += data.index_count;
+		compiled_draw_data.total_vertex_count += data.vertex_count;
 	}
 
 	//create vertex buffer.
@@ -60,17 +54,6 @@ void lucid_engine::renderer::render_draw_data() {
 			throw std::runtime_error{ "CreateIndexBuffer error" };
 	}
 
-	//create state block
-	IDirect3DStateBlock9* d3d9_state_block{ };
-	if (lucid_engine::graphics::get_instance().direct_3d_device->CreateStateBlock(D3DSBT_ALL, &d3d9_state_block) < 0)
-		throw std::runtime_error{ "CreateStateBlock error" };
-
-	//camera
-	D3DMATRIX last_world{ }, last_view{ }, last_projection{ };
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
-
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
 	if (vertex_buffer->Lock(0, (UINT)(compiled_draw_data.total_vertex_count * sizeof(vertex_t)), (void**)&vertex_data, D3DLOCK_DISCARD) < 0)
@@ -79,31 +62,22 @@ void lucid_engine::renderer::render_draw_data() {
 	if (index_buffer->Lock(0, (UINT)(compiled_draw_data.total_index_count * sizeof(std::uint32_t)), (void**)&index_data, D3DLOCK_DISCARD) < 0)
 		throw std::runtime_error{ "idx_buffer->Lock error" };
 
-	for (const draw_data_t& draw_data : draw_data) {
-		memcpy(vertex_data, draw_data.vertices.data(), draw_data.vertex_count * sizeof(vertex_t));
-		memcpy(index_data, draw_data.indices.data(), draw_data.index_count * sizeof(std::uint32_t));
-	}
+	memcpy(vertex_data, compiled_draw_data.vertices.data(), compiled_draw_data.total_vertex_count * sizeof(vertex_t));
+	memcpy(index_data, compiled_draw_data.indices.data(), compiled_draw_data.total_index_count * sizeof(std::uint32_t));
 
 	vertex_buffer->Unlock();
 	index_buffer->Unlock();
 
-	//set stream source and indices.
-	lucid_engine::graphics::get_instance().direct_3d_device->SetIndices(index_buffer);
 	lucid_engine::graphics::get_instance().direct_3d_device->SetStreamSource(0, vertex_buffer, 0, sizeof(vertex_t));
-	//lucid_engine::graphics::get_instance().direct_3d_device->SetVertexDeclaration(vertex_declaration);
+	lucid_engine::graphics::get_instance().direct_3d_device->SetIndices(index_buffer);
 
-	for (const draw_data_t& draw_data : draw_data) {
-		lucid_engine::graphics::get_instance().direct_3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, 0, 0, draw_data.vertex_count, 0, draw_data.index_count / 3);
+	int start_vertex = 0;
+	int start_index = 0;
+	for (const draw_data_t& data : draw_data) {
+		lucid_engine::graphics::get_instance().direct_3d_device->DrawIndexedPrimitive(D3DPT_TRIANGLEFAN, start_vertex, 0, data.vertex_count, start_index, data.index_count / 3);
+		start_vertex += data.vertex_count;
+		start_index += data.index_count;
 	}
-
-	//restore camera
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
-
-	//apply state block
-	d3d9_state_block->Apply();
-	d3d9_state_block->Release();
 
 	//clear
 	compiled_draw_data = {};

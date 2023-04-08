@@ -24,7 +24,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 		break;
 	case WM_MOUSEWHEEL:
-		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0 ? 8 : -8;
+		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0.f ? 8.f : -8.f;
 		lucid_engine::input::get_instance().mouse_wheel_delta = mouse_wheel_delta;
 
 		break;
@@ -35,7 +35,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	}
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
-}
+} 
 
 bool lucid_engine::window::create_window(const char* title, int x, int y, int w, int h) {
 	window_class = {

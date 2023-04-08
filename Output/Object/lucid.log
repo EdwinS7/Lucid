@@ -3,16 +3,20 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v17
   lol.cpp
   graphics.cpp
   input.cpp
-C:\Users\RareD\Documents\Lucid\lucid\lucid\input\input.cpp(23,20): warning C4018: '<': signed/unsigned mismatch
   lucid.cpp
   renderer.cpp
-C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(38,81): warning C4018: '>': signed/unsigned mismatch
-C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(51,84): warning C4018: '>': signed/unsigned mismatch
   wnd.cpp
-C:\Users\RareD\Documents\Lucid\lucid\lucid\window\wnd.cpp(27,54): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lucid\input\input.cpp(23,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(32,81): warning C4018: '>': signed/unsigned mismatch
+C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(45,84): warning C4018: '>': signed/unsigned mismatch
+C:\Users\RareD\Documents\Lucid\lucid\lucid\lucid.cpp(20,24): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lol.cpp(62,159): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lol.cpp(62,147): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lol.cpp(62,129): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lol.cpp(62,102): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
-  89 of 1122 functions ( 7.9%) were compiled, the rest were copied from previous compilation.
+  67 of 1202 functions ( 5.6%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    64 functions had inline decision re-evaluated but remain unchanged
+    36 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   lucid.vcxproj -> C:\Users\RareD\Documents\Lucid\Output\lucid.exe

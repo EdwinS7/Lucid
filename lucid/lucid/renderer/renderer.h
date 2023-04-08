@@ -5,9 +5,9 @@
 namespace lucid_engine {
 	class renderer : public singleton<renderer> {
 	private:
-		compiled_draw_data_t compiled_draw_data;
-		std::vector<draw_data_t> draw_data;
-		IDirect3DVertexDeclaration9* vertex_declaration{ };
+		compiled_draw_data_t compiled_draw_data{ };
+		std::vector<draw_data_t> draw_data{ };
+
 		IDirect3DVertexBuffer9* vertex_buffer{ };
 		IDirect3DIndexBuffer9* index_buffer{ };
 
