@@ -15,38 +15,28 @@ void lucid_engine::renderer::destroy_objects() {
 
 void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
-	
-	//compile our draw data.
+
 	for (const draw_data_t& data : draw_data) {
 		for (vertex_t vertex : data.vertices)
 			compiled_draw_data.vertices.push_back(vertex);
 
-		for (std::uint32_t indice : data.indices)
-			compiled_draw_data.indices.push_back(indice);
+		for (std::uint32_t index : data.indices)
+			compiled_draw_data.indices.push_back(index);
 
 		compiled_draw_data.total_index_count += data.index_count;
 		compiled_draw_data.total_vertex_count += data.vertex_count;
 	}
 
-	//create vertex buffer.
 	if (!vertex_buffer || compiled_draw_data.total_vertex_count * sizeof(vertex_t) > vertex_buffer_size) {
-		if (vertex_buffer) {
-			vertex_buffer->Release();
-			vertex_buffer = nullptr;
-		}
+		if (vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
 
 		vertex_buffer_size = compiled_draw_data.total_vertex_count + 5000;
 
 		if (lucid_engine::graphics::get_instance().direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) < 0)
 			throw std::runtime_error{ "CreateVertexBuffer error" };
 	}
-
-	//create index buffer.
 	if (!index_buffer || compiled_draw_data.total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
-		if (index_buffer) {
-			index_buffer->Release();
-			index_buffer = nullptr;
-		}
+		if (index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
 
 		index_buffer_size = compiled_draw_data.total_index_count + 10000;
 
@@ -54,13 +44,34 @@ void lucid_engine::renderer::render_draw_data() {
 			throw std::runtime_error{ "CreateIndexBuffer error" };
 	}
 
+	IDirect3DStateBlock9* state_block{ };
+	if (lucid_engine::graphics::get_instance().direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
+		return;
+
+	if (state_block->Capture() < 0) {
+		state_block->Release();
+		return;
+	}
+
+	D3DMATRIX last_world, last_view, last_projection;
+	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
+	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
+	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
+
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
-	if (vertex_buffer->Lock(0, (UINT)(compiled_draw_data.total_vertex_count * sizeof(vertex_t)), (void**)&vertex_data, D3DLOCK_DISCARD) < 0)
+	if (vertex_buffer->Lock(0, (UINT)(compiled_draw_data.total_vertex_count * sizeof(vertex_t)), (void**)&vertex_data, D3DLOCK_DISCARD) < 0) {
 		throw std::runtime_error{ "vtx_buffer->Lock error" };
+		state_block->Release();
+		return;
+	}
 
-	if (index_buffer->Lock(0, (UINT)(compiled_draw_data.total_index_count * sizeof(std::uint32_t)), (void**)&index_data, D3DLOCK_DISCARD) < 0)
+	if (index_buffer->Lock(0, (UINT)(compiled_draw_data.total_index_count * sizeof(std::uint32_t)), (void**)&index_data, D3DLOCK_DISCARD) < 0) {
 		throw std::runtime_error{ "idx_buffer->Lock error" };
+		vertex_buffer->Unlock();
+		state_block->Release();
+		return;
+	}
 
 	memcpy(vertex_data, compiled_draw_data.vertices.data(), compiled_draw_data.total_vertex_count * sizeof(vertex_t));
 	memcpy(index_data, compiled_draw_data.indices.data(), compiled_draw_data.total_index_count * sizeof(std::uint32_t));
@@ -79,7 +90,13 @@ void lucid_engine::renderer::render_draw_data() {
 		start_index += data.index_count;
 	}
 
-	//clear
+	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
+	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
+	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
+
+	state_block->Apply();
+	state_block->Release();
+
 	compiled_draw_data = {};
 	draw_data.clear();
 }

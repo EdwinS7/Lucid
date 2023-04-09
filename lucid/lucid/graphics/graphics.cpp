@@ -19,7 +19,10 @@ bool lucid_engine::graphics::create_direct_3d() {
 }
 
 bool lucid_engine::graphics::create_device() {
-    direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, lucid_engine::window::get_instance().get_hwnd(), D3DCREATE_SOFTWARE_VERTEXPROCESSING, &direct_3d_paramaters, &direct_3d_device);
+    if (direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, lucid_engine::window::get_instance().get_hwnd(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &direct_3d_paramaters, &direct_3d_device) < 0) {
+        throw std::runtime_error{ "CreateDevice error" };
+        return false;
+    }
 
     direct_3d_device->SetPixelShader(nullptr);
     direct_3d_device->SetVertexShader(nullptr);
