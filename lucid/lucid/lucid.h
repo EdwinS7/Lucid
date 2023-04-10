@@ -41,6 +41,7 @@ public:
 #include "renderer/vector/vector4d.h"
 #include "renderer/vertex/vertex.h"
 #include "renderer/matrix/matrix.h"
+#include "renderer/freetype/font.h"
 #include "renderer/drawdata/draw_data.h"
 #include "renderer/drawdata/compiled_draw_data.h"
 

@@ -28,8 +28,6 @@ namespace lucid_engine {
 		IDirect3DIndexBuffer9* index_buffer{ };
 
 	public:
-		D3DVIEWPORT9 shared_viewport{ };
-
 		void create_objects();
 		void destroy_objects();
 		void render_draw_data();

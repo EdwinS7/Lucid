@@ -3,10 +3,11 @@ C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v17
   renderer.cpp
 C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(30,81): warning C4018: '>': signed/unsigned mismatch
 C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(38,84): warning C4018: '>': signed/unsigned mismatch
-C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(193,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(182,30): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\RareD\Documents\Lucid\lucid\lucid\renderer\renderer.cpp(207,37): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   Generating code
-  31 of 1221 functions ( 2.5%) were compiled, the rest were copied from previous compilation.
+  6 of 1221 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    4 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   lucid.vcxproj -> C:\Users\RareD\Documents\Lucid\Output\lucid.exe

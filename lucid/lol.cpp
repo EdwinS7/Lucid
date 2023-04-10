@@ -16,9 +16,7 @@ int main() {
 
         lucid_engine::graphics::get_instance().begin_scene();
         {
-            lucid_engine::renderer::get_instance().gradient_filled_circle(vec2_t(350, 350), 100, 100, 0, color_t(0, 0, 0, 0), color_t(34, 108, 199, 255));
-            lucid_engine::renderer::get_instance().rounded_rectangle(vec2_t(200, 200), vec2_t(100, 100), color_t(255, 255, 255, 255), 25);
-            //lucid_engine::renderer::get_instance().rectangle(vec2_t(150, 200), vec2_t(100, 100), color_t(255, 0, 0, 255));
+            
             lucid_engine::renderer::get_instance().render_draw_data();
         }
         lucid_engine::graphics::get_instance().end_scene();
