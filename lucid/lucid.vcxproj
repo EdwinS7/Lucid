@@ -171,6 +171,7 @@
     <ClCompile Include="lucid\graphics\graphics.cpp" />
     <ClCompile Include="lucid\input\input.cpp" />
     <ClCompile Include="lucid\lucid.cpp" />
+    <ClCompile Include="lucid\renderer\freetype\font.cpp" />
     <ClCompile Include="lucid\renderer\renderer.cpp" />
     <ClCompile Include="lucid\window\wnd.cpp" />
   </ItemGroup>
@@ -181,6 +182,7 @@
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
+    <ClInclude Include="lucid\renderer\freetype\font.h" />
     <ClInclude Include="lucid\renderer\matrix\matrix.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\vector\vector2d.h" />
