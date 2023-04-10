@@ -84,3 +84,23 @@ void lucid_engine::window::set_window_title(const char* title) {
 HWND lucid_engine::window::get_hwnd() {
 	return hwnd;
 }
+
+vec2_t lucid_engine::window::get_window_size() {
+	RECT rect{ };
+
+	if (GetClientRect(hwnd, &rect))
+		return vec2_t(rect.right - rect.left, rect.bottom - rect.top);
+
+	throw std::runtime_error{ "GetClientRect error" };
+	return vec2_t(0, 0);
+}
+
+vec2_t lucid_engine::window::get_window_pos() {
+	RECT rect{ };
+
+	if (GetWindowRect(hwnd, &rect))
+		return vec2_t(rect.left, rect.top);
+
+	throw std::runtime_error{ "GetWindowRect error" };
+	return vec2_t(0, 0);
+}

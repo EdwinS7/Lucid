@@ -2,6 +2,7 @@
 
 #include <d3d9.h>
 #include <d3dx9.h>
+#include <DirectXMath.h>
 
 #pragma comment(lib, "d3d9")
 #pragma comment(lib, "d3dx9")
@@ -34,9 +35,6 @@ public:
 };
 
 /* lucid engine backend */
-#include "window/wnd.h"
-#include "graphics/graphics.h"
-
 #include "renderer/color/color.h"
 #include "renderer/vector/vector2d.h"
 #include "renderer/vector/vector3d.h"
@@ -46,7 +44,9 @@ public:
 #include "renderer/drawdata/draw_data.h"
 #include "renderer/drawdata/compiled_draw_data.h"
 
+#include "window/wnd.h"
 #include "input/input.h"
+#include "graphics/graphics.h"
 #include "renderer/renderer.h"
 
 namespace lucid_engine {

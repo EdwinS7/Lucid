@@ -14,5 +14,8 @@ namespace lucid_engine {
 
 		void set_window_title(const char* title);
 		HWND get_hwnd();
+
+		vec2_t get_window_size();
+		vec2_t get_window_pos();
 	};
 }
