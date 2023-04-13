@@ -16,7 +16,8 @@ int main() {
 
         lucid_engine::graphics::get_instance().begin_scene();
         {
-            
+            //lucid_engine::io::get_instance().demo_window(true);
+            lucid_engine::renderer::get_instance().gradient_circle(vec2_t(150, 150), 100, 100, 0, color_t(34, 108, 199), color_t(0, 0, 0, 0));
             lucid_engine::renderer::get_instance().render_draw_data();
         }
         lucid_engine::graphics::get_instance().end_scene();

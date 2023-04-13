@@ -33,7 +33,13 @@
     <ClCompile Include="lucid\input\input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lucid\renderer\freetype\font.cpp">
+    <ClCompile Include="lucid\framework\window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lucid\framework\dragging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lucid\framework\resizing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,9 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\input\input.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="lucid\renderer\freetype\font.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

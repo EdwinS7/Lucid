@@ -38,15 +38,18 @@ namespace lucid_engine {
 		void rectangle(vec2_t pos, vec2_t size, color_t color);
 		void filled_rectangle(vec2_t pos, vec2_t size, color_t color);
 		void rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = all);
+		void shadow_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = all);
 		void filled_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = all);
+		void shadow_filled_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = all);
 		void gradient(vec2_t pos, vec2_t size, color_t left, color_t right, bool vertical = false);
 		void filled_gradient(vec2_t pos, vec2_t size, color_t left, color_t right, bool vertical = false);
 		void gradient_four(vec2_t pos, vec2_t size, color_t top_left, color_t top_right, color_t bottom_right, color_t bottom_left);
 		void filled_gradient_four(vec2_t pos, vec2_t size, color_t top_left, color_t top_right, color_t bottom_right, color_t bottom_left);
 		void triangle(vec2_t pos, vec2_t size, color_t color);
 		void filled_triangle(vec2_t pos, vec2_t size, color_t color);
+		void gradient_triangle(vec2_t pos, vec2_t size, color_t color, color_t color2);
 		void circle(vec2_t pos, int size, int completion, int rotation, color_t color);
 		void filled_circle(vec2_t pos, int size, int completion, int rotation, color_t color);
-		void gradient_filled_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2);
+		void gradient_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2);
 	};
 }

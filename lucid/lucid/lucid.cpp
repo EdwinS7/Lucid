@@ -26,5 +26,21 @@ void lucid_engine::io::update() {
 }
 
 void lucid_engine::io::reset() {
-	lucid_engine::input::get_instance().key_info = {};
+	input::get_instance().key_info = {};
+	ui::get_instance().reset();
+}
+
+void lucid_engine::ui::reset() {
+	window_id = -1;
+}
+
+void lucid_engine::io::demo_window(bool open) {
+	if (!open)
+		return;
+
+	lucid_engine::ui::get_instance().create_window("edwngui demo window", { 100, 100 }, {600, 450});
+	{
+
+	}
+	lucid_engine::ui::get_instance().end_window();
 }

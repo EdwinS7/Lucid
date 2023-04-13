@@ -176,10 +176,32 @@ void lucid_engine::renderer::rounded_rectangle(vec2_t pos, vec2_t size, color_t 
 	line(vec2_t(pos.x + radius, pos.y + size.y), vec2_t(pos.x + size.x - radius, pos.y + size.y), color);
 	line(vec2_t(pos.x, pos.y + radius), vec2_t(pos.x, pos.y + size.y - radius), color);
 
-	circle(pos, radius, 25, 180, color);
-	circle(pos + vec2_t(size.x - radius * 2, 0), radius, 25, 270, color);
-	circle(pos + vec2_t(size.x - radius * 4, size.y - radius * 2), radius, 25, 0, color);
-	circle(pos + vec2_t(-radius * 2, size.y - radius * 4), radius, 25, 90, color);
+	circle(pos + vec2_t(radius, radius), radius, 25, 180, color);
+	circle(pos + vec2_t(size.x - radius, radius), radius, 25, 270, color);
+	circle(pos + vec2_t(size.x - radius, size.y - radius), radius, 25, 0, color);
+	circle(pos + vec2_t(radius, size.y - radius), radius, 25, 90, color);
+}
+
+void lucid_engine::renderer::shadow_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags) {
+	if (radius < 0.5f || flags == none)
+		throw std::runtime_error{ "shadow_rounded_rectangle -> Radius must be > 0.5 or flags must not be none" };
+
+	//Not used as of right now.
+	/*const bool round_top_left = (flags & top_left) != 0;
+	const bool round_top_right = (flags & top_right) != 0;
+	const bool round_bottom_left = (flags & bottom_left) != 0;
+	const bool round_bottom_right = (flags & bottom_right) != 0;*/
+
+	
+	filled_gradient(vec2_t(pos.x + radius, pos.y), vec2_t(size.x - radius * 2, radius), color_t(0, 0, 0, 0), color, true);
+	filled_gradient(vec2_t(pos.x + size.x - radius, pos.y + radius), vec2_t(radius, size.y - radius * 2), color, color_t(0, 0, 0, 0));
+	filled_gradient(vec2_t(pos.x + radius, pos.y + size.y - radius), vec2_t(size.x - radius * 2, radius), color, color_t(0, 0, 0, 0), true);
+	filled_gradient(vec2_t(pos.x, pos.y + radius), vec2_t(radius, size.y - radius * 2), color_t(0, 0, 0, 0), color);
+
+	gradient_circle(pos + vec2_t(radius, radius), radius, 25, 180, color, color_t(0, 0, 0, 0));
+	gradient_circle(pos + vec2_t(size.x - radius, radius), radius, 25, 270, color, color_t(0, 0, 0, 0));
+	gradient_circle(pos + vec2_t(size.x - radius, size.y - radius), radius, 25, 0, color, color_t(0, 0, 0, 0));
+	gradient_circle(pos + vec2_t(radius, size.y - radius), radius, 25, 90, color, color_t(0, 0, 0, 0));
 }
 
 void lucid_engine::renderer::filled_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags) {
@@ -212,6 +234,14 @@ void lucid_engine::renderer::filled_rounded_rectangle(vec2_t pos, vec2_t size, c
 	filled_circle(pos + vec2_t(size.x - radius * 4, size.y - radius * 2), radius, 25, 0, color);
 	filled_circle(pos + vec2_t(-radius * 2, size.y - radius * 4), radius, 25, 90, color);
 	polygon(corner_points, color);
+}
+
+void lucid_engine::renderer::shadow_filled_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags) {
+	if (radius < 0.5f || flags == none)
+		throw std::runtime_error{ "shadow_filled_rounded_rectangle -> Radius must be > 0.5 or flags must not be none" };
+
+	filled_rectangle(pos + vec2_t(radius, radius), size - vec2_t(radius * 2, radius * 2), color);
+	shadow_rounded_rectangle(pos, size, color, radius, flags);
 }
 
 void lucid_engine::renderer::gradient(vec2_t pos, vec2_t size, color_t left, color_t right, bool vertical) {
@@ -281,6 +311,18 @@ void lucid_engine::renderer::filled_triangle(vec2_t pos, vec2_t size, color_t co
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
+void lucid_engine::renderer::gradient_triangle(vec2_t pos, vec2_t size, color_t color, color_t color2) {
+	std::vector<vertex_t> vertices;
+
+	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color2.translate()));
+	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color.translate()));
+	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color2.translate()));
+	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color.translate()));
+	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color2.translate()));
+
+	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
+}
+
 void lucid_engine::renderer::circle(vec2_t pos, int size, int completion, int rotation, color_t color) {
 	std::vector<vertex_t> vertices;
 
@@ -290,8 +332,8 @@ void lucid_engine::renderer::circle(vec2_t pos, int size, int completion, int ro
 	for (int i = 0; i < 64 + 1; i++) {
 		float calc = static_cast<float>(i) / 64;
 
-		float x = pos.x + size + size * cos(2 * _completion * calc + angle);
-		float y = pos.y + size + size * sin(2 * _completion * calc + angle);
+		float x = pos.x + size * cos(2 * _completion * calc + angle);
+		float y = pos.y + size * sin(2 * _completion * calc + angle);
 
 		vertices.emplace_back(vertex_t(x, y, 0.f, 1.f, color.translate()));
 	}
@@ -305,13 +347,13 @@ void lucid_engine::renderer::filled_circle(vec2_t pos, int size, int completion,
 	float angle = rotation * D3DX_PI / 180;
 	float _completion = (completion / 100.f) * D3DX_PI;
 
-	vertices.emplace_back(vertex_t(pos.x + size, pos.y + size, 0.f, 1.f, color.translate()));
+	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color.translate()));
 
 	for (int i = 0; i < 64 + 1; i++) {
 		float calc = static_cast<float>(i) / 64;
 
-		float x = pos.x + size + size * cos(2 * _completion * calc + angle);
-		float y = pos.y + size + size * sin(2 * _completion * calc + angle);
+		float x = pos.x + size * cos(2 * _completion * calc + angle);
+		float y = pos.y + size * sin(2 * _completion * calc + angle);
 
 		vertices.emplace_back(vertex_t(x, y, 0.f, 1.f, color.translate()));
 	}
@@ -319,19 +361,19 @@ void lucid_engine::renderer::filled_circle(vec2_t pos, int size, int completion,
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
-void lucid_engine::renderer::gradient_filled_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2) {
+void lucid_engine::renderer::gradient_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2) {
 	std::vector<vertex_t> vertices;
 
 	float angle = rotation * D3DX_PI / 180;
 	float _completion = (completion / 100.f) * D3DX_PI;
 
-	vertices.emplace_back(vertex_t(pos.x + size, pos.y + size, 0.f, 1.f, color.translate()));
+	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color.translate()));
 
 	for (int i = 0; i < 64 + 1; i++) {
 		float calc = static_cast<float>(i) / 64;
 
-		float x = pos.x + size + size * cos(2 * _completion * calc + angle);
-		float y = pos.y + size + size * sin(2 * _completion * calc + angle);
+		float x = pos.x + size * cos(2 * _completion * calc + angle);
+		float y = pos.y + size * sin(2 * _completion * calc + angle);
 
 		vertices.emplace_back(vertex_t(x, y, 0.f, 1.f, color2.translate()));
 	}

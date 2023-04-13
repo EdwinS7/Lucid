@@ -104,7 +104,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -114,11 +114,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>Level1</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -168,10 +169,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="lol.cpp" />
+    <ClCompile Include="lucid\framework\dragging.cpp" />
+    <ClCompile Include="lucid\framework\resizing.cpp" />
+    <ClCompile Include="lucid\framework\window.cpp" />
     <ClCompile Include="lucid\graphics\graphics.cpp" />
     <ClCompile Include="lucid\input\input.cpp" />
     <ClCompile Include="lucid\lucid.cpp" />
-    <ClCompile Include="lucid\renderer\freetype\font.cpp" />
     <ClCompile Include="lucid\renderer\renderer.cpp" />
     <ClCompile Include="lucid\window\wnd.cpp" />
   </ItemGroup>
@@ -182,7 +185,6 @@
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
-    <ClInclude Include="lucid\renderer\freetype\font.h" />
     <ClInclude Include="lucid\renderer\matrix\matrix.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\vector\vector2d.h" />

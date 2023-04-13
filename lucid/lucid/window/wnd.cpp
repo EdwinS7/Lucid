@@ -14,8 +14,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].style = (msg == WM_KEYUP ? key_style::press : key_style::hold);
-		lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].on = true;
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+		if (wParam <= 256) {
+			bool held = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
+
+			lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].style = (held ? key_style::hold : key_style::press);
+			lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].on = true;
+		}
 
 		break;
 	case WM_MOUSEMOVE:
