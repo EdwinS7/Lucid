@@ -15,6 +15,9 @@ namespace lucid_engine {
 		float mouse_wheel_delta;
 		std::map<int, key_data> key_info;
 
+		//used for cursor
+		HCURSOR cursor_style;
+
 		bool button_behavior(int key, key_style style, vec2_t pos, vec2_t size);
 		bool rect_clipping_rect(vec2_t pos, vec2_t size, vec2_t _pos, vec2_t _size);
 		bool point_hovering_rect(vec2_t point, vec2_t pos, vec2_t size);

@@ -3,15 +3,16 @@
 bool lucid_engine::graphics::create_direct_3d() {
 	direct_3d = Direct3DCreate9(D3D_SDK_VERSION);
 
-	direct_3d_paramaters.Windowed = true;
+	direct_3d_paramaters.Windowed = TRUE;
     direct_3d_paramaters.SwapEffect = D3DSWAPEFFECT_DISCARD;
     direct_3d_paramaters.BackBufferFormat = D3DFMT_UNKNOWN;
     direct_3d_paramaters.EnableAutoDepthStencil = TRUE;
     direct_3d_paramaters.AutoDepthStencilFormat = D3DFMT_D16;
 
     /* to use VSync, use D3DPRESENT_INTERVAL_DEFAULT. to use NVSync use, D3DPRESENT_INTERVAL_IMMEDIATE */
-    direct_3d_paramaters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
+    direct_3d_paramaters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
 
+    /* to use Anti Aliasing, you need this. Higher sample rate gives better picture quality but it comes at the cost of a performance loss */
     direct_3d_paramaters.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;
     direct_3d_paramaters.MultiSampleQuality = 0;
 
@@ -60,6 +61,7 @@ bool lucid_engine::graphics::create_device() {
     direct_3d_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
     direct_3d_device->SetTexture(NULL, NULL);
     direct_3d_device->SetPixelShader(nullptr);
+    direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
 
     return true;
 }
@@ -79,10 +81,11 @@ bool lucid_engine::graphics::end_scene() {
 }
 
 void lucid_engine::graphics::reset_device() {
-    lucid_engine::renderer::get_instance().destroy_objects();
-    lucid_engine::renderer::get_instance().create_objects();
     direct_3d_device->Release();
     create_device();
+
+    lucid_engine::renderer::get_instance().destroy_objects();
+    lucid_engine::renderer::get_instance().create_objects();
 }
 
 void lucid_engine::graphics::release() {

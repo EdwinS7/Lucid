@@ -36,10 +36,10 @@
     <ClCompile Include="lucid\framework\window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lucid\framework\dragging.cpp">
+    <ClCompile Include="lucid\framework\helpers\dragging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="lucid\framework\resizing.cpp">
+    <ClCompile Include="lucid\framework\helpers\resizing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,6 +81,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\input\input.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\font\font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\framework\framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\textflags\text_flags.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\textinfo\text_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

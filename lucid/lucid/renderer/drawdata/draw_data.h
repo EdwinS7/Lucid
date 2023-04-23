@@ -6,4 +6,6 @@ struct draw_data_t {
 	std::vector<unsigned int> indices;
 	int vertex_count;
 	int index_count;
+	bool anti_alias;
+	text_info_t text_info;
 };

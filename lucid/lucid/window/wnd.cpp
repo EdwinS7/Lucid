@@ -2,6 +2,7 @@
 
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 	float mouse_wheel_delta = 0.f;
+	static std::map<int, key_data> key_state;
 
 	switch (msg) {
 	case WM_SIZE:
@@ -12,6 +13,26 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		}
 
 		return 0;
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+		key_state[1].on = (msg == WM_LBUTTONDOWN) ? true : false;
+
+		break;
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+		key_state[2].on = (msg == WM_LBUTTONDOWN) ? true : false;
+
+		break;
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+		key_state[4].on = (msg == WM_LBUTTONDOWN) ? true : false;
+
+		break;
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+		key_state[5].on = (msg == WM_LBUTTONDOWN) ? true : false;
+
+		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
 	case WM_SYSKEYDOWN:
@@ -19,8 +40,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		if (wParam <= 256) {
 			bool held = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
 
-			lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].style = (held ? key_style::hold : key_style::press);
-			lucid_engine::input::get_instance().key_info[static_cast<int>(wParam)].on = true;
+			key_state[static_cast<int>(wParam)].style = (held ? key_style::hold : key_style::press);
+			key_state[static_cast<int>(wParam)].on = true;
 		}
 
 		break;
@@ -34,11 +55,18 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		lucid_engine::input::get_instance().mouse_wheel_delta = mouse_wheel_delta;
 
 		break;
+	case WM_SETCURSOR:
+		SetCursor(lucid_engine::input::get_instance().cursor_style);
+
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 
 		return 0;
 	}
+
+	for (int i = 0; i < 256; i++)
+		lucid_engine::input::get_instance().key_info[i] = key_state[i];
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 } 

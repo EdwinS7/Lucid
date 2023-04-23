@@ -75,16 +75,16 @@
     <OutDir>..\Output\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
     <TargetName>lucid</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(ProjectDir)libs;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(ProjectDir)libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Output\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
     <TargetName>lucid</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;C:\Users\RareD\Documents\freetype-2.13.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib/x86;C:\Users\RareD\Documents\freetype-2.13.0\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -169,8 +169,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="lol.cpp" />
-    <ClCompile Include="lucid\framework\dragging.cpp" />
-    <ClCompile Include="lucid\framework\resizing.cpp" />
+    <ClCompile Include="lucid\framework\helpers\dragging.cpp" />
+    <ClCompile Include="lucid\framework\helpers\resizing.cpp" />
     <ClCompile Include="lucid\framework\window.cpp" />
     <ClCompile Include="lucid\graphics\graphics.cpp" />
     <ClCompile Include="lucid\input\input.cpp" />
@@ -179,14 +179,18 @@
     <ClCompile Include="lucid\window\wnd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lucid\framework\framework.h" />
     <ClInclude Include="lucid\graphics\graphics.h" />
     <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
+    <ClInclude Include="lucid\renderer\font\font.h" />
     <ClInclude Include="lucid\renderer\matrix\matrix.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
+    <ClInclude Include="lucid\renderer\textflags\text_flags.h" />
+    <ClInclude Include="lucid\renderer\textinfo\text_info.h" />
     <ClInclude Include="lucid\renderer\vector\vector2d.h" />
     <ClInclude Include="lucid\renderer\vector\vector3d.h" />
     <ClInclude Include="lucid\renderer\vector\vector4d.h" />

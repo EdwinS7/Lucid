@@ -1,10 +1,12 @@
 #include "lucid.h"
 
 void lucid_engine::io::create() {
-	
+	lucid_engine::input::get_instance().cursor_style = LoadCursor(NULL, IDC_ARROW);
 }
 
 void lucid_engine::io::update() {
+	lucid_engine::input::get_instance().cursor_style = LoadCursor(NULL, IDC_ARROW);
+
 	auto high_resolution_clock = std::chrono::high_resolution_clock::now();
 	real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
 
@@ -14,8 +16,8 @@ void lucid_engine::io::update() {
 
 	frame_rate = static_cast<int>(1.f / delta_time);
 	
-	static auto frame_rate_avg = 60.f;
-	static auto frame_rate_update = real_time + 1.f;
+	static int frame_rate_avg = 60;
+	static float frame_rate_update = real_time + 1.f;
 	if (real_time > frame_rate_update) {
 		frame_rate_average = frame_rate_avg;
 		frame_rate_update = real_time + 1;
@@ -26,8 +28,8 @@ void lucid_engine::io::update() {
 }
 
 void lucid_engine::io::reset() {
-	input::get_instance().key_info = {};
-	ui::get_instance().reset();
+	lucid_engine::input::get_instance().key_info = {};
+	lucid_engine::ui::get_instance().reset();
 }
 
 void lucid_engine::ui::reset() {
@@ -38,7 +40,7 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	lucid_engine::ui::get_instance().create_window("edwngui demo window", { 100, 100 }, {600, 450});
+	lucid_engine::ui::get_instance().create_window("edwngui demo window", { 100, 100 }, { 600, 450 }, {600, 450});
 	{
 
 	}
