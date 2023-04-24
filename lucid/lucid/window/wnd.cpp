@@ -65,8 +65,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	}
 
-	for (int i = 0; i < 256; i++)
-		lucid_engine::input::get_instance().key_info[i] = key_state[i];
+	lucid_engine::input::get_instance().key_info = key_state;
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 } 

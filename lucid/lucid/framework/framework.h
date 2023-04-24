@@ -7,20 +7,20 @@ struct style_t {
 	int padding = 8;
 
 	int window_rounding = 5;
-	int child_rounding = 10;
+	int child_rounding = 5;
 	int element_rounding = 5;
 
 	//colors (r, g, b, a = 255)
-	color_t accent = color_t(166, 147, 243);
+	color_t accent = color_t(207, 157, 173);
 
 	color_t window_background = color_t(20, 20, 20);
-	color_t window_outline = color_t(33, 33, 33);
+	color_t window_outline = color_t(0, 0, 0);
 	color_t window_header = color_t(28, 28, 28);
 
 	color_t panel_background = color_t(18, 18, 18);
 
 	color_t child_background = color_t(18, 18, 18);
-	color_t child_outline = color_t(33, 33, 33);
+	color_t child_outline = color_t(0, 0, 0);
 	color_t child_header = color_t(28, 28, 28);
 
 	color_t element_active = accent;
@@ -29,16 +29,31 @@ struct style_t {
 
 	color_t text_active = color_t(240, 240, 240);
 	color_t text_hovered = color_t(255, 255, 255);
-	color_t text_inactive = color_t(74, 74, 74);
+	color_t text_inactive = color_t(179, 179, 179);
+};
+
+struct tab_info {
+	const char* icon;
+	const char* title;
+
+	tab_info(const char* _icon, const char* _title)
+		: icon(_icon), title(_title) {}
 };
 
 namespace lucid_engine {
 	class ui : public singleton<ui> {
 	private:
 		int window_id = -1;
+		int group_id = -1;
 
 		std::map<int, bool> this_window_setup{ };
 		std::map<int, vec2_t> window_pos, window_min_size, window_size{ };
+
+		std::map<int, bool> this_group_setup{ };
+		std::map<int, vec2_t> group_pos, group_min_size, group_size{ };
+
+		std::vector<tab_info> tabs;
+		int tab = 0;
 
 		style_t* style = new style_t;
 
@@ -53,6 +68,16 @@ namespace lucid_engine {
 
 		void create_window(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size);
 		void end_window();
+
+		void create_group(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size);
+		void end_group();
+
+		void set_tabs_pos(vec2_t pos);
+		void add_tab(const char* icon, const char* title);
+		void handle_tabs();
+
+		vec2_t get_window_pos();
+		vec2_t get_window_size();
 
 		void reset();
 	};

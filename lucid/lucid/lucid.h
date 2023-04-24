@@ -67,4 +67,23 @@ namespace lucid_engine {
 		int frame_rate;
 		int frame_rate_average;
 	};
+
+	class animations : public singleton<animations> {
+	public:
+		float linear(float x, float to, float delta) {
+			return x < to ? x + (1 * delta) : x - (1 * delta);
+		}
+
+		float lerp(float x, float to, float delta) {
+			return x + (to - x) * delta;
+		}
+
+		vec2_t vec2_lerp(vec2_t x, vec2_t to, float delta) {
+			return vec2_t(lerp(x.x, to.x, delta), lerp(x.y, to.y, delta));
+		}
+
+		float in(float x, float delta) {
+			return x * (x * delta);
+		}
+	};
 }

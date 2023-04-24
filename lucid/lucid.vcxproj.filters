@@ -42,6 +42,12 @@
     <ClCompile Include="lucid\framework\helpers\resizing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lucid\framework\group.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lucid\framework\tabs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\lucid.h">

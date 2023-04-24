@@ -21,7 +21,7 @@ struct font_t {
 
     font_t() {}
     font_t(IDirect3DDevice9* pDevice, const char* name, int size, int weight, font_flags_t _font_flags) {
-        D3DXCreateFontA(pDevice, size, 0, weight, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, _font_flags.anti_alias ? CLEARTYPE_NATURAL_QUALITY /* LOL */ : DEFAULT_QUALITY, DEFAULT_PITCH, name, &dx_font);
+        D3DXCreateFontA(pDevice, size, 0, weight, 0, 0, ANSI_CHARSET, OUT_DEFAULT_PRECIS, _font_flags.anti_alias ? CLEARTYPE_QUALITY /* LOL */ : DEFAULT_QUALITY, DEFAULT_PITCH, name, &dx_font);
         font_flags = _font_flags;
     }
 };

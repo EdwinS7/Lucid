@@ -169,8 +169,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="lol.cpp" />
+    <ClCompile Include="lucid\framework\group.cpp" />
     <ClCompile Include="lucid\framework\helpers\dragging.cpp" />
     <ClCompile Include="lucid\framework\helpers\resizing.cpp" />
+    <ClCompile Include="lucid\framework\tabs.cpp" />
     <ClCompile Include="lucid\framework\window.cpp" />
     <ClCompile Include="lucid\graphics\graphics.cpp" />
     <ClCompile Include="lucid\input\input.cpp" />

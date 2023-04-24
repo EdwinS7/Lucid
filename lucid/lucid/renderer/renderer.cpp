@@ -5,7 +5,8 @@ void lucid_engine::renderer::create_objects() {
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
 	D3DXCreateSprite(lucid_engine::graphics::get_instance().direct_3d_device, &font_sprite);
-	fonts.default_font = create_font("Tahoma", 16, 400, font_flags_t(true, false, false));
+	fonts.default_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
+	fonts.primordial_icons = create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false));
 }
 
 void lucid_engine::renderer::destroy_objects() {
@@ -399,4 +400,11 @@ void lucid_engine::renderer::text(font_t font, std::string string, vec2_t pos, c
 
 	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color.translate()));
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true, text_info_t(font, string, pos, color, text_flags));
+}
+
+vec2_t lucid_engine::renderer::get_text_size(font_t font, std::string string) {
+	RECT text_clip; 
+	font.dx_font->DrawTextA(0, string.c_str(), strlen(string.c_str()), &text_clip, DT_CALCRECT, D3DCOLOR_ARGB(0, 0, 0, 0));
+
+	return vec2_t(text_clip.right - text_clip.left, text_clip.bottom - text_clip.top);
 }

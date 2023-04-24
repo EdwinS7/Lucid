@@ -33,6 +33,7 @@ namespace lucid_engine {
 	public:
 		struct fonts {
 			font_t default_font{ };
+			font_t primordial_icons{ };
 		} fonts;
 
 		void create_objects();
@@ -58,5 +59,6 @@ namespace lucid_engine {
 		void gradient_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2);
 		font_t create_font(std::string font_name, int size, int weight = 400, font_flags_t font_flags = font_flags_t());
 		void text(font_t font, std::string string, vec2_t pos, color_t color, text_flags_t flags = text_flags_t());
+		vec2_t get_text_size(font_t font, std::string string);
 	};
 }
