@@ -13,10 +13,11 @@ namespace lucid_engine {
 		bool dispatch_messages();
 
 		void set_window_title(const char* title);
-		HWND get_hwnd();
 
 		vec2_t get_window_size();
 		vec2_t get_window_pos();
+
+		HWND get_hwnd();
 	};
 	inline const auto g_window = std::make_unique< window >();
 }

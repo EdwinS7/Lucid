@@ -33,23 +33,17 @@ void lucid_engine::ui::handle_tabs() {
 			g_renderer.get()->filled_rectangle(draw_position, area - vec2_t(0, 2), m_style->m_window_background);
 			g_renderer.get()->filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), m_style->m_accent);
 
-			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default),
-				m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_active);
-			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_primordial_icons),
-				m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_active);
+			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_active);
+			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_primordial_icons), m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_active);
 		}
 		else {
 			if (hovered) {
-				g_renderer.get()->filled_rectangle(draw_position, area - vec2_t(0, 2),
-					m_style->m_window_background.override_alpha(150));
-				g_renderer.get()->filled_rectangle(draw_position + vec2_t(0, area.x - 2),
-					vec2_t(area.x, 2), m_style->m_accent.override_alpha(150));
+				g_renderer.get()->filled_rectangle(draw_position, area - vec2_t(0, 2), m_style->m_window_background.override_alpha(150));
+				g_renderer.get()->filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), m_style->m_accent.override_alpha(150));
 			}
 
-			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default),
-				m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_inactive);
-			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_primordial_icons),
-				m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_inactive);
+			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_inactive);
+			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_primordial_icons), m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_inactive);
 		}
 		
 		// check if mouse is hovering the bounds of this m_tab.
@@ -68,4 +62,3 @@ void lucid_engine::ui::handle_tabs() {
 
 	// clear vector for next window.
 	m_tabs.clear();
-}

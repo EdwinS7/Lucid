@@ -19,14 +19,13 @@ namespace lucid_engine {
 		std::map<int, key_data> m_key_info{ };
 		HCURSOR					m_cursor_style{ };
 
-		bool button_behavior(int key,
-			key_style style, vec2_t pos, vec2_t size);
-		bool rect_clipping_rect(vec2_t pos
-			, vec2_t size, vec2_t _pos, vec2_t _size);
+		bool rect_clipping_rect(vec2_t pos, vec2_t size, vec2_t _pos, vec2_t _size);
 		bool point_hovering_rect(vec2_t point, vec2_t pos, vec2_t size);
 		bool mouse_hovering_rect(vec2_t pos, vec2_t size);
-		bool is_key_held(int key);
+
+		bool button_behavior(int key, key_style style, vec2_t pos, vec2_t size);
 		bool is_key_pressed(int key);
+		bool is_key_held(int key);
 	};
 	inline const auto g_input = std::make_unique< input >();
 }

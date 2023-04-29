@@ -67,8 +67,8 @@ bool lucid_engine::graphics::create_device() {
     return true;
 }
 
-bool lucid_engine::graphics::begin_scene(color_t bg_color) {
-    m_direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(bg_color.r, bg_color.g, bg_color.b, NULL), 1.f, 0);
+bool lucid_engine::graphics::begin_scene(color_t color) {
+    m_direct_3d_device->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_RGBA(color.r, color.g, color.b, NULL), 1.f, 0);
     m_direct_3d_device->BeginScene();
 
     return true;

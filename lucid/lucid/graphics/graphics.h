@@ -13,7 +13,7 @@ namespace lucid_engine {
 		bool create_direct_3d();
 		bool create_device();
 
-		bool begin_scene(color_t bg_color);
+		bool begin_scene(color_t color);
 		bool end_scene();
 
 		void reset_device();

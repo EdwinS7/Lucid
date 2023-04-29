@@ -23,8 +23,8 @@ bool lucid_engine::input::rect_clipping_rect(vec2_t pos, vec2_t size, vec2_t _po
 		{pos.x + size.x, pos.y + size.y}
 	};
 
-	for (int i = 0; i < points.size(); i++)
-		if (point_hovering_rect(points[i], _pos, _size))
+	for (vec2_t& point : points)
+		if (point_hovering_rect(point, _pos, _size))
 			hovered = true;
 
 	return hovered;

@@ -88,12 +88,10 @@ namespace lucid_engine {
 		bool is_resizing();
 		bool is_this_resizing();
 
-		void create_window(const char* title,
-			vec2_t pos, vec2_t min_size, vec2_t default_size);
+		void create_window(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size);
 		void end_window();
 
-		void create_group(const char* title,
-			vec2_t pos, vec2_t min_size, vec2_t default_size);
+		void create_group(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size);
 		void end_group();
 
 		void set_tabs_pos(vec2_t pos);
