@@ -33,26 +33,31 @@ void lucid_engine::renderer::destroy_objects() {
 void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
 
-	for (const draw_data_t& data : m_draw_data) {
-		for (vertex_t vertex : data.m_vertices)
-			m_compiled_draw_data.m_vertices.emplace_back(vertex);
+	for (int i = 0; i < 3; i++) {
+		std::vector<draw_data_t> draw_data_ptr;
+		
+		switch (i) {
+		case background_draw_list:
+			draw_data_ptr = m_background_draw_data;
+			break;
+		case default_draw_list:
+			draw_data_ptr = m_default_draw_data;
+			break;
+		case foreground_draw_list:
+			draw_data_ptr = m_foreground_draw_data;
+			break;
+		}
 
-		for (std::uint32_t index : data.m_indices)
-			m_compiled_draw_data.m_indices.emplace_back(index);
+		for (const draw_data_t& data : draw_data_ptr) {
+			for (vertex_t vertex : data.m_vertices)
+				m_compiled_draw_data.m_vertices.emplace_back(vertex);
 
-		m_compiled_draw_data.m_total_index_count += data.m_index_count;
-		m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
-	}
+			for (std::uint32_t index : data.m_indices)
+				m_compiled_draw_data.m_indices.emplace_back(index);
 
-	for (const draw_data_t& data : m_background_draw_data) {
-		for (vertex_t vertex : data.m_vertices)
-			m_compiled_draw_data.m_vertices.emplace_back(vertex);
-
-		for (std::uint32_t index : data.m_indices)
-			m_compiled_draw_data.m_indices.emplace_back(index);
-
-		m_compiled_draw_data.m_total_index_count += data.m_index_count;
-		m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
+			m_compiled_draw_data.m_total_index_count += data.m_index_count;
+			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
+		}
 	}
 
 	if (!m_vertex_buffer || m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t) > vertex_buffer_size) {
@@ -117,42 +122,39 @@ void lucid_engine::renderer::render_draw_data() {
 
 	int start_vertex = 0;
 	int start_index = 0;
-	for (const draw_data_t& data : m_background_draw_data) {
-		RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
-		text_info_t text_info = data.m_text_info;
+	for (int i = 0; i < 3; i++) {
+		std::vector<draw_data_t> draw_data_ptr;
 
-		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
-		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, data.m_clip_info.m_clipping);
-		g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
-
-		if (text_info.m_setup) {
-			RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
-			text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
+		switch (i) {
+		case background_draw_list:
+			draw_data_ptr = m_background_draw_data;
+			break;
+		case default_draw_list:
+			draw_data_ptr = m_default_draw_data;
+			break;
+		case foreground_draw_list:
+			draw_data_ptr = m_foreground_draw_data;
+			break;
 		}
-		else
-			g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count / 3);
 
-		start_vertex += data.m_vertex_count;
-		start_index += data.m_index_count;
-	}
+		for (const draw_data_t& data : draw_data_ptr) {
+			RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
+			text_info_t text_info = data.m_text_info;
 
-	for (const draw_data_t& data : m_draw_data) {
-		RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
-		text_info_t text_info = data.m_text_info;
+			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
+			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, data.m_clip_info.m_clipping);
+			g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
 
-		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
-		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, data.m_clip_info.m_clipping);
-		g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
+			if (text_info.m_setup) {
+				RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
+				text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
+			}
+			else
+				g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count / 3);
 
-		if (text_info.m_setup) {
-			RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
-			text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
+			start_vertex += data.m_vertex_count;
+			start_index += data.m_index_count;
 		}
-		else
-			g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count / 3);
-
-		start_vertex += data.m_vertex_count;
-		start_index += data.m_index_count;
 	}
 
 	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
@@ -163,8 +165,10 @@ void lucid_engine::renderer::render_draw_data() {
 	state_block->Release();
 
 	m_compiled_draw_data = {};
+	m_foreground_draw_data.clear();
 	m_background_draw_data.clear();
-	m_draw_data.clear();
+	m_default_draw_data.clear();
+
 	m_clip_info.clear();
 }
 
@@ -203,10 +207,17 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 	for (unsigned int i = 0; i < vertices.size(); i++)
 		indices[i] = i;
 
-	if (m_draw_list == foreground)
-		m_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
-	else
+	switch (m_draw_list) {
+	case default_draw_list:
+		m_default_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
+		break;
+	case background_draw_list:
 		m_background_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
+		break;
+	case foreground_draw_list:
+		m_foreground_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
+		break;
+	}
 }
 
 void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {

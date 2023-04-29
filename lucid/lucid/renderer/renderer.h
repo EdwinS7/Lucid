@@ -22,16 +22,18 @@ enum corner_flags {
 };
 
 enum draw_list_t {
-	background = 0,
-	foreground
+	background_draw_list = 0,
+	default_draw_list,
+	foreground_draw_list
 };
 
 namespace lucid_engine {
 	class renderer {
 	private:
 		compiled_draw_data_t	 m_compiled_draw_data{ };
-		std::vector<draw_data_t> m_draw_data{ },
-			                     m_background_draw_data{ };
+		std::vector<draw_data_t> m_default_draw_data{ },
+								 m_background_draw_data{ },
+			                     m_foreground_draw_data{ };
 
 		IDirect3DVertexBuffer9*  m_vertex_buffer{ };
 		IDirect3DIndexBuffer9*   m_index_buffer{ };
@@ -41,7 +43,7 @@ namespace lucid_engine {
 
 		clip_info_t              m_clip_info{ };
 
-		draw_list_t              m_draw_list{ foreground };
+		draw_list_t              m_draw_list{ default_draw_list };
 
 		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
 
