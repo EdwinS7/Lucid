@@ -2,7 +2,7 @@
 
 void lucid_engine::ui::check_box(const char* title, bool* state) {
 	vec2_t check_box_size = { 9, 9 };
-	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_fonts.at(fonts::font_default), title);
+	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, title);
 
 	// check if mouse is hovering the bounds of the check box.
 	if (g_input.get()->mouse_hovering_rect(m_elements_pos, text_size + vec2_t(check_box_size.x, 0))) {
@@ -20,7 +20,7 @@ void lucid_engine::ui::check_box(const char* title, bool* state) {
 		g_renderer.get()->filled_rounded_rectangle(m_elements_pos, check_box_size, *state ? m_style->m_element_active : m_style->m_element_inactive, m_style->m_element_rounding);
 		g_renderer.get()->rounded_rectangle(m_elements_pos, check_box_size, m_style->m_element_outline, m_style->m_element_rounding);
 
-		g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), title, m_elements_pos + vec2_t(check_box_size.x + 4, -2), *state ? m_style->m_text_active : m_style->m_text_inactive);
+		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos + vec2_t(check_box_size.x + 4, -2), *state ? m_style->m_text_active : m_style->m_text_inactive);
 	}
 
 	// apply new position.

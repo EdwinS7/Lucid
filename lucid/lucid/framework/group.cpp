@@ -22,7 +22,7 @@ void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_si
 	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 25), vec2_t(m_group_size[m_group_id].x, 1), m_style->m_accent);
 	g_renderer.get()->rounded_rectangle(m_window_pos[m_window_id] + m_group_pos[m_group_id], m_group_size[m_group_id], m_style->m_group_outline, m_style->m_group_rounding);
 
-	g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), title, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(4, 6), m_style->m_text_active);
+	g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(4, 6), m_style->m_text_active);
 
 	// handle scrolling data.
 	m_groups[m_group_id].m_hovered = g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id] + pos, m_group_size[m_group_id]);
@@ -42,7 +42,7 @@ void lucid_engine::ui::end_group() {
 	float scroll_max_range = left_over - ((m_elements_pos.y - m_groups[m_group_id].m_scroll) + m_groups[m_group_id].m_scroll_abs);
 
 	// apply values, the absolute and the lerped value.
-	if (m_elements_pos.y - left_over >= 0)
+	if (m_elements_pos.y - left_over >= 0 && !is_dragging() && !is_resizing())
 		m_groups[m_group_id].m_scroll_abs = std::clamp(m_groups[m_group_id].m_scroll_abs + g_input.get()->m_mouse_wheel_delta, scroll_max_range + m_groups[m_group_id].m_scroll_abs, 0.f);
 
 	m_groups[m_group_id].m_scroll = g_animations.get()->lerp(m_groups[m_group_id].m_scroll, m_groups[m_group_id].m_scroll_abs, g_io.get()->m_delta_time * 8);

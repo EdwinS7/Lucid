@@ -1,12 +1,14 @@
 #include "renderer.h"
 
+
 void lucid_engine::renderer::create_objects() {
 	if (!g_graphics.get()->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
 	D3DXCreateSprite(g_graphics.get()->m_direct_3d_device, &m_font_sprite);
-	m_fonts.push_back(create_font("Segoe UI", 13, 400, font_flags_t(true, false, false)));
-	m_fonts.push_back(create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false)));
+
+	m_defualt_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
+	m_primordial_font = create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false));
 }
 
 void lucid_engine::renderer::destroy_objects() {
@@ -24,6 +26,7 @@ void lucid_engine::renderer::destroy_objects() {
 			font.m_dx_font = nullptr;
 		}
 	}
+
 	m_fonts.clear();
 }
 
@@ -149,6 +152,11 @@ void lucid_engine::renderer::pop_clip() {
 	}
 	else
 		m_clip_info.clear();
+}
+
+font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, const font_flags_t font_flags) {
+	m_fonts.push_back(font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags));
+	return m_fonts.back();
 }
 
 void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
@@ -374,8 +382,8 @@ std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t 
 	for (int i = 0; i < segments + 1; i++) {
 		float current_point = static_cast<float>(i) / segments;
 
-		float x = pos.x + radius * cos(2 * c * current_point + ang);
-		float y = pos.y + radius * sin(2 * c * current_point + ang);
+		float x = pos.x + radius * cos(ang + 2 * c * current_point);
+		float y = pos.y + radius * sin(ang + 2 * c * current_point);
 
 		points.emplace_back(vec2_t(x, y));
 	}
@@ -415,11 +423,6 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color2)));
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
-}
-
-font_t lucid_engine::renderer::create_font(const std::string font_name, 
-	const int size, const int weight, const font_flags_t font_flags) {
-	return font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags);
 }
 
 void lucid_engine::renderer::text(const font_t font, const std::string string, const vec2_t pos, const color_t color) {
