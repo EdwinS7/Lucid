@@ -10,7 +10,7 @@ bool lucid_engine::graphics::create_direct_3d() {
     direct_3d_paramaters.AutoDepthStencilFormat = D3DFMT_D16;
 
     /* to use VSync, use D3DPRESENT_INTERVAL_DEFAULT. to use NVSync use, D3DPRESENT_INTERVAL_IMMEDIATE */
-    direct_3d_paramaters.PresentationInterval = D3DPRESENT_INTERVAL_DEFAULT;
+    direct_3d_paramaters.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
 
     /* to use Anti Aliasing, you need this. Higher sample rate gives better picture quality but it comes at the cost of a performance loss */
     direct_3d_paramaters.MultiSampleType = D3DMULTISAMPLE_4_SAMPLES;

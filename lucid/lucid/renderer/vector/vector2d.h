@@ -15,6 +15,16 @@ struct vec2_t {
         return vec2_t(x - other.x, y - other.y);
     }
 
+    void operator += (const vec2_t& other) {
+        x = x + other.x;
+        y = y + other.y;
+    }
+
+    vec2_t operator -= (const vec2_t& other) {
+        x = x - other.x;
+        y = y - other.y;
+    }
+
     bool operator < (const vec2_t& other) {
         return (x < other.x && y < other.y);
     }

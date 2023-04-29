@@ -10,4 +10,12 @@ struct color_t {
 	D3DCOLOR translate() {
 		return D3DCOLOR_RGBA(r, g, b, a);
 	}
+
+	static D3DCOLOR translate(color_t clr) {
+		return D3DCOLOR_RGBA(clr.r, clr.g, clr.b, clr.a);
+	}
+
+	color_t override_alpha(int alpha) {
+		return color_t(r, g, b, alpha);
+	}
 };

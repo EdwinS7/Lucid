@@ -2,6 +2,8 @@
 
 #include "../lucid.h"
 
+#define CIRCLE_SEGMENTS 64
+
 enum corner_flags {
 	none = 0,
 
@@ -30,6 +32,8 @@ namespace lucid_engine {
 		LPDIRECT3DTEXTURE9 font_texture{ };
 		LPD3DXSPRITE font_sprite{ };
 
+		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
+
 	public:
 		struct fonts {
 			font_t default_font{ };
@@ -39,26 +43,26 @@ namespace lucid_engine {
 		void create_objects();
 		void destroy_objects();
 		void render_draw_data();
-		void write_vertex(D3DPRIMITIVETYPE type, std::vector<vertex_t> vertices, bool anti_alias = false, text_info_t text_info = text_info_t());
-		void line(vec2_t from, vec2_t to, color_t color, bool anti_alias = false);
-		void polyline(std::vector<vec2_t> points, color_t color, bool anti_alias = false);
-		void polygon(std::vector<vec2_t> points, color_t color, bool anti_alias = false);
-		void rectangle(vec2_t pos, vec2_t size, color_t color);
-		void filled_rectangle(vec2_t pos, vec2_t size, color_t color);
-		void rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = corner_all);
-		void filled_rounded_rectangle(vec2_t pos, vec2_t size, color_t color, int radius, corner_flags flags = corner_all);
-		void gradient(vec2_t pos, vec2_t size, color_t left, color_t right, bool vertical = false);
-		void filled_gradient(vec2_t pos, vec2_t size, color_t left, color_t right, bool vertical = false);
-		void gradient_four(vec2_t pos, vec2_t size, color_t top_left, color_t top_right, color_t bottom_right, color_t bottom_left);
-		void filled_gradient_four(vec2_t pos, vec2_t size, color_t top_left, color_t top_right, color_t bottom_right, color_t bottom_left);
-		void triangle(vec2_t pos, vec2_t size, color_t color);
-		void filled_triangle(vec2_t pos, vec2_t size, color_t color);
-		void gradient_triangle(vec2_t pos, vec2_t size, color_t color, color_t color2);
-		void circle(vec2_t pos, int size, int completion, int rotation, color_t color);
-		void filled_circle(vec2_t pos, int size, int completion, int rotation, color_t color);
-		void gradient_circle(vec2_t pos, int size, int completion, int rotation, color_t color, color_t color2);
-		font_t create_font(std::string font_name, int size, int weight = 400, font_flags_t font_flags = font_flags_t());
-		void text(font_t font, std::string string, vec2_t pos, color_t color, text_flags_t flags = text_flags_t());
-		vec2_t get_text_size(font_t font, std::string string);
+		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
+		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
+		void polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
+		void polygon(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
+		void rectangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_all);
+		void filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_all);
+		void gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical = false);
+		void filled_gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical = false);
+		void gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left);
+		void filled_gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left);
+		void triangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void filled_triangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2);
+		void circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
+		void filled_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
+		void gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2);
+		font_t create_font(const std::string font_name, int radius, int weight = 400, const font_flags_t font_flags = font_flags_t());
+		void text(const font_t font, const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags = text_flags_t());
+		vec2_t get_text_size(const font_t font, const std::string string);
 	};
 }

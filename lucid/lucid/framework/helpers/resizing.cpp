@@ -9,12 +9,9 @@ struct resizing_info {
 std::map<int, resizing_info> info;
 
 vec2_t lucid_engine::ui::handle_resizing() {
-	bool another_resizing = false;
-
-	for (int i = info.size(); i > 0; i--) {
-		if (window_id != i && info[i].resizing)
-			another_resizing = true;
-	}
+	bool another_resizing = std::any_of(info.begin(), info.end(), [this](const auto& item) {
+		return window_id != item.first && item.second.resizing;
+	});
 
 	if (is_dragging() || another_resizing)
 		return window_size[window_id];
@@ -24,7 +21,7 @@ vec2_t lucid_engine::ui::handle_resizing() {
 	bool held = input::get_instance().is_key_held(VK_LBUTTON);
 	bool inside_bounds = input::get_instance().mouse_hovering_rect(window_pos[window_id] + window_size[window_id] - area, area);
 
-	if (!info[window_id].outside_bounds && held && !inside_bounds)
+	if (!info[window_id].outside_bounds && ((held && !inside_bounds) || hovering_element))
 		info[window_id].outside_bounds = true;
 	else if (info[window_id].outside_bounds && !held)
 		info[window_id].outside_bounds = false;

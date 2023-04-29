@@ -4,11 +4,12 @@
 
 struct style_t {
 	float alpha = 255.f;
-	int padding = 8;
 
 	int window_rounding = 5;
-	int child_rounding = 5;
-	int element_rounding = 5;
+	int group_rounding = 5;
+	int element_rounding = 3;
+	int group_padding = 10;
+	int group_spacing = 4;
 
 	//colors (r, g, b, a = 255)
 	color_t accent = color_t(207, 157, 173);
@@ -19,12 +20,12 @@ struct style_t {
 
 	color_t panel_background = color_t(18, 18, 18);
 
-	color_t child_background = color_t(18, 18, 18);
-	color_t child_outline = color_t(0, 0, 0);
-	color_t child_header = color_t(28, 28, 28);
+	color_t group_background = color_t(18, 18, 18);
+	color_t group_outline = color_t(0, 0, 0);
+	color_t group_header = color_t(28, 28, 28);
 
 	color_t element_active = accent;
-	color_t element_inactive = color_t(0, 0, 0, 0); //unused
+	color_t element_inactive = color_t(28, 28, 28, 255); //unused
 	color_t element_outline = color_t(0, 0, 0);
 
 	color_t text_active = color_t(240, 240, 240);
@@ -40,6 +41,18 @@ struct tab_info {
 		: icon(_icon), title(_title) {}
 };
 
+struct group_info {
+	bool hovered;
+	float scroll_abs;
+	float scroll;
+
+	vec2_t og_elements_pos{ };
+
+	group_info() { }
+	group_info(bool _hovered, float _scroll_abs, float _scroll, vec2_t _og_elements_pos)
+		: hovered(_hovered), scroll_abs(_scroll_abs), scroll(_scroll), og_elements_pos(_og_elements_pos) {}
+};
+
 namespace lucid_engine {
 	class ui : public singleton<ui> {
 	private:
@@ -51,9 +64,13 @@ namespace lucid_engine {
 
 		std::map<int, bool> this_group_setup{ };
 		std::map<int, vec2_t> group_pos, group_min_size, group_size{ };
+		std::map<int, group_info> groups;
 
 		std::vector<tab_info> tabs;
 		int tab = 0;
+
+		bool hovering_element = false;
+		vec2_t elements_pos{ };
 
 		style_t* style = new style_t;
 
@@ -75,6 +92,8 @@ namespace lucid_engine {
 		void set_tabs_pos(vec2_t pos);
 		void add_tab(const char* icon, const char* title);
 		void handle_tabs();
+
+		void check_box(const char* title, bool* state);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();

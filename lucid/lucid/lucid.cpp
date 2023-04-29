@@ -28,6 +28,7 @@ void lucid_engine::io::update() {
 }
 
 void lucid_engine::io::reset() {
+	lucid_engine::input::get_instance().mouse_wheel_delta = 0.f;
 	lucid_engine::input::get_instance().key_info = {};
 	lucid_engine::ui::get_instance().reset();
 }
@@ -45,16 +46,26 @@ void lucid_engine::io::demo_window(bool open) {
 	{
 		vec2_t window_pos = lucid_engine::ui::get_instance().get_window_pos();
 		vec2_t window_size = lucid_engine::ui::get_instance().get_window_size();
-		vec2_t group_size = { (window_size.x - 45) / 2, 100 };
+		vec2_t group_size = { (window_size.x - 45) / 2, window_size.y - 100 };
+
+		lucid_engine::ui::get_instance().add_tab("A", "aimbot");
+		lucid_engine::ui::get_instance().add_tab("B", "antiaim");
+		lucid_engine::ui::get_instance().add_tab("C", "visuals");
+		lucid_engine::ui::get_instance().add_tab("D", "misc");
+		lucid_engine::ui::get_instance().add_tab("E", "skins");
+		lucid_engine::ui::get_instance().handle_tabs();
 
 		lucid_engine::ui::get_instance().create_group("i hit kids 4000", { 15, 40 }, group_size, group_size);
 		{
-			lucid_engine::ui::get_instance().add_tab("A", "aimbot");
-			lucid_engine::ui::get_instance().add_tab("B", "antiaim");
-			lucid_engine::ui::get_instance().add_tab("C", "visuals");
-			lucid_engine::ui::get_instance().add_tab("D", "misc");
-			lucid_engine::ui::get_instance().add_tab("E", "skins");
-			lucid_engine::ui::get_instance().handle_tabs();
+			static bool test = false;
+
+
+		}
+		lucid_engine::ui::get_instance().end_group();
+
+		lucid_engine::ui::get_instance().create_group("i hit kids 6000", { group_size.x + 30, 40 }, group_size, group_size);
+		{
+
 		}
 		lucid_engine::ui::get_instance().end_group();
 	}
