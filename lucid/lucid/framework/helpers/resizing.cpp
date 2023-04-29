@@ -18,8 +18,8 @@ vec2_t lucid_engine::ui::handle_resizing() {
 
 	vec2_t area{ 10, 10 };
 
-	bool held = g_input.is_key_held(VK_LBUTTON);
-	bool inside_bounds = g_input.mouse_hovering_rect(window_pos[window_id] + window_size[window_id] - area, area);
+	bool held = g_input.get( )->is_key_held(VK_LBUTTON);
+	bool inside_bounds = g_input.get( )->mouse_hovering_rect(window_pos[window_id] + window_size[window_id] - area, area);
 
 	auto& window_info = info[window_id];
 	if (!window_info.outside_bounds && ((held && !inside_bounds) || hovering_element))
@@ -28,7 +28,7 @@ vec2_t lucid_engine::ui::handle_resizing() {
 		window_info.outside_bounds = false;
 
 	if (!window_info.resizing && !window_info.outside_bounds && held && inside_bounds) {
-		window_info.difference = g_input.mouse_pos - (window_pos[window_id] + window_size[window_id]);
+		window_info.difference = g_input.get( )->mouse_pos - (window_pos[window_id] + window_size[window_id]);
 		window_info.resizing = true;
 	}
 	else if (window_info.resizing && !held)
@@ -37,11 +37,11 @@ vec2_t lucid_engine::ui::handle_resizing() {
 	if (!window_info.resizing)
 		return window_size[window_id];
 
-	vec2_t new_size = (g_input.mouse_pos - window_pos[window_id]) - window_info.difference;
+	vec2_t new_size = (g_input.get( )->mouse_pos - window_pos[window_id]) - window_info.difference;
 
 	new_size = vec2_t{ std::max(new_size.x, window_min_size[window_id].x), std::max(new_size.y, window_min_size[window_id].y) };
 
-	g_input.cursor_style = LoadCursor(NULL, IDC_SIZENWSE);
+	g_input.get( )->cursor_style = LoadCursor(NULL, IDC_SIZENWSE);
 
 	return new_size;
 }
