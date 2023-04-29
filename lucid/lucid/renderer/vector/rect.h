@@ -1,10 +1,10 @@
 #pragma once
 
 struct rect_t {
-	int x, y, w, h;
+	float x, y, w, h;
 
 	rect_t() {}
-	rect_t(int x, int y, int w, int h) {
+	rect_t(float x, float y, float w, float h) {
 		this->x = x;
 		this->y = y;
 		this->w = w;
