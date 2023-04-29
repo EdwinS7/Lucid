@@ -19,5 +19,5 @@ namespace lucid_engine {
 		void reset_device();
 		void release();
 	};
-	inline const auto g_graphics = std::make_unique< graphics >();
+	inline graphics g_graphics;
 }

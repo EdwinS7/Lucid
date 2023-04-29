@@ -6,10 +6,10 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 	case WM_SIZE:
-		if (lucid_engine::g_graphics.get()->m_direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
-			lucid_engine::g_graphics.get()->m_direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
-			lucid_engine::g_graphics.get()->m_direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
-			lucid_engine::g_graphics.get()->reset_device();
+		if (lucid_engine::g_graphics.direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
+			lucid_engine::g_graphics.direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
+			lucid_engine::g_graphics.direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
+			lucid_engine::g_graphics.reset_device();
 		}
 
 		return 0;
@@ -47,16 +47,16 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		break;
 	case WM_MOUSEMOVE:
 		const POINTS p = MAKEPOINTS(lParam);
-		lucid_engine::g_input.get()->m_mouse_pos = vec2_t(p.x, p.y);
+		lucid_engine::g_input.mouse_pos = vec2_t(p.x, p.y);
 
 		break;
 	case WM_MOUSEWHEEL:
 		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0.f ? 8.f : -8.f;
-		lucid_engine::g_input.get()->m_mouse_wheel_delta = mouse_wheel_delta;
+		lucid_engine::g_input.mouse_wheel_delta = mouse_wheel_delta;
 
 		break;
 	case WM_SETCURSOR:
-		SetCursor(lucid_engine::g_input.get()->m_cursor_style);
+		SetCursor(lucid_engine::g_input.cursor_style);
 
 		break;
 	case WM_DESTROY:
@@ -65,7 +65,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	}
 
-	lucid_engine::g_input.get()->m_key_info = key_state;
+	lucid_engine::g_input.key_info = key_state;
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 } 
