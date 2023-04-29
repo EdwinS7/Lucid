@@ -17,8 +17,8 @@ int main() {
 
         lucid_engine::graphics::get_instance().begin_scene(156, 129, 98);
         {
-            //lucid_engine::renderer::get_instance().filled_rounded_rectangle({ 10, 10 }, { 100, 100 }, { 255, 255, 255, 255 }, 25);
-            lucid_engine::io::get_instance().demo_window(true);
+            lucid_engine::renderer::get_instance().filled_rounded_rectangle({ 10, 10 }, { 100, 100 }, { 255, 255, 255, 255 }, 25, corner_bottom);
+            //lucid_engine::io::get_instance().demo_window(true);
         }
         lucid_engine::renderer::get_instance().render_draw_data();
         lucid_engine::graphics::get_instance().end_scene();
