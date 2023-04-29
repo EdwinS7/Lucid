@@ -9,12 +9,9 @@ struct dragging_info {
 std::map<int, dragging_info> info;
 
 vec2_t lucid_engine::ui::handle_dragging() {
-	bool another_dragging = false;
-
-	for (int i = info.size(); i > 0; i--) {
-		if (window_id != i && info[i].dragging)
-			another_dragging = true;
-	}
+	bool another_dragging = std::any_of(info.begin(), info.end(), [this](const auto& item) {
+		return window_id != item.first && item.second.dragging;
+	});
 
 	if (is_resizing() || another_dragging)
 		return window_pos[window_id];

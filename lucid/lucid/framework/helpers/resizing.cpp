@@ -9,12 +9,9 @@ struct resizing_info {
 std::map<int, resizing_info> info;
 
 vec2_t lucid_engine::ui::handle_resizing() {
-	bool another_resizing = false;
-
-	for (int i = info.size(); i > 0; i--) {
-		if (window_id != i && info[i].resizing)
-			another_resizing = true;
-	}
+	bool another_resizing = std::any_of(info.begin(), info.end(), [this](const auto& item) {
+		return window_id != item.first && item.second.resizing;
+	});
 
 	if (is_dragging() || another_resizing)
 		return window_size[window_id];
