@@ -6,18 +6,18 @@ namespace lucid_engine {
 	class graphics {
 	private:
 	public:
-		IDirect3D9* direct_3d;
-		IDirect3DDevice9* direct_3d_device;
-		D3DPRESENT_PARAMETERS direct_3d_paramaters;
+		IDirect3D9*			  m_direct_3d{ nullptr };
+		IDirect3DDevice9*	  m_direct_3d_device{ nullptr };
+		D3DPRESENT_PARAMETERS m_direct_3d_paramaters{ };
 
 		bool create_direct_3d();
 		bool create_device();
 
-		bool begin_scene(int r = 0, int g = 0, int b = 0);
+		bool begin_scene(color_t bg_color);
 		bool end_scene();
 
 		void reset_device();
 		void release();
 	};
-	inline graphics g_graphics;
+	inline const auto g_graphics = std::make_unique< graphics >();
 }

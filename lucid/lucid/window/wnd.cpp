@@ -6,31 +6,31 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
 	switch (msg) {
 	case WM_SIZE:
-		if (lucid_engine::g_graphics.direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
-			lucid_engine::g_graphics.direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
-			lucid_engine::g_graphics.direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
-			lucid_engine::g_graphics.reset_device();
+		if (lucid_engine::g_graphics.get()->m_direct_3d_device != NULL && wParam != SIZE_MINIMIZED) {
+			lucid_engine::g_graphics.get()->m_direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
+			lucid_engine::g_graphics.get()->m_direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
+			lucid_engine::g_graphics.get()->reset_device();
 		}
 
 		return 0;
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
-		key_state[1].on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[1].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
 
 		break;
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
-		key_state[2].on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[2].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
 
 		break;
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONUP:
-		key_state[4].on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[4].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
 
 		break;
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
-		key_state[5].on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[5].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
 
 		break;
 	case WM_KEYDOWN:
@@ -40,23 +40,23 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		if (wParam <= 256) {
 			bool held = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
 
-			key_state[static_cast<int>(wParam)].style = (held ? key_style::hold : key_style::press);
-			key_state[static_cast<int>(wParam)].on = true;
+			key_state[static_cast<int>(wParam)].m_style = (held ? key_style::key_hold : key_style::key_press);
+			key_state[static_cast<int>(wParam)].m_on = true;
 		}
 
 		break;
 	case WM_MOUSEMOVE:
 		const POINTS p = MAKEPOINTS(lParam);
-		lucid_engine::g_input.mouse_pos = vec2_t(p.x, p.y);
+		lucid_engine::g_input.get()->m_mouse_pos = vec2_t(p.x, p.y);
 
 		break;
 	case WM_MOUSEWHEEL:
 		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0.f ? 8.f : -8.f;
-		lucid_engine::g_input.mouse_wheel_delta = mouse_wheel_delta;
+		lucid_engine::g_input.get()->m_mouse_wheel_delta = mouse_wheel_delta;
 
 		break;
 	case WM_SETCURSOR:
-		SetCursor(lucid_engine::g_input.cursor_style);
+		SetCursor(lucid_engine::g_input.get()->m_cursor_style);
 
 		break;
 	case WM_DESTROY:
@@ -65,14 +65,14 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	}
 
-	lucid_engine::g_input.key_info = key_state;
+	lucid_engine::g_input.get()->m_key_info = key_state;
 
 	return ::DefWindowProc(hWnd, msg, wParam, lParam);
 } 
 
 bool lucid_engine::window::create_window(const char* title, int x, int y, int w, int h) {
-	window_class = {
-		sizeof(window_class),
+	m_window_class = {
+		sizeof(m_window_class),
 		CS_CLASSDC,
 		WndProc,
 		0L,
@@ -86,12 +86,13 @@ bool lucid_engine::window::create_window(const char* title, int x, int y, int w,
 		NULL
 	};
 
-	RegisterClassEx(&window_class);
+	RegisterClassEx(&m_window_class);
 
-	hwnd = CreateWindowA(window_class.lpszClassName, title, WS_OVERLAPPEDWINDOW, x, y, w, h, NULL, NULL, window_class.hInstance, NULL);
+	m_hwnd = CreateWindowA(m_window_class.lpszClassName, title,
+		WS_OVERLAPPEDWINDOW, x, y, w, h, NULL, NULL, m_window_class.hInstance, NULL);
 
-	::ShowWindow(hwnd, SW_SHOWDEFAULT);
-	::UpdateWindow(hwnd);
+	::ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+	::UpdateWindow(m_hwnd);
 
 	return true;
 }
@@ -111,17 +112,17 @@ bool lucid_engine::window::dispatch_messages() {
 }
 
 void lucid_engine::window::set_window_title(const char* title) {
-	SetWindowTextA(hwnd, title);
+	SetWindowTextA(m_hwnd, title);
 }
 
 HWND lucid_engine::window::get_hwnd() {
-	return hwnd;
+	return m_hwnd;
 }
 
 vec2_t lucid_engine::window::get_window_size() {
 	RECT rect{ };
 
-	if (GetClientRect(hwnd, &rect))
+	if (GetClientRect(m_hwnd, &rect))
 		return vec2_t(rect.right - rect.left, rect.bottom - rect.top);
 
 	throw std::runtime_error{ "GetClientRect error" };
@@ -131,7 +132,7 @@ vec2_t lucid_engine::window::get_window_size() {
 vec2_t lucid_engine::window::get_window_pos() {
 	RECT rect{ };
 
-	if (GetWindowRect(hwnd, &rect))
+	if (GetWindowRect(m_hwnd, &rect))
 		return vec2_t(rect.left, rect.top);
 
 	throw std::runtime_error{ "GetWindowRect error" };

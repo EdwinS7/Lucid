@@ -1,61 +1,67 @@
 #include "renderer.h"
 
 void lucid_engine::renderer::create_objects() {
-	if (!g_graphics.direct_3d_device)
+	if (!g_graphics.get()->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
-	D3DXCreateSprite(g_graphics.direct_3d_device, &font_sprite);
-	fonts.default_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
-	fonts.primordial_icons = create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false));
+	D3DXCreateSprite(g_graphics.get()->m_direct_3d_device, &m_font_sprite);
+	m_fonts.push_back(create_font("Segoe UI", 13, 400, font_flags_t(true, false, false)));
+	m_fonts.push_back(create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false)));
 }
 
 void lucid_engine::renderer::destroy_objects() {
-	if (!g_graphics.direct_3d_device)
+	if (!g_graphics.get()->m_direct_3d_device)
 		return;
 
-	if (vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
-	if (index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
+	if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
+	if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
 
-	if (font_sprite) { font_sprite->Release(); font_sprite = nullptr; }
+	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
-	//fonts
-	if (fonts.default_font.dx_font) { fonts.default_font.dx_font->Release(); fonts.default_font.dx_font = nullptr; }
-	if (fonts.primordial_icons.dx_font) { fonts.primordial_icons.dx_font->Release(); fonts.primordial_icons.dx_font = nullptr; }
+	for (auto& font : m_fonts) {
+		if (font.m_dx_font) {
+			font.m_dx_font->Release();
+			font.m_dx_font = nullptr;
+		}
+	}
+	m_fonts.clear();
 }
 
 void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
 
-	for (const draw_data_t& data : draw_data) {
-		for (vertex_t vertex : data.vertices)
-			compiled_draw_data.vertices.emplace_back(vertex);
+	for (const draw_data_t& data : m_draw_data) {
+		for (vertex_t vertex : data.m_vertices)
+			m_compiled_draw_data.m_vertices.emplace_back(vertex);
 
-		for (std::uint32_t index : data.indices)
-			compiled_draw_data.indices.emplace_back(index);
+		for (std::uint32_t index : data.m_indices)
+			m_compiled_draw_data.m_indices.emplace_back(index);
 
-		compiled_draw_data.total_index_count += data.index_count;
-		compiled_draw_data.total_vertex_count += data.vertex_count;
+		m_compiled_draw_data.m_total_index_count += data.m_index_count;
+		m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
 	}
 
-	if (!vertex_buffer || compiled_draw_data.total_vertex_count * sizeof(vertex_t) > vertex_buffer_size) {
-		if (vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
+	if (!m_vertex_buffer || m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t) > vertex_buffer_size) {
+		if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
 
-		vertex_buffer_size = compiled_draw_data.total_vertex_count + 5000;
+		vertex_buffer_size = m_compiled_draw_data.m_total_vertex_count + 5000;
 
-		if (g_graphics.direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) < 0)
+		if (g_graphics.get()->m_direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
+			D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &m_vertex_buffer, nullptr) < 0)
 			throw std::runtime_error{ "CreateVertexBuffer error" };
 	}
-	if (!index_buffer || compiled_draw_data.total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
-		if (index_buffer) { index_buffer->Release(); index_buffer = nullptr; }
+	if (!m_index_buffer || m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
+		if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
 
-		index_buffer_size = compiled_draw_data.total_index_count + 10000;
+		index_buffer_size = m_compiled_draw_data.m_total_index_count + 10000;
 
-		if (g_graphics.direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &index_buffer, nullptr) < 0)
+		if (g_graphics.get()->m_direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
+			D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &m_index_buffer, nullptr) < 0)
 			throw std::runtime_error{ "CreateIndexBuffer error" };
 	}
 
 	IDirect3DStateBlock9* state_block{ };
-	if (g_graphics.direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
+	if (g_graphics.get()->m_direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
 		return;
 
 	if (state_block->Capture() < 0) {
@@ -65,64 +71,69 @@ void lucid_engine::renderer::render_draw_data() {
 	}
 
 	D3DMATRIX last_world, last_view, last_projection;
-	g_graphics.direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
-	g_graphics.direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
-	g_graphics.direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
+	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
+	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
+	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
 
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
-	if (vertex_buffer->Lock(0, (UINT)(compiled_draw_data.total_vertex_count * sizeof(vertex_t)), (void**)&vertex_data, D3DLOCK_DISCARD) < 0) {
+	if (m_vertex_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t)),
+		(void**)&vertex_data, D3DLOCK_DISCARD) < 0) {
 		throw std::runtime_error{ "vtx_buffer->Lock error" };
 		state_block->Release();
 		return;
 	}
 
-	if (index_buffer->Lock(0, (UINT)(compiled_draw_data.total_index_count * sizeof(std::uint32_t)), (void**)&index_data, D3DLOCK_DISCARD) < 0) {
+	if (m_index_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t)),
+		(void**)&index_data, D3DLOCK_DISCARD) < 0) {
 		throw std::runtime_error{ "idx_buffer->Lock error" };
-		vertex_buffer->Unlock();
+		m_vertex_buffer->Unlock();
 		state_block->Release();
 		return;
 	}
 
-	memcpy(vertex_data, compiled_draw_data.vertices.data(), compiled_draw_data.total_vertex_count * sizeof(vertex_t));
-	memcpy(index_data, compiled_draw_data.indices.data(), compiled_draw_data.total_index_count * sizeof(std::uint32_t));
+	memcpy(vertex_data, m_compiled_draw_data.m_vertices.data(), m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t));
+	memcpy(index_data, m_compiled_draw_data.m_indices.data(), m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t));
 
-	vertex_buffer->Unlock();
-	index_buffer->Unlock();
+	m_vertex_buffer->Unlock();
+	m_index_buffer->Unlock();
 
-	g_graphics.direct_3d_device->SetStreamSource(0, vertex_buffer, 0, sizeof(vertex_t));
-	g_graphics.direct_3d_device->SetIndices(index_buffer);
+	g_graphics.get()->m_direct_3d_device->SetStreamSource(0, m_vertex_buffer, 0, sizeof(vertex_t));
+	g_graphics.get()->m_direct_3d_device->SetIndices(m_index_buffer);
 
 	int start_vertex = 0;
 	int start_index = 0;
-	for (const draw_data_t& data : draw_data) {
-		text_info_t text_info = data.text_info;
+	for (const draw_data_t& data : m_draw_data) {
+		text_info_t text_info = data.m_text_info;
 
-		g_graphics.direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.anti_alias);
+		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
 
-		if (text_info.setup) {
-			RECT rect = { text_info.pos.x, text_info.pos.y, 0, 0 };
-			text_info.font.dx_font->DrawTextA(NULL, text_info.string.c_str(), -1, &rect, text_info.flags, color_t::translate(text_info.color));
+		if (text_info.m_setup) {
+			RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
+			text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1,
+				&rect, text_info.m_flags, color_t::translate(text_info.m_color));
 		}
 		else
-			g_graphics.direct_3d_device->DrawIndexedPrimitive(data.draw_type, start_vertex, 0, data.vertex_count, start_index, data.index_count / 3);
+			g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex,
+				0, data.m_vertex_count, start_index, data.m_index_count / 3);
 
-		start_vertex += data.vertex_count;
-		start_index += data.index_count;
+		start_vertex += data.m_vertex_count;
+		start_index += data.m_index_count;
 	}
 
-	g_graphics.direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
-	g_graphics.direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
-	g_graphics.direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
+	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
+	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
+	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
 
 	state_block->Apply();
 	state_block->Release();
 
-	compiled_draw_data = {};
-	draw_data.clear();
+	m_compiled_draw_data = {};
+	m_draw_data.clear();
 }
 
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type,
+	const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
 	if (vertices.empty())
 		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
 
@@ -131,10 +142,12 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 	for (unsigned int i = 0; i < vertices.size(); i++)
 		indices[i] = i;
 
-	draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info });
+	m_draw_data.emplace_back(draw_data_t{ type, vertices, indices,
+		static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info });
 }
 
-void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
+void lucid_engine::renderer::line(const vec2_t from,
+	const vec2_t to, const color_t color, const bool anti_alias) {
 	std::vector<vertex_t> vertices;
 
 	vertices.emplace_back(vertex_t(from.x, from.y, 0.f, 1.f, color_t::translate(color)));
@@ -184,8 +197,9 @@ void lucid_engine::renderer::filled_rectangle(const vec2_t pos, const vec2_t siz
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
-void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
-	if (radius < 0.5f || flags == none) {
+void lucid_engine::renderer::rounded_rectangle(const vec2_t pos,
+	const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
+	if (radius < 0.5f || flags == corner_flags::corner_none) {
 		rectangle(pos, size, color);
 		return;
 	}
@@ -218,8 +232,9 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 	polyline(points, color);
 }
 
-void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
-	if (radius < 0.5f || flags == none) {
+void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, 
+	const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
+	if (radius < 0.5f || flags == corner_flags::corner_none) {
 		filled_rectangle(pos, size, color);
 		return;
 	}
@@ -273,7 +288,8 @@ void lucid_engine::renderer::filled_gradient(const vec2_t pos, const vec2_t size
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
-void lucid_engine::renderer::gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
+void lucid_engine::renderer::gradient_four(const vec2_t pos,
+	const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
@@ -285,7 +301,8 @@ void lucid_engine::renderer::gradient_four(const vec2_t pos, const vec2_t size, 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
-void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
+void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, 
+	const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
@@ -330,7 +347,8 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
 }
 
-std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
+std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos,
+	const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
 	float ang = rotation * D3DX_PI / 180;
@@ -373,7 +391,8 @@ void lucid_engine::renderer::filled_circle(const vec2_t pos, int radius, int com
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
 
-void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2) {
+void lucid_engine::renderer::gradient_circle(const vec2_t pos,
+	int radius, int completion, int rotation, const color_t color, const color_t color2) {
 	std::vector<vec2_t> points = generate_circle_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
 
@@ -385,32 +404,34 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
 
-font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, const font_flags_t font_flags) {
-	return font_t(g_graphics.direct_3d_device, font_name.c_str(), size, weight, font_flags);
+font_t lucid_engine::renderer::create_font(const std::string font_name, 
+	const int size, const int weight, const font_flags_t font_flags) {
+	return font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags);
 }
 
-void lucid_engine::renderer::text(const font_t font, const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags) {
+void lucid_engine::renderer::text(const font_t font,
+	const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags) {
 	std::vector<vertex_t> vertices;
 	DWORD text_flags = {};
 
-	switch (flags.alignment) {
-	case text_alignment::left:
+	switch (flags.m_alignment) {
+	case text_alignment::alignment_left:
 		text_flags = DT_LEFT | DT_NOCLIP;
 
 		break;
-	case text_alignment::right:
+	case text_alignment::alignment_right:
 		text_flags = DT_RIGHT | DT_NOCLIP;
 
 		break;
-	case text_alignment::center_x:
+	case text_alignment::alignment_center_x:
 		text_flags = DT_CENTER | DT_NOCLIP;
 
 		break;
-	case text_alignment::center_y:
+	case text_alignment::alignment_center_y:
 		text_flags = DT_VCENTER | DT_NOCLIP;
 
 		break;
-	case text_alignment::center:
+	case text_alignment::alignment_center:
 		text_flags = DT_CENTER | DT_VCENTER | DT_NOCLIP;
 		break;
 	}
@@ -422,7 +443,8 @@ void lucid_engine::renderer::text(const font_t font, const std::string string, c
 vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::string string) {
 	RECT text_clip; 
 
-	font.dx_font->DrawTextA(0, string.c_str(), strlen(string.c_str()), &text_clip, DT_CALCRECT, D3DCOLOR_ARGB(0, 0, 0, 0));
+	font.m_dx_font->DrawTextA(0, string.c_str(),
+		strlen(string.c_str()), &text_clip, DT_CALCRECT, D3DCOLOR_ARGB(0, 0, 0, 0));
 
 	return vec2_t(text_clip.right - text_clip.left, text_clip.bottom - text_clip.top);
 }

@@ -44,12 +44,12 @@ namespace lucid_engine {
 		void reset();
 		void demo_window(bool open);
 
-		float delta_time;
-		float real_time;
-		int frame_rate;
-		int frame_rate_average;
+		float m_delta_time{ 0.f },
+			  m_real_time{ 0.f };
+		int	  m_frame_rate{ 0 },
+			  m_frame_rate_average{ 0 };
 	};
-	inline io g_io;
+	inline const auto g_io = std::make_unique< io >();
 
 	class animations {
 	public:
@@ -69,5 +69,5 @@ namespace lucid_engine {
 			return x * (x * delta);
 		}
 	};
-	inline animations g_animations;
+	inline const auto g_animations = std::make_unique< animations >();
 }

@@ -1,10 +1,10 @@
 #include "input.h"
 
 bool lucid_engine::input::button_behavior(int key, key_style style, vec2_t pos, vec2_t size) {
-	if (mouse_pos.x >= pos.x && mouse_pos.x <= pos.x + size.x &&
-		mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + size.y ) {
+	if (m_mouse_pos.x >= pos.x && m_mouse_pos.x <= pos.x + size.x &&
+		m_mouse_pos.y >= pos.y && m_mouse_pos.y <= pos.y + size.y ) {
 
-		if (style == key_style::press )
+		if (style == key_style::key_press )
 			return is_key_pressed(key);
 		else
 			return is_key_held(key);
@@ -38,14 +38,14 @@ bool lucid_engine::input::point_hovering_rect(vec2_t point, vec2_t pos, vec2_t s
 }
 
 bool lucid_engine::input::mouse_hovering_rect(vec2_t pos, vec2_t size) {
-	if ( mouse_pos.x >= pos.x && mouse_pos.x <= pos.x + size.x && mouse_pos.y >= pos.y && mouse_pos.y <= pos.y + size.y )
+	if ( m_mouse_pos.x >= pos.x && m_mouse_pos.x <= pos.x + size.x && m_mouse_pos.y >= pos.y && m_mouse_pos.y <= pos.y + size.y )
 		return true;
 
 	return false;
 }
 
 bool lucid_engine::input::is_key_held(int key) {
-	if (key_info[key].on && key_info[key].style == key_style::hold)
+	if (m_key_info[key].m_on && m_key_info[key].m_style == key_style::key_hold)
 		return true;
 
 	return false;
@@ -55,11 +55,11 @@ std::map<int, bool> old_frame_key_pressed{ };
 bool lucid_engine::input::is_key_pressed(int key) {
 	bool pressed = false;
 
-	if (key_info[key].on && !old_frame_key_pressed[key]) {
+	if (m_key_info[key].m_on && !old_frame_key_pressed[key]) {
 		old_frame_key_pressed[key] = true;
 		pressed = true;
 	}
-	else if (!key_info[key].on && old_frame_key_pressed[key])
+	else if (!m_key_info[key].m_on && old_frame_key_pressed[key])
 		old_frame_key_pressed[key] = false;
 
 	return pressed;

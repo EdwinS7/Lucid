@@ -5,8 +5,8 @@
 namespace lucid_engine {
 	class window {
 	private:
-		HWND hwnd;
-		WNDCLASSEX window_class;
+		HWND	   m_hwnd;
+		WNDCLASSEX m_window_class;
 
 	public:
 		bool create_window(const char* title, int x, int y, int w, int h);
@@ -18,5 +18,5 @@ namespace lucid_engine {
 		vec2_t get_window_size();
 		vec2_t get_window_pos();
 	};
-	inline window g_window;
+	inline const auto g_window = std::make_unique< window >();
 }

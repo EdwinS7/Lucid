@@ -3,17 +3,17 @@
 #include "../../lucid.h"
 
 enum text_alignment {
-	left,
-	right,
-	center_x,
-	center_y,
-	center
+	alignment_left,
+	alignment_right,
+	alignment_center_x,
+	alignment_center_y,
+	alignment_center
 };
 
 struct text_flags_t {
-	int alignment = text_alignment::left;
+	int m_alignment{ text_alignment::alignment_left };
 
 	text_flags_t() {}
-	text_flags_t(text_alignment _alignment)
-		: alignment(_alignment) {}
+	text_flags_t(text_alignment alignment)
+		: m_alignment(alignment) {}
 };
