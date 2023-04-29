@@ -9,7 +9,7 @@ struct key_data {
 };
 
 namespace lucid_engine {
-	class input : public singleton<input> {
+	class input {
 	public:
 		vec2_t mouse_pos;
 		float mouse_wheel_delta;
@@ -25,4 +25,5 @@ namespace lucid_engine {
 		bool is_key_held(int key);
 		bool is_key_pressed(int key);
 	};
+	inline input g_input;
 }

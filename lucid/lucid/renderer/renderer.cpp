@@ -1,16 +1,16 @@
 #include "renderer.h"
 
 void lucid_engine::renderer::create_objects() {
-	if (!lucid_engine::graphics::get_instance().direct_3d_device)
+	if (!g_graphics.direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
-	D3DXCreateSprite(lucid_engine::graphics::get_instance().direct_3d_device, &font_sprite);
+	D3DXCreateSprite(g_graphics.direct_3d_device, &font_sprite);
 	fonts.default_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
 	fonts.primordial_icons = create_font("Primordial-Icons", 26, 400, font_flags_t(true, false, false));
 }
 
 void lucid_engine::renderer::destroy_objects() {
-	if (!lucid_engine::graphics::get_instance().direct_3d_device)
+	if (!g_graphics.direct_3d_device)
 		return;
 
 	if (vertex_buffer) { vertex_buffer->Release(); vertex_buffer = nullptr; }
@@ -42,7 +42,7 @@ void lucid_engine::renderer::render_draw_data() {
 
 		vertex_buffer_size = compiled_draw_data.total_vertex_count + 5000;
 
-		if (lucid_engine::graphics::get_instance().direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) < 0)
+		if (g_graphics.direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &vertex_buffer, nullptr) < 0)
 			throw std::runtime_error{ "CreateVertexBuffer error" };
 	}
 	if (!index_buffer || compiled_draw_data.total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
@@ -50,12 +50,12 @@ void lucid_engine::renderer::render_draw_data() {
 
 		index_buffer_size = compiled_draw_data.total_index_count + 10000;
 
-		if (lucid_engine::graphics::get_instance().direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &index_buffer, nullptr) < 0)
+		if (g_graphics.direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &index_buffer, nullptr) < 0)
 			throw std::runtime_error{ "CreateIndexBuffer error" };
 	}
 
 	IDirect3DStateBlock9* state_block{ };
-	if (lucid_engine::graphics::get_instance().direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
+	if (g_graphics.direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
 		return;
 
 	if (state_block->Capture() < 0) {
@@ -65,9 +65,9 @@ void lucid_engine::renderer::render_draw_data() {
 	}
 
 	D3DMATRIX last_world, last_view, last_projection;
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
-	lucid_engine::graphics::get_instance().direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
+	g_graphics.direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
+	g_graphics.direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
+	g_graphics.direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
 
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
@@ -90,30 +90,30 @@ void lucid_engine::renderer::render_draw_data() {
 	vertex_buffer->Unlock();
 	index_buffer->Unlock();
 
-	lucid_engine::graphics::get_instance().direct_3d_device->SetStreamSource(0, vertex_buffer, 0, sizeof(vertex_t));
-	lucid_engine::graphics::get_instance().direct_3d_device->SetIndices(index_buffer);
+	g_graphics.direct_3d_device->SetStreamSource(0, vertex_buffer, 0, sizeof(vertex_t));
+	g_graphics.direct_3d_device->SetIndices(index_buffer);
 
 	int start_vertex = 0;
 	int start_index = 0;
 	for (const draw_data_t& data : draw_data) {
 		text_info_t text_info = data.text_info;
 
-		lucid_engine::graphics::get_instance().direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.anti_alias);
+		g_graphics.direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.anti_alias);
 
 		if (text_info.setup) {
 			RECT rect = { text_info.pos.x, text_info.pos.y, 0, 0 };
 			text_info.font.dx_font->DrawTextA(NULL, text_info.string.c_str(), -1, &rect, text_info.flags, color_t::translate(text_info.color));
 		}
 		else
-			lucid_engine::graphics::get_instance().direct_3d_device->DrawIndexedPrimitive(data.draw_type, start_vertex, 0, data.vertex_count, start_index, data.index_count / 3);
+			g_graphics.direct_3d_device->DrawIndexedPrimitive(data.draw_type, start_vertex, 0, data.vertex_count, start_index, data.index_count / 3);
 
 		start_vertex += data.vertex_count;
 		start_index += data.index_count;
 	}
 
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
-	lucid_engine::graphics::get_instance().direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
+	g_graphics.direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
+	g_graphics.direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
+	g_graphics.direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
 
 	state_block->Apply();
 	state_block->Release();
@@ -386,7 +386,7 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 }
 
 font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, const font_flags_t font_flags) {
-	return font_t(lucid_engine::graphics::get_instance().direct_3d_device, font_name.c_str(), size, weight, font_flags);
+	return font_t(g_graphics.direct_3d_device, font_name.c_str(), size, weight, font_flags);
 }
 
 void lucid_engine::renderer::text(const font_t font, const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags) {

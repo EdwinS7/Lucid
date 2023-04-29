@@ -3,7 +3,7 @@
 #include "../lucid.h"
 
 namespace lucid_engine {
-	class window : public singleton<window> {
+	class window {
 	private:
 		HWND hwnd;
 		WNDCLASSEX window_class;
@@ -18,4 +18,5 @@ namespace lucid_engine {
 		vec2_t get_window_size();
 		vec2_t get_window_pos();
 	};
+	inline window g_window;
 }

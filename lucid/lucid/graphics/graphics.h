@@ -3,10 +3,8 @@
 #include "../lucid.h"
 
 namespace lucid_engine {
-	class graphics : public singleton<graphics> {
+	class graphics {
 	private:
-
-
 	public:
 		IDirect3D9* direct_3d;
 		IDirect3DDevice9* direct_3d_device;
@@ -21,4 +19,5 @@ namespace lucid_engine {
 		void reset_device();
 		void release();
 	};
+	inline graphics g_graphics;
 }

@@ -1,11 +1,11 @@
 #include "lucid.h"
 
 void lucid_engine::io::create() {
-	lucid_engine::input::get_instance().cursor_style = LoadCursor(NULL, IDC_ARROW);
+	g_input.cursor_style = LoadCursor(NULL, IDC_ARROW);
 }
 
 void lucid_engine::io::update() {
-	lucid_engine::input::get_instance().cursor_style = LoadCursor(NULL, IDC_ARROW);
+	g_input.cursor_style = LoadCursor(NULL, IDC_ARROW);
 
 	auto high_resolution_clock = std::chrono::high_resolution_clock::now();
 	real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
@@ -28,9 +28,9 @@ void lucid_engine::io::update() {
 }
 
 void lucid_engine::io::reset() {
-	lucid_engine::input::get_instance().mouse_wheel_delta = 0.f;
-	lucid_engine::input::get_instance().key_info = {};
-	lucid_engine::ui::get_instance().reset();
+	g_input.mouse_wheel_delta = 0.f;
+	g_input.key_info = {};
+	g_ui.reset();
 }
 
 void lucid_engine::ui::reset() {
@@ -42,32 +42,32 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	lucid_engine::ui::get_instance().create_window("edwngui demo window", { 50, 50 }, { 600, 550 }, {600, 550 });
+	g_ui.create_window("edwngui demo window", { 50, 50 }, { 600, 550 }, {600, 550 });
 	{
-		vec2_t window_pos = lucid_engine::ui::get_instance().get_window_pos();
-		vec2_t window_size = lucid_engine::ui::get_instance().get_window_size();
+		vec2_t window_pos = g_ui.get_window_pos();
+		vec2_t window_size = g_ui.get_window_size();
 		vec2_t group_size = { (window_size.x - 45) / 2, window_size.y - 100 };
 
-		lucid_engine::ui::get_instance().add_tab("A", "aimbot");
-		lucid_engine::ui::get_instance().add_tab("B", "antiaim");
-		lucid_engine::ui::get_instance().add_tab("C", "visuals");
-		lucid_engine::ui::get_instance().add_tab("D", "misc");
-		lucid_engine::ui::get_instance().add_tab("E", "skins");
-		lucid_engine::ui::get_instance().handle_tabs();
+		g_ui.add_tab("A", "aimbot");
+		g_ui.add_tab("B", "antiaim");
+		g_ui.add_tab("C", "visuals");
+		g_ui.add_tab("D", "misc");
+		g_ui.add_tab("E", "skins");
+		g_ui.handle_tabs();
 
-		lucid_engine::ui::get_instance().create_group("i hit kids 4000", { 15, 40 }, group_size, group_size);
+		g_ui.create_group("i hit kids 4000", { 15, 40 }, group_size, group_size);
 		{
 			static bool test = false;
 
 
 		}
-		lucid_engine::ui::get_instance().end_group();
+		g_ui.end_group();
 
-		lucid_engine::ui::get_instance().create_group("i hit kids 6000", { group_size.x + 30, 40 }, group_size, group_size);
+		g_ui.create_group("i hit kids 6000", { group_size.x + 30, 40 }, group_size, group_size);
 		{
 
 		}
-		lucid_engine::ui::get_instance().end_group();
+		g_ui.end_group();
 	}
-	lucid_engine::ui::get_instance().end_window();
+	g_ui.end_window();
 }

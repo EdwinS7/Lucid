@@ -16,8 +16,8 @@ vec2_t lucid_engine::ui::handle_dragging() {
 	if (is_resizing() || another_dragging)
 		return window_pos[window_id];
 
-	bool held = input::get_instance().is_key_held(VK_LBUTTON);
-	bool inside_bounds = input::get_instance().mouse_hovering_rect(window_pos[window_id], window_size[window_id]);
+	bool held = g_input.is_key_held(VK_LBUTTON);
+	bool inside_bounds = g_input.mouse_hovering_rect(window_pos[window_id], window_size[window_id]);
 
 	auto& window_info = info[window_id];
 	if (!window_info.outside_bounds && ((held && !inside_bounds) || hovering_element))
@@ -26,7 +26,7 @@ vec2_t lucid_engine::ui::handle_dragging() {
 		window_info.outside_bounds = false;
 
 	if (!window_info.dragging && !window_info.outside_bounds && held && inside_bounds) {
-		window_info.difference = input::get_instance().mouse_pos - window_pos[window_id];
+		window_info.difference = g_input.mouse_pos - window_pos[window_id];
 		window_info.dragging = true;
 	}
 	else if (window_info.dragging && !held)
@@ -35,7 +35,7 @@ vec2_t lucid_engine::ui::handle_dragging() {
 	if (!window_info.dragging)
 		return window_pos[window_id];
 
-	vec2_t new_pos = input::get_instance().mouse_pos - window_info.difference;
+	vec2_t new_pos = g_input.mouse_pos - window_info.difference;
 
 	return new_pos;
 }

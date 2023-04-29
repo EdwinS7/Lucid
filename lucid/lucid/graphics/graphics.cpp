@@ -20,7 +20,7 @@ bool lucid_engine::graphics::create_direct_3d() {
 }
 
 bool lucid_engine::graphics::create_device() {
-    if (direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, lucid_engine::window::get_instance().get_hwnd(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &direct_3d_paramaters, &direct_3d_device) < 0) {
+    if (direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, g_window.get_hwnd(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &direct_3d_paramaters, &direct_3d_device) < 0) {
         throw std::runtime_error{ "CreateDevice error" };
         return false;
     }
@@ -84,12 +84,12 @@ void lucid_engine::graphics::reset_device() {
     direct_3d_device->Release();
     create_device();
 
-    lucid_engine::renderer::get_instance().destroy_objects();
-    lucid_engine::renderer::get_instance().create_objects();
+    g_renderer.destroy_objects();
+    g_renderer.create_objects();
 }
 
 void lucid_engine::graphics::release() {
-    lucid_engine::renderer::get_instance().destroy_objects();
+    g_renderer.destroy_objects();
     direct_3d_device->Release();
     direct_3d->Release();
 }

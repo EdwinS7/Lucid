@@ -21,7 +21,7 @@ enum corner_flags {
 };
 
 namespace lucid_engine {
-	class renderer : public singleton<renderer> {
+	class renderer {
 	private:
 		compiled_draw_data_t compiled_draw_data{ };
 		std::vector<draw_data_t> draw_data{ };
@@ -65,4 +65,5 @@ namespace lucid_engine {
 		void text(const font_t font, const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags = text_flags_t());
 		vec2_t get_text_size(const font_t font, const std::string string);
 	};
+	inline renderer g_renderer;
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#define NOMINMAX
-
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <DirectXMath.h>
@@ -17,26 +15,6 @@
 #include <chrono>
 #include <format>
 #include <map>
-
-template <typename T>
-class singleton
-{
-protected:
-	singleton() { }
-	~singleton() { }
-
-	singleton(const singleton&) = delete;
-	singleton& operator=(const singleton&) = delete;
-
-	singleton(singleton&&) = delete;
-	singleton& operator=(singleton&&) = delete;
-public:
-	static T& get_instance() {
-		static T inst { };
-
-		return inst;
-	}
-};
 
 /* lucid engine backend */
 #include "renderer/color/color.h"
@@ -59,7 +37,7 @@ public:
 #include "framework/framework.h"
 
 namespace lucid_engine {
-	class io : public singleton<io> {
+	class io {
 	public:
 		void create();
 		void update();
@@ -71,8 +49,9 @@ namespace lucid_engine {
 		int frame_rate;
 		int frame_rate_average;
 	};
+	inline io g_io;
 
-	class animations : public singleton<animations> {
+	class animations {
 	public:
 		float linear(float x, float to, float delta) {
 			return x < to ? x + (1 * delta) : x - (1 * delta);
@@ -90,4 +69,5 @@ namespace lucid_engine {
 			return x * (x * delta);
 		}
 	};
+	inline animations g_animations;
 }

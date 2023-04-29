@@ -54,7 +54,7 @@ struct group_info {
 };
 
 namespace lucid_engine {
-	class ui : public singleton<ui> {
+	class ui {
 	private:
 		int window_id = -1;
 		int group_id = -1;
@@ -100,4 +100,5 @@ namespace lucid_engine {
 
 		void reset();
 	};
+	inline ui g_ui;
 }

@@ -17,14 +17,14 @@ void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_si
 	group_size[group_id] = default_size;
 
 	// render our group box.
-	lucid_engine::renderer::get_instance().filled_rounded_rectangle(window_pos[window_id] + group_pos[group_id], group_size[group_id], style->group_background, style->group_rounding);
-	lucid_engine::renderer::get_instance().filled_rounded_rectangle(window_pos[window_id] + group_pos[group_id], vec2_t(group_size[group_id].x, 25), style->group_header, style->group_rounding, corner_top);
-	lucid_engine::renderer::get_instance().filled_rectangle(window_pos[window_id] + group_pos[group_id] + vec2_t(0, 25), vec2_t(group_size[group_id].x, 1), style->accent);
-	lucid_engine::renderer::get_instance().rounded_rectangle(window_pos[window_id] + group_pos[group_id], group_size[group_id], style->group_outline, style->group_rounding);
-	lucid_engine::renderer::get_instance().text(lucid_engine::renderer::get_instance().fonts.default_font, title, window_pos[window_id] + group_pos[group_id] + vec2_t(4, 6), style->text_active);
+	g_renderer.filled_rounded_rectangle(window_pos[window_id] + group_pos[group_id], group_size[group_id], style->group_background, style->group_rounding);
+	g_renderer.filled_rounded_rectangle(window_pos[window_id] + group_pos[group_id], vec2_t(group_size[group_id].x, 25), style->group_header, style->group_rounding, corner_top);
+	g_renderer.filled_rectangle(window_pos[window_id] + group_pos[group_id] + vec2_t(0, 25), vec2_t(group_size[group_id].x, 1), style->accent);
+	g_renderer.rounded_rectangle(window_pos[window_id] + group_pos[group_id], group_size[group_id], style->group_outline, style->group_rounding);
+	g_renderer.text(g_renderer.fonts.default_font, title, window_pos[window_id] + group_pos[group_id] + vec2_t(4, 6), style->text_active);
 
 	// handle scrolling data.
-	groups[group_id].hovered = lucid_engine::input::get_instance().mouse_hovering_rect(window_pos[window_id] + pos, group_size[group_id]);
+	groups[group_id].hovered = g_input.mouse_hovering_rect(window_pos[window_id] + pos, group_size[group_id]);
 	groups[group_id].og_elements_pos = window_pos[window_id] + group_pos[group_id] + vec2_t(style->group_padding, 25 + style->group_padding);
 
 	// apply origin for elements to render.
@@ -40,8 +40,8 @@ void lucid_engine::ui::end_group() {
 	float scroll_max_range = left_over - ((elements_pos.y - groups[group_id].scroll) + groups[group_id].scroll_abs);
 
 	// apply values, the absolute and the lerped value.
-	groups[group_id].scroll_abs = std::clamp(groups[group_id].scroll_abs + lucid_engine::input::get_instance().mouse_wheel_delta, scroll_max_range + groups[group_id].scroll_abs, 0.f);
-	groups[group_id].scroll = lucid_engine::animations::get_instance().lerp(groups[group_id].scroll, groups[group_id].scroll_abs, lucid_engine::io::get_instance().delta_time * 8);
+	groups[group_id].scroll_abs = std::clamp(groups[group_id].scroll_abs + g_input.mouse_wheel_delta, scroll_max_range + groups[group_id].scroll_abs, 0.f);
+	groups[group_id].scroll = g_animations.lerp(groups[group_id].scroll, groups[group_id].scroll_abs, g_io.delta_time * 8);
 
 	// prepare for next frame.
 	elements_pos = { };
