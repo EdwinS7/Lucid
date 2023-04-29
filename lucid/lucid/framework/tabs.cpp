@@ -22,8 +22,8 @@ void lucid_engine::ui::handle_tabs() {
 	// each tab in our vector.
 	for (int i = 0; i < tabs.size(); i++) {
 		// calculate text sizes.
-		vec2_t title_size = g_renderer.get_text_size(g_renderer.fonts.default_font, tabs[i].title);
-		vec2_t icon_size = g_renderer.get_text_size(g_renderer.fonts.primordial_icons, tabs[i].icon);
+		vec2_t title_size = g_renderer.get_text_size(g_renderer.fonts.at( default_font ), tabs[i].title);
+		vec2_t icon_size = g_renderer.get_text_size(g_renderer.fonts.at( primordial_icons), tabs[i].icon);
 
 		// check for hovering affect and used for click detection.
 		bool hovered = g_input.mouse_hovering_rect(draw_position, area);
@@ -33,8 +33,8 @@ void lucid_engine::ui::handle_tabs() {
 			g_renderer.filled_rectangle(draw_position, area - vec2_t(0, 2), style->window_background);
 			g_renderer.filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), style->accent);
 
-			g_renderer.text(g_renderer.fonts.default_font, tabs[i].title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), style->text_active);
-			g_renderer.text(g_renderer.fonts.primordial_icons, tabs[i].icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), style->text_active);
+			g_renderer.text(g_renderer.fonts.at( default_font ), tabs[i].title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), style->text_active);
+			g_renderer.text(g_renderer.fonts.at( primordial_icons), tabs[i].icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), style->text_active);
 		}
 		else {
 			if (hovered) {
@@ -42,8 +42,8 @@ void lucid_engine::ui::handle_tabs() {
 				g_renderer.filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), style->accent.override_alpha(150));
 			}
 
-			g_renderer.text(g_renderer.fonts.default_font, tabs[i].title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), style->text_inactive);
-			g_renderer.text(g_renderer.fonts.primordial_icons, tabs[i].icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), style->text_inactive);
+			g_renderer.text(g_renderer.fonts.at( default_font ), tabs[i].title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), style->text_inactive);
+			g_renderer.text(g_renderer.fonts.at( primordial_icons), tabs[i].icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), style->text_inactive);
 		}
 		
 		// check if mouse is hovering the bounds of this tab.

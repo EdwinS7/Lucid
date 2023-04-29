@@ -21,7 +21,7 @@ void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_si
 	g_renderer.filled_rounded_rectangle(window_pos[window_id] + group_pos[group_id], vec2_t(group_size[group_id].x, 25), style->group_header, style->group_rounding, corner_top);
 	g_renderer.filled_rectangle(window_pos[window_id] + group_pos[group_id] + vec2_t(0, 25), vec2_t(group_size[group_id].x, 1), style->accent);
 	g_renderer.rounded_rectangle(window_pos[window_id] + group_pos[group_id], group_size[group_id], style->group_outline, style->group_rounding);
-	g_renderer.text(g_renderer.fonts.default_font, title, window_pos[window_id] + group_pos[group_id] + vec2_t(4, 6), style->text_active);
+	g_renderer.text(g_renderer.fonts.at( default_font ), title, window_pos[window_id] + group_pos[group_id] + vec2_t(4, 6), style->text_active);
 
 	// handle scrolling data.
 	groups[group_id].hovered = g_input.mouse_hovering_rect(window_pos[window_id] + pos, group_size[group_id]);

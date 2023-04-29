@@ -20,6 +20,11 @@ enum corner_flags {
 	corner_all = corner_top_left | corner_top_right | corner_bottom_left | corner_bottom_right
 };
 
+enum font_names: int {
+	default_font = 0,
+	primordial_icons
+};
+
 namespace lucid_engine {
 	class renderer {
 	private:
@@ -35,10 +40,7 @@ namespace lucid_engine {
 		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
 
 	public:
-		struct fonts {
-			font_t default_font{ };
-			font_t primordial_icons{ };
-		} fonts;
+		std::vector<font_t> fonts{ };
 
 		void create_objects();
 		void destroy_objects();
@@ -63,7 +65,7 @@ namespace lucid_engine {
 		void gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2);
 		font_t create_font(const std::string font_name, int radius, int weight = 400, const font_flags_t font_flags = font_flags_t());
 		void text(const font_t font, const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags = text_flags_t());
-		vec2_t get_text_size(const font_t font, const std::string string);
+		vec2_t get_text_size( const font_t font, const std::string string );
 	};
 	inline renderer g_renderer;
 }
