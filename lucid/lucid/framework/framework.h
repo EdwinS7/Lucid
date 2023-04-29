@@ -73,7 +73,6 @@ namespace lucid_engine {
 		vec2_t elements_pos{ };
 
 		style_t* style = new style_t;
-
 	public:
 		vec2_t handle_dragging();
 		bool is_dragging();
@@ -100,5 +99,5 @@ namespace lucid_engine {
 
 		void reset();
 	};
-	inline ui g_ui;
+	inline const auto g_ui = std::make_unique< ui >( );
 }

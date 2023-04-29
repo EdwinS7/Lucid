@@ -18,5 +18,5 @@ namespace lucid_engine {
 		vec2_t get_window_size();
 		vec2_t get_window_pos();
 	};
-	inline window g_window;
+	inline const auto g_window = std::make_unique< window >( );
 }

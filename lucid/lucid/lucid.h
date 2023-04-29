@@ -49,7 +49,7 @@ namespace lucid_engine {
 		int frame_rate;
 		int frame_rate_average;
 	};
-	inline io g_io;
+	inline const auto g_io = std::make_unique< io >( );
 
 	class animations {
 	public:
@@ -69,5 +69,5 @@ namespace lucid_engine {
 			return x * (x * delta);
 		}
 	};
-	inline animations g_animations;
+	inline const auto g_animations = std::make_unique< animations >( );
 }
