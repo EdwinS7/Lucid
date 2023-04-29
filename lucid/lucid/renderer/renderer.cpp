@@ -104,18 +104,19 @@ void lucid_engine::renderer::render_draw_data() {
 	int start_vertex = 0;
 	int start_index = 0;
 	for (const draw_data_t& data : m_draw_data) {
+		RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
 		text_info_t text_info = data.m_text_info;
 
 		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
+		g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, data.m_clip_info.m_clipping);
+		g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
 
 		if (text_info.m_setup) {
 			RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
-			text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1,
-				&rect, text_info.m_flags, color_t::translate(text_info.m_color));
+			text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
 		}
 		else
-			g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex,
-				0, data.m_vertex_count, start_index, data.m_index_count / 3);
+			g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count / 3);
 
 		start_vertex += data.m_vertex_count;
 		start_index += data.m_index_count;
@@ -130,10 +131,27 @@ void lucid_engine::renderer::render_draw_data() {
 
 	m_compiled_draw_data = {};
 	m_draw_data.clear();
+	m_clip_info.clear();
 }
 
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type,
-	const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
+void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
+	m_clip_info.m_old_clips.push(std::make_pair(m_clip_info.m_clipping, m_clip_info.m_clip));
+
+	m_clip_info.m_clipping = true;
+	m_clip_info.m_clip = { pos.x, pos.y, size.x, size.y };
+}
+
+void lucid_engine::renderer::pop_clip() {
+	if (!m_clip_info.m_old_clips.empty()) {
+		m_clip_info.m_clipping = m_clip_info.m_old_clips.top().first;
+		m_clip_info.m_clip = m_clip_info.m_old_clips.top().second;
+		m_clip_info.m_old_clips.pop();
+	}
+	else
+		m_clip_info.clear();
+}
+
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
 	if (vertices.empty())
 		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
 
@@ -142,12 +160,10 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type,
 	for (unsigned int i = 0; i < vertices.size(); i++)
 		indices[i] = i;
 
-	m_draw_data.emplace_back(draw_data_t{ type, vertices, indices,
-		static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info });
+	m_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
 }
 
-void lucid_engine::renderer::line(const vec2_t from,
-	const vec2_t to, const color_t color, const bool anti_alias) {
+void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
 	std::vector<vertex_t> vertices;
 
 	vertices.emplace_back(vertex_t(from.x, from.y, 0.f, 1.f, color_t::translate(color)));
@@ -180,7 +196,7 @@ void lucid_engine::renderer::rectangle(const vec2_t pos, const vec2_t size, cons
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertices.front()
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color))
 	};
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
@@ -197,8 +213,7 @@ void lucid_engine::renderer::filled_rectangle(const vec2_t pos, const vec2_t siz
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
-void lucid_engine::renderer::rounded_rectangle(const vec2_t pos,
-	const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
+void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
 	if (radius < 0.5f || flags == corner_flags::corner_none) {
 		rectangle(pos, size, color);
 		return;
@@ -232,8 +247,7 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos,
 	polyline(points, color);
 }
 
-void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, 
-	const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
+void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
 	if (radius < 0.5f || flags == corner_flags::corner_none) {
 		filled_rectangle(pos, size, color);
 		return;
@@ -288,8 +302,7 @@ void lucid_engine::renderer::filled_gradient(const vec2_t pos, const vec2_t size
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
-void lucid_engine::renderer::gradient_four(const vec2_t pos,
-	const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
+void lucid_engine::renderer::gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
@@ -301,8 +314,7 @@ void lucid_engine::renderer::gradient_four(const vec2_t pos,
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
-void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, 
-	const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
+void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
@@ -347,8 +359,7 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
 }
 
-std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos,
-	const int radius, const int completion, const int rotation, int segments) {
+std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
 	float ang = rotation * D3DX_PI / 180;
@@ -391,8 +402,7 @@ void lucid_engine::renderer::filled_circle(const vec2_t pos, int radius, int com
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
 
-void lucid_engine::renderer::gradient_circle(const vec2_t pos,
-	int radius, int completion, int rotation, const color_t color, const color_t color2) {
+void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2) {
 	std::vector<vec2_t> points = generate_circle_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
 
@@ -409,35 +419,12 @@ font_t lucid_engine::renderer::create_font(const std::string font_name,
 	return font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags);
 }
 
-void lucid_engine::renderer::text(const font_t font,
-	const std::string string, const vec2_t pos, const color_t color, const text_flags_t flags) {
-	std::vector<vertex_t> vertices;
-	DWORD text_flags = {};
+void lucid_engine::renderer::text(const font_t font, const std::string string, const vec2_t pos, const color_t color) {
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color))
+	};
 
-	switch (flags.m_alignment) {
-	case text_alignment::alignment_left:
-		text_flags = DT_LEFT | DT_NOCLIP;
-
-		break;
-	case text_alignment::alignment_right:
-		text_flags = DT_RIGHT | DT_NOCLIP;
-
-		break;
-	case text_alignment::alignment_center_x:
-		text_flags = DT_CENTER | DT_NOCLIP;
-
-		break;
-	case text_alignment::alignment_center_y:
-		text_flags = DT_VCENTER | DT_NOCLIP;
-
-		break;
-	case text_alignment::alignment_center:
-		text_flags = DT_CENTER | DT_VCENTER | DT_NOCLIP;
-		break;
-	}
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
-	write_vertex(D3DPT_TRIANGLEFAN, vertices, true, text_info_t(font, string, pos, color, text_flags));
+	write_vertex(D3DPT_TRIANGLEFAN, vertices, true, text_info_t(font, string, pos, color));
 }
 
 vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::string string) {

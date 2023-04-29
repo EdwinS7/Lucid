@@ -59,7 +59,9 @@ void lucid_engine::io::demo_window(bool open) {
 		{
 			static bool test = false;
 
-
+			for (int i = 0; i < 40; i++) {
+				g_ui.get()->check_box("lol", &test);
+			}
 		}
 		g_ui.get()->end_group();
 

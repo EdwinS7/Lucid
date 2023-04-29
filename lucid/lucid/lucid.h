@@ -18,11 +18,13 @@
 
 /* lucid engine backend */
 #include "renderer/color/color.h"
+#include "renderer/vector/rect.h"
 #include "renderer/vector/vector2d.h"
 #include "renderer/vector/vector3d.h"
 #include "renderer/vector/vector4d.h"
 #include "renderer/vertex/vertex.h"
 #include "renderer/matrix/matrix.h"
+#include "renderer/clip/clip.h"
 #include "renderer/font/font.h"
 #include "renderer/textflags/text_flags.h"
 #include "renderer/textinfo/text_info.h"

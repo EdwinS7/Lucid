@@ -186,11 +186,13 @@
     <ClInclude Include="lucid\graphics\graphics.h" />
     <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
+    <ClInclude Include="lucid\renderer\clip\clip.h" />
     <ClInclude Include="lucid\renderer\color\color.h" />
     <ClInclude Include="lucid\renderer\drawdata\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\drawdata\draw_data.h" />
     <ClInclude Include="lucid\renderer\font\font.h" />
     <ClInclude Include="lucid\renderer\matrix\matrix.h" />
+    <ClInclude Include="lucid\renderer\vector\rect.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\textflags\text_flags.h" />
     <ClInclude Include="lucid\renderer\textinfo\text_info.h" />

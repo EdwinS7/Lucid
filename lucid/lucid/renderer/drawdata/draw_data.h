@@ -8,4 +8,5 @@ struct draw_data_t {
 							   m_index_count{ };
 	bool					   m_anti_alias{ };
 	text_info_t				   m_text_info{ };
+	clip_info_t                m_clip_info{ };
 };

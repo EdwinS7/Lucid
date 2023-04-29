@@ -30,14 +30,16 @@ void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_si
 
 	// apply origin for elements to render.
 	m_elements_pos = m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(m_style->m_group_padding, 25 + m_style->m_group_padding + m_groups[m_group_id].m_scroll);
+
+	g_renderer.get()->push_clip(m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26));
 }
 
 void lucid_engine::ui::end_group() {
+	g_renderer.get()->pop_clip();
+
 	// get the amount that should be scrolled to get to the bottom from current scrolled amount.
-	float left_over = m_groups[m_group_id].m_original_pos.y +
-		m_group_size[m_group_id].y - 26 /* header */ - m_style->m_group_padding;
-	float scroll_max_range = left_over -
-		((m_elements_pos.y - m_groups[m_group_id].m_scroll) + m_groups[m_group_id].m_scroll_abs);
+	float left_over = m_groups[m_group_id].m_original_pos.y + m_group_size[m_group_id].y - 26 /* header */ - m_style->m_group_padding;
+	float scroll_max_range = left_over - ((m_elements_pos.y - m_groups[m_group_id].m_scroll) + m_groups[m_group_id].m_scroll_abs);
 
 	// apply values, the absolute and the lerped value.
 	m_groups[m_group_id].m_scroll_abs = std::clamp(m_groups[m_group_id].m_scroll_abs + g_input.get()->m_mouse_wheel_delta, scroll_max_range + m_groups[m_group_id].m_scroll_abs, 0.f);
