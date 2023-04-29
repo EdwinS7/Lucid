@@ -15,22 +15,22 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
-		key_state[1].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[1].m_on = (msg == WM_LBUTTONDOWN);
 
 		break;
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
-		key_state[2].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[2].m_on = (msg == WM_LBUTTONDOWN);
 
 		break;
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONUP:
-		key_state[4].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[4].m_on = (msg == WM_LBUTTONDOWN);
 
 		break;
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
-		key_state[5].m_on = (msg == WM_LBUTTONDOWN) ? true : false;
+		key_state[5].m_on = (msg == WM_LBUTTONDOWN);
 
 		break;
 	case WM_KEYDOWN:
@@ -126,7 +126,7 @@ vec2_t lucid_engine::window::get_window_size() {
 		return vec2_t(rect.right - rect.left, rect.bottom - rect.top);
 
 	throw std::runtime_error{ "GetClientRect error" };
-	return vec2_t(0, 0);
+	return vec2_t();
 }
 
 vec2_t lucid_engine::window::get_window_pos() {
@@ -136,5 +136,5 @@ vec2_t lucid_engine::window::get_window_pos() {
 		return vec2_t(rect.left, rect.top);
 
 	throw std::runtime_error{ "GetWindowRect error" };
-	return vec2_t(0, 0);
+	return vec2_t();
 }

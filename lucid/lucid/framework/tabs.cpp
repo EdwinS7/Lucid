@@ -13,7 +13,7 @@ void lucid_engine::ui::add_tab(const char* icon, const char* title) {
 
 void lucid_engine::ui::handle_tabs() {
 	// size for each m_tab.
-	vec2_t area = {45, 45};
+	vec2_t area = { 45, 45 };
 
 	// get the draw position and fix the draw position to work with the amount of m_tabs. (center)
 	draw_position.x = (m_window_pos[m_window_id].x + (m_window_size[m_window_id].x / 2)) - (area.x * m_tabs.size()) / 2;
@@ -45,7 +45,7 @@ void lucid_engine::ui::handle_tabs() {
 			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_inactive);
 			g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_primordial_icons), m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_inactive);
 		}
-		
+
 		// check if mouse is hovering the bounds of this m_tab.
 		if (hovered) {
 			// check if mouse1 is pressed and change the m_tab to this m_tab.
@@ -55,10 +55,11 @@ void lucid_engine::ui::handle_tabs() {
 			// set this so we cannot drag our menu.
 			m_hovering_element = true;
 		}
-		
+
 		// apply new position.
 		draw_position.x += 45;
 	}
 
 	// clear vector for next window.
 	m_tabs.clear();
+}
