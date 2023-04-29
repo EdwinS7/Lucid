@@ -28,5 +28,5 @@ namespace lucid_engine {
 		bool is_key_held(int key);
 		bool is_key_pressed(int key);
 	};
-	inline input g_input;
+	inline const auto g_input = std::make_unique< input >();
 }

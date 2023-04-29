@@ -16,16 +16,23 @@ void lucid_engine::ui::create_window(const char* title, vec2_t pos, vec2_t min_s
 	}
 
 	// calculate text size for title.
-	vec2_t text_size = g_renderer.get_text_size(g_renderer.fonts.default_font, title);
+	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_fonts.at(fonts::font_default), title);
 
 	// render our window.
-	g_renderer.filled_rounded_rectangle(window_pos[window_id], window_size[window_id], style->window_background, style->window_rounding);
-	g_renderer.filled_rounded_rectangle(window_pos[window_id], vec2_t(window_size[window_id].x, 25), style->window_header, style->window_rounding, corner_top);
-	g_renderer.filled_rounded_rectangle(window_pos[window_id] + vec2_t(0, window_size[window_id].y - 45), vec2_t(window_size[window_id].x, 45), style->window_header, style->window_rounding, corner_bottom);
-	g_renderer.filled_rectangle(window_pos[window_id] + vec2_t(0, 26), vec2_t(window_size[window_id].x, 1), style->accent);
-	g_renderer.filled_rectangle(window_pos[window_id] + vec2_t(0, window_size[window_id].y - 46), vec2_t(window_size[window_id].x, 1), style->accent);
-	g_renderer.rounded_rectangle(window_pos[window_id], window_size[window_id], style->window_outline, style->window_rounding);
-	g_renderer.text(g_renderer.fonts.default_font, title, window_pos[window_id] + vec2_t((window_size[window_id].x / 2) - text_size.x / 2, 6), style->text_active);
+	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id],
+		m_window_size[m_window_id], m_style->m_window_background, m_style->m_window_rounding);
+	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id],
+		vec2_t(m_window_size[m_window_id].x, 25), m_style->m_window_header, m_style->m_window_rounding, corner_top);
+	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 45),
+		vec2_t(m_window_size[m_window_id].x, 45), m_style->m_window_header, m_style->m_window_rounding, corner_bottom);
+	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, 26),
+		vec2_t(m_window_size[m_window_id].x, 1), m_style->m_accent);
+	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 46),
+		vec2_t(m_window_size[m_window_id].x, 1), m_style->m_accent);
+	g_renderer.get()->rounded_rectangle(m_window_pos[m_window_id],
+		m_window_size[m_window_id], m_style->m_window_outline, m_style->m_window_rounding);
+	g_renderer.get()->text(g_renderer.get()->m_fonts.at(fonts::font_default), title,
+		m_window_pos[m_window_id] + vec2_t((m_window_size[m_window_id].x / 2) - text_size.x / 2, 6), m_style->m_text_active);
 }
 
 void lucid_engine::ui::end_window() {
