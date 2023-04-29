@@ -1,5 +1,7 @@
 #pragma once
 
+#define NOMINMAX
+
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <DirectXMath.h>
@@ -10,6 +12,7 @@
 #include <Windows.h>
 #include <algorithm>
 #include <iostream>
+#include <ranges>
 #include <vector>
 #include <chrono>
 #include <format>

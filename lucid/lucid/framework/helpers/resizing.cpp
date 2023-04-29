@@ -9,7 +9,7 @@ struct resizing_info {
 std::map<int, resizing_info> info;
 
 vec2_t lucid_engine::ui::handle_resizing() {
-	bool another_resizing = std::any_of(info.begin(), info.end(), [this](const auto& item) {
+	bool another_resizing = std::ranges::any_of(info, [this](const auto& item) {
 		return window_id != item.first && item.second.resizing;
 	});
 
@@ -21,25 +21,25 @@ vec2_t lucid_engine::ui::handle_resizing() {
 	bool held = input::get_instance().is_key_held(VK_LBUTTON);
 	bool inside_bounds = input::get_instance().mouse_hovering_rect(window_pos[window_id] + window_size[window_id] - area, area);
 
-	if (!info[window_id].outside_bounds && ((held && !inside_bounds) || hovering_element))
-		info[window_id].outside_bounds = true;
-	else if (info[window_id].outside_bounds && !held)
-		info[window_id].outside_bounds = false;
+	auto& window_info = info[window_id];
+	if (!window_info.outside_bounds && ((held && !inside_bounds) || hovering_element))
+		window_info.outside_bounds = true;
+	else if (window_info.outside_bounds && !held)
+		window_info.outside_bounds = false;
 
-	if (!info[window_id].resizing && !info[window_id].outside_bounds && held && inside_bounds) {
-		info[window_id].difference = input::get_instance().mouse_pos - (window_pos[window_id] + window_size[window_id]);
-		info[window_id].resizing = true;
+	if (!window_info.resizing && !window_info.outside_bounds && held && inside_bounds) {
+		window_info.difference = input::get_instance().mouse_pos - (window_pos[window_id] + window_size[window_id]);
+		window_info.resizing = true;
 	}
-	else if (info[window_id].resizing && !held)
-		info[window_id].resizing = false;
+	else if (window_info.resizing && !held)
+		window_info.resizing = false;
 
-	if (!info[window_id].resizing)
+	if (!window_info.resizing)
 		return window_size[window_id];
 
-	vec2_t new_size = (input::get_instance().mouse_pos - window_pos[window_id]) - info[window_id].difference;
+	vec2_t new_size = (input::get_instance().mouse_pos - window_pos[window_id]) - window_info.difference;
 
-	if (new_size.x < window_min_size[window_id].x) new_size.x = window_min_size[window_id].x;
-	if (new_size.y < window_min_size[window_id].y) new_size.y = window_min_size[window_id].y;
+	new_size = vec2_t{ std::max(new_size.x, window_min_size[window_id].x), std::max(new_size.y, window_min_size[window_id].y) };
 
 	lucid_engine::input::get_instance().cursor_style = LoadCursor(NULL, IDC_SIZENWSE);
 
@@ -47,12 +47,11 @@ vec2_t lucid_engine::ui::handle_resizing() {
 }
 
 bool lucid_engine::ui::is_resizing() {
-	for (int i = 0; i < info.size(); i++) {
-		if (info[i].resizing)
-			return true;
-	}
+	bool another_resizing = std::ranges::any_of(info, [this](const auto& item) {
+		return item.second.resizing;
+	});
 
-	return false;
+	return another_resizing;
 }
 
 bool lucid_engine::ui::is_this_resizing() {

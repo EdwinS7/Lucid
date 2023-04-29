@@ -9,7 +9,7 @@ struct dragging_info {
 std::map<int, dragging_info> info;
 
 vec2_t lucid_engine::ui::handle_dragging() {
-	bool another_dragging = std::any_of(info.begin(), info.end(), [this](const auto& item) {
+	bool another_dragging = std::ranges::any_of(info, [this](const auto& item) {
 		return window_id != item.first && item.second.dragging;
 	});
 
@@ -19,33 +19,33 @@ vec2_t lucid_engine::ui::handle_dragging() {
 	bool held = input::get_instance().is_key_held(VK_LBUTTON);
 	bool inside_bounds = input::get_instance().mouse_hovering_rect(window_pos[window_id], window_size[window_id]);
 
-	if (!info[window_id].outside_bounds && ((held && !inside_bounds) || hovering_element))
-		info[window_id].outside_bounds = true;
-	else if (info[window_id].outside_bounds && !held)
-		info[window_id].outside_bounds = false;
+	auto& window_info = info[window_id];
+	if (!window_info.outside_bounds && ((held && !inside_bounds) || hovering_element))
+		window_info.outside_bounds = true;
+	else if (window_info.outside_bounds && !held)
+		window_info.outside_bounds = false;
 
-	if (!info[window_id].dragging && !info[window_id].outside_bounds && held && inside_bounds) {
-		info[window_id].difference = input::get_instance().mouse_pos - window_pos[window_id];
-		info[window_id].dragging = true;
+	if (!window_info.dragging && !window_info.outside_bounds && held && inside_bounds) {
+		window_info.difference = input::get_instance().mouse_pos - window_pos[window_id];
+		window_info.dragging = true;
 	}
-	else if (info[window_id].dragging && !held)
-		info[window_id].dragging = false;
+	else if (window_info.dragging && !held)
+		window_info.dragging = false;
 
-	if (!info[window_id].dragging)
+	if (!window_info.dragging)
 		return window_pos[window_id];
 
-	vec2_t new_pos = input::get_instance().mouse_pos - info[window_id].difference;
+	vec2_t new_pos = input::get_instance().mouse_pos - window_info.difference;
 
 	return new_pos;
 }
 
 bool lucid_engine::ui::is_dragging() {
-	for (int i = 0; i < info.size(); i++) {
-		if (info[i].dragging)
-			return true;
-	}
+	bool another_dragging = std::ranges::any_of(info, [this](const auto& item) {
+		return item.second.dragging;
+	});
 
-	return false;
+	return another_dragging;
 }
 
 bool lucid_engine::ui::is_this_dragging() {
