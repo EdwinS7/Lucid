@@ -159,24 +159,24 @@ void lucid_engine::renderer::polygon(const std::vector<vec2_t>& points, const co
 }
 
 void lucid_engine::renderer::rectangle(const vec2_t pos, const vec2_t size, const color_t color) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertices.front());
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertices.front()
+	};
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
 void lucid_engine::renderer::filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
@@ -197,7 +197,7 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 	};
 
 	for (const auto& [corner, angle] : gen_points) {
-		auto corner_points = generate_circle_points(corner, radius, 25, angle);
+		const std::vector<vec2_t> corner_points = generate_circle_points(corner, radius, 25, angle);
 		points.insert(points.end(), corner_points.begin(), corner_points.end());
 	}
 
@@ -222,7 +222,7 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 	};
 
 	for (const auto& [corner, angle] : gen_points) {
-		auto corner_points = generate_circle_points(corner, radius, 25, angle);
+		const std::vector<vec2_t> corner_points = generate_circle_points(corner, radius, 25, angle);
 		points.insert(points.end(), corner_points.begin(), corner_points.end());
 	}
 
@@ -230,80 +230,81 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 }
 
 void lucid_engine::renderer::gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(left)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, vertical ? color_t::translate(left) : color_t::translate(right)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(right)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, vertical ? color_t::translate(right) : color_t::translate(left)));
-	vertices.emplace_back(vertices.front());
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(left)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, vertical ? color_t::translate(left) : color_t::translate(right)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(right)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, vertical ? color_t::translate(right) : color_t::translate(left)),
+		vertices.front()
+	};
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
 void lucid_engine::renderer::filled_gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(left)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, vertical ? color_t::translate(left) : color_t::translate(right)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(right)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, vertical ? color_t::translate(right) : color_t::translate(left)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(left)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, vertical ? color_t::translate(left) : color_t::translate(right)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(right)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, vertical ? color_t::translate(right) : color_t::translate(left)),
+	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
 void lucid_engine::renderer::gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_right)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_left)));
-	vertices.emplace_back(vertices.front());
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_right)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_left)),
+		vertices.front()
+	};
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
 void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_right)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_left)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(top_left)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_right)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_left))
+	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
 void lucid_engine::renderer::triangle(const vec2_t pos, const vec2_t size, const color_t color) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertices.front());
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertices.front()
+	};
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
 
 void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size, const color_t color) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertices.front()
+	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
 void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color2)));
-	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2)));
-	vertices.emplace_back(vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color2)),
+		vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2)),
+		vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2))
+	};
 
 	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
 }
@@ -333,9 +334,8 @@ void lucid_engine::renderer::circle(const vec2_t pos, int radius, int completion
 	std::vector<vec2_t> points = generate_circle_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
 
-	for (const auto& point : points) {
+	for (const auto& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color)));
-	}
 
 	write_vertex(D3DPT_LINESTRIP, vertices, true);
 }
@@ -346,9 +346,8 @@ void lucid_engine::renderer::filled_circle(const vec2_t pos, int radius, int com
 
 	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
 
-	for (const auto& point : points) {
+	for (const auto& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color)));
-	}
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
@@ -359,9 +358,8 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 
 	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
 
-	for (const auto& point : points) {
+	for (const auto& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color2)));
-	}
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
