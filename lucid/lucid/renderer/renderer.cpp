@@ -164,10 +164,10 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 }
 
 void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
-	std::vector<vertex_t> vertices;
-
-	vertices.emplace_back(vertex_t(from.x, from.y, 0.f, 1.f, color_t::translate(color)));
-	vertices.emplace_back(vertex_t(to.x, to.y, 0.f, 1.f, color_t::translate(color)));
+	std::vector<vertex_t> vertices = {
+		vertex_t(from.x, from.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(to.x, to.y, 0.f, 1.f, color_t::translate(color))
+	};
 
 	write_vertex(D3DPT_LINELIST, vertices, anti_alias);
 }
@@ -195,9 +195,10 @@ void lucid_engine::renderer::rectangle(const vec2_t pos, const vec2_t size, cons
 		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color))
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color))
 	};
+
+	vertices.emplace_back(vertices.front());
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
@@ -285,8 +286,9 @@ void lucid_engine::renderer::gradient(const vec2_t pos, const vec2_t size, const
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, vertical ? color_t::translate(left) : color_t::translate(right)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(right)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, vertical ? color_t::translate(right) : color_t::translate(left)),
-		vertices.front()
 	};
+
+	vertices.emplace_back(vertices.front());
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
@@ -308,8 +310,9 @@ void lucid_engine::renderer::gradient_four(const vec2_t pos, const vec2_t size, 
 		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(top_right)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_right)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(bottom_left)),
-		vertices.front()
 	};
+
+	vertices.emplace_back(vertices.front());
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
@@ -330,8 +333,9 @@ void lucid_engine::renderer::triangle(const vec2_t pos, const vec2_t size, const
 		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertices.front()
 	};
+
+	vertices.emplace_back(vertices.front());
 
 	write_vertex(D3DPT_LINESTRIP, vertices);
 }
@@ -341,7 +345,6 @@ void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size
 		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertices.front()
 	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
