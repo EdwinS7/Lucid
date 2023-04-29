@@ -3,9 +3,9 @@
 #include "../../lucid.h"
 
 struct font_flags_t {
-    bool m_anti_alias,
-         m_drop_shadow,
-         m_outline;
+    bool m_anti_alias{ },
+         m_drop_shadow{ },
+         m_outline{ };
 
     font_flags_t() {
         m_anti_alias  = false;
@@ -18,8 +18,8 @@ struct font_flags_t {
 };
 
 struct font_t {
-    LPD3DXFONT   m_dx_font    = {};
-    font_flags_t m_font_flags = {};
+    LPD3DXFONT   m_dx_font{ };
+    font_flags_t m_font_flags{ };
 
     font_t() {}
     font_t(IDirect3DDevice9* device, const char* name, int size, int weight, font_flags_t font_flags) {

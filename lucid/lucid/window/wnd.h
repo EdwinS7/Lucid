@@ -5,8 +5,8 @@
 namespace lucid_engine {
 	class window {
 	private:
-		HWND	   m_hwnd;
-		WNDCLASSEX m_window_class;
+		HWND	   m_hwnd{ };
+		WNDCLASSEX m_window_class{ };
 
 	public:
 		bool create_window(const char* title, int x, int y, int w, int h);

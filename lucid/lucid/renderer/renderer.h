@@ -21,7 +21,7 @@ enum corner_flags {
 				 corner_bottom_left | corner_bottom_right
 };
 
-enum fonts : int {
+enum fonts {
 	font_default = 0,
 	font_primordial_icons
 };
