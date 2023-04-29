@@ -42,7 +42,9 @@ void lucid_engine::ui::end_group() {
 	float scroll_max_range = left_over - ((m_elements_pos.y - m_groups[m_group_id].m_scroll) + m_groups[m_group_id].m_scroll_abs);
 
 	// apply values, the absolute and the lerped value.
-	m_groups[m_group_id].m_scroll_abs = std::clamp(m_groups[m_group_id].m_scroll_abs + g_input.get()->m_mouse_wheel_delta, scroll_max_range + m_groups[m_group_id].m_scroll_abs, 0.f);
+	if (m_elements_pos.y - left_over >= 0)
+		m_groups[m_group_id].m_scroll_abs = std::clamp(m_groups[m_group_id].m_scroll_abs + g_input.get()->m_mouse_wheel_delta, scroll_max_range + m_groups[m_group_id].m_scroll_abs, 0.f);
+
 	m_groups[m_group_id].m_scroll = g_animations.get()->lerp(m_groups[m_group_id].m_scroll, m_groups[m_group_id].m_scroll_abs, g_io.get()->m_delta_time * 8);
 
 	// prepare for next frame.
