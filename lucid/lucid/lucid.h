@@ -8,6 +8,7 @@
 #pragma comment(lib, "d3dx9")
 
 #include <Windows.h>
+#include <algorithm>
 #include <iostream>
 #include <vector>
 #include <chrono>
