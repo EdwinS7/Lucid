@@ -18,8 +18,7 @@ void lucid_engine::ui::combo_box( const char* title, int* current_variable, std:
 		if ( g_input.get( )->is_key_pressed( VK_LBUTTON ) ) {
 			pressed = true;
 
-			// check if we are hovering the combo box and if we are then open/close it.
-			// note: should probably make this so we can close it when clicking out of range to the box however this seemed to fuck shit up
+			// invert our opened variable when pressed that way we can open/close the combo box even while hovering.
 			if ( pressed )
 				opened = !opened;
 		}
@@ -34,9 +33,7 @@ void lucid_engine::ui::combo_box( const char* title, int* current_variable, std:
 		g_renderer.get( )->filled_rounded_rectangle( m_elements_pos + vec2_t( 0, text_size.y ), combo_box_size, m_style->m_element_inactive, m_style->m_element_rounding );
 		g_renderer.get( )->rounded_rectangle( m_elements_pos + vec2_t( 0, text_size.y ), combo_box_size, m_style->m_element_outline, m_style->m_element_rounding );
 
-		// note: @edwn @magik comments here are just while im building the combo shit
-
-		// title of our combo box
+		// title of our combo box.
 		g_renderer.get( )->text( g_renderer.get( )->m_defualt_font, title, m_elements_pos - vec2_t( 0, 4 ), m_style->m_text_active );
 
 		// this will be where combo text is rendered.
