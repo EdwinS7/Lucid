@@ -41,9 +41,6 @@ void lucid_engine::ui::combo_box(const char* title, int* value, std::vector<cons
 				if (g_input.get()->mouse_hovering_rect(bbox, combo_size)) {
 					// check if mouse1 is pressed and change the value of the combo box.
 					if (g_input.get()->is_key_pressed(VK_LBUTTON)) {
-						//close combo box menu.
-						m_combo_info[m_combo_id].in_use = false;
-
 						// change value of current selected object.
 						*value = i;
 					}
