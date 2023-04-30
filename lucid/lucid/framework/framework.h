@@ -24,8 +24,9 @@ struct style_t {
 			m_group_header{ color_t(28, 28, 28) },
 
 			m_element_active{ m_accent },
-			m_element_inactive{ color_t(28, 28, 28, 255) },
-			m_element_outline{ color_t(35, 35, 35) },
+			m_element_inactive{ color_t(20, 20, 20, 255) },
+			m_element_outline{ color_t(0, 0, 0) },
+		    m_element_in_outline{ color_t(35, 35, 35) },
 
 			m_text_active{ color_t(240, 240, 240) },
 			m_text_hovered{ color_t(255, 255, 255) },

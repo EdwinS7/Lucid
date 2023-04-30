@@ -29,7 +29,7 @@ void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_si
 	m_groups[m_group_id].m_original_pos = m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(m_style->m_group_padding, 25 + m_style->m_group_padding);
 
 	// apply origin for elements to render.
-	m_elements_pos = m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(m_style->m_group_padding, 25 + m_style->m_group_padding + m_groups[m_group_id].m_scroll);
+	m_elements_pos = m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(m_style->m_group_padding * 2, 25 + m_style->m_group_padding + m_groups[m_group_id].m_scroll);
 
 	g_renderer.get()->push_clip(m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26));
 }
