@@ -56,7 +56,7 @@ void lucid_engine::ui::multi_combo_box(const char* title, std::vector<bool>* sel
 
 			// close our element if we click outside of it.
 			if (g_input.get()->is_key_pressed(VK_LBUTTON))
-				m_combo_info[m_multi_combo_id].in_use = false;
+				m_multi_combo_info[m_multi_combo_id].in_use = false;
 		}
 
 		// restore draw list to default.
