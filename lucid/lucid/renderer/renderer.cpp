@@ -38,13 +38,25 @@ void lucid_engine::renderer::render_draw_data() {
 		
 		switch (i) {
 		case background_draw_list:
-			draw_data_ptr = m_background_draw_data;
+			if (m_background_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_background_draw_data;
+
 			break;
 		case default_draw_list:
-			draw_data_ptr = m_default_draw_data;
+			if (m_default_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_default_draw_data;
+
 			break;
 		case foreground_draw_list:
-			draw_data_ptr = m_foreground_draw_data;
+			if (m_foreground_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_foreground_draw_data;
+
 			break;
 		}
 
@@ -127,13 +139,25 @@ void lucid_engine::renderer::render_draw_data() {
 
 		switch (i) {
 		case background_draw_list:
-			draw_data_ptr = m_background_draw_data;
+			if (m_background_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_background_draw_data;
+
 			break;
 		case default_draw_list:
-			draw_data_ptr = m_default_draw_data;
+			if (m_default_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_default_draw_data;
+
 			break;
 		case foreground_draw_list:
-			draw_data_ptr = m_foreground_draw_data;
+			if (m_foreground_draw_data.empty())
+				break;
+			else
+				draw_data_ptr = m_foreground_draw_data;
+
 			break;
 		}
 
