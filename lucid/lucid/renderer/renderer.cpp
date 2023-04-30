@@ -1,6 +1,5 @@
 #include "renderer.h"
 
-
 void lucid_engine::renderer::create_objects() {
 	if (!g_graphics.get()->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
