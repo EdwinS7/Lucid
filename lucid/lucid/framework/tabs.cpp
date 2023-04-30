@@ -57,3 +57,7 @@ void lucid_engine::ui::handle_tabs() {
 	// clear vector for next window.
 	m_tabs.clear();
 }
+
+int lucid_engine::ui::get_tab_index() {
+	return m_tab;
+}

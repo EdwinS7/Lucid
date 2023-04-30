@@ -118,6 +118,7 @@ namespace lucid_engine {
 		void set_tabs_pos(vec2_t pos);
 		void add_tab(const char* icon, const char* title);
 		void handle_tabs();
+		int get_tab_index();
 
 		void spacing(vec2_t spacing = vec2_t(0, 10));
 
