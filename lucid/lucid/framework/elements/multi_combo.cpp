@@ -24,40 +24,40 @@ void lucid_engine::ui::multi_combo_box(const char* title, std::vector<bool>* sel
 
 		// render our element.
 		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos + vec2_t(3, 1), m_style->m_text_active);
-	}
 
-	// apply foreground to draw list type.
-	g_renderer.get()->set_draw_list(foreground_draw_list);
+		// apply foreground to draw list type.
+		g_renderer.get()->set_draw_list(foreground_draw_list);
 
-	// if the multi combo is opened then lopp through elements and handle them.
-	if (m_multi_combo_info[m_multi_combo_id].in_use) {
-		selected->resize(options.size());
+		// if the multi combo is opened then lopp through elements and handle them.
+		if (m_multi_combo_info[m_multi_combo_id].in_use) {
+			selected->resize(options.size());
 
-		// render background & outline.
-		g_renderer.get()->filled_rounded_rectangle(m_elements_pos + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_inactive, m_style->m_element_rounding, corner_bottom);
-		g_renderer.get()->rounded_rectangle(m_elements_pos + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_outline, m_style->m_element_rounding, corner_bottom);
+			// render background & outline.
+			g_renderer.get()->filled_rounded_rectangle(m_elements_pos + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_inactive, m_style->m_element_rounding, corner_bottom);
+			g_renderer.get()->rounded_rectangle(m_elements_pos + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_outline, m_style->m_element_rounding, corner_bottom);
 
-		for (int i = 0; i < options.size(); i++) {
-			vec2_t bbox = m_elements_pos + vec2_t(0, combo_size.y * (i + 1));
+			for (int i = 0; i < options.size(); i++) {
+				vec2_t bbox = m_elements_pos + vec2_t(0, combo_size.y * (i + 1));
 
-			// check for new selected & set hover state.
-			if (g_input.get()->mouse_hovering_rect(bbox, combo_size)) {
-				// check if mouse1 is pressed and change the value of the multi combo box.
-				if (g_input.get()->is_key_pressed(VK_LBUTTON)) {
-					// change value of current selected object.
-					selected->at(i) = !selected->at(i);
+				// check for new selected & set hover state.
+				if (g_input.get()->mouse_hovering_rect(bbox, combo_size)) {
+					// check if mouse1 is pressed and change the value of the multi combo box.
+					if (g_input.get()->is_key_pressed(VK_LBUTTON)) {
+						// change value of current selected object.
+						selected->at(i) = !selected->at(i);
+					}
+
+					// set this so we cannot drag our menu.
+					m_hovering_popup = true;
 				}
 
-				// set this so we cannot drag our menu.
-				m_hovering_popup = true;
+				g_renderer.get()->text(g_renderer.get()->m_defualt_font, options.at(i), bbox + vec2_t(3, 1), selected->at(i) ? m_style->m_accent : m_style->m_text_inactive);
 			}
-
-			g_renderer.get()->text(g_renderer.get()->m_defualt_font, options.at(i), bbox + vec2_t(3, 1), selected->at(i) ? m_style->m_accent : m_style->m_text_inactive);
 		}
-	}
 
-	// restore draw list to default.
-	g_renderer.get()->set_draw_list(default_draw_list);
+		// restore draw list to default.
+		g_renderer.get()->set_draw_list(default_draw_list);
+	}
 
 	// apply new position.
 	m_elements_pos += vec2_t(0, combo_size.y + m_style->m_group_spacing);
