@@ -54,6 +54,12 @@
     <ClCompile Include="lucid\framework\elements\label.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lucid\framework\elements\popup.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lucid\framework\elements\button.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\lucid.h">

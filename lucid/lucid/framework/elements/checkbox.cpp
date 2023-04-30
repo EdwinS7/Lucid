@@ -1,7 +1,7 @@
 #include "../framework.h"
 
+vec2_t check_box_size = { 10, 10 };
 void lucid_engine::ui::check_box(const char* title, bool* state) {
-	vec2_t check_box_size = { 9, 9 };
 	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, title);
 
 	// check if mouse is hovering the bounds of the check box.

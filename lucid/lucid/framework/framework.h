@@ -99,8 +99,11 @@ namespace lucid_engine {
 		void handle_tabs();
 
 		void spacing(vec2_t spacing = vec2_t(0, 10));
+
+		bool button(const char* title);
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
+		void popup(const char* title, vec2_t pos, color_t color);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();

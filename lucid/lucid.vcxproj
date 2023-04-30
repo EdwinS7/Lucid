@@ -169,8 +169,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="lol.cpp" />
+    <ClCompile Include="lucid\framework\elements\button.cpp" />
     <ClCompile Include="lucid\framework\elements\checkbox.cpp" />
     <ClCompile Include="lucid\framework\elements\label.cpp" />
+    <ClCompile Include="lucid\framework\elements\popup.cpp" />
     <ClCompile Include="lucid\framework\group.cpp" />
     <ClCompile Include="lucid\framework\helpers\dragging.cpp" />
     <ClCompile Include="lucid\framework\helpers\resizing.cpp" />

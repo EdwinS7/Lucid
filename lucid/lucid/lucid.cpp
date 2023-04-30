@@ -65,12 +65,14 @@ void lucid_engine::io::demo_window(bool open) {
 
 		g_ui.get()->create_group("group 0", { 15, 40 }, group_size, group_size);
 		{
-			g_ui.get()->label("example label", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example = false;
 			g_ui.get()->check_box("check box example", &checkbox_example);
 
-
+			if (g_ui.get()->button("button example")) {
+				printf("button pressed\n");
+			}
 		}
 		g_ui.get()->end_group();
 

@@ -272,15 +272,15 @@ void lucid_engine::renderer::filled_rectangle(const vec2_t pos, const vec2_t siz
 }
 
 void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
-	if (radius < 0.5f || flags == corner_flags::corner_none) {
+	if (radius < 0.5f || (flags & corner_none)) {
 		rectangle(pos, size, color);
 		return;
 	}
 
-	const bool round_top_left = (flags & corner_top_left) != 0;
-	const bool round_top_right = (flags & corner_top_right) != 0;
-	const bool round_bottom_left = (flags & corner_bottom_left) != 0;
-	const bool round_bottom_right = (flags & corner_bottom_right) != 0;
+	const bool round_top_left = (flags & corner_top_left);
+	const bool round_top_right = (flags & corner_top_right);
+	const bool round_bottom_left = (flags & corner_bottom_left);
+	const bool round_bottom_right = (flags & corner_bottom_right);
 
 	std::vector<vec2_t> points;
 
@@ -423,13 +423,13 @@ std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t 
 	std::vector<vec2_t> points;
 
 	double ang = static_cast<double>( rotation * D3DX_PI ) / 180.0;
-	double c = (completion / 100.0) * D3DX_PI;
+	double c = (completion / 100.f) * D3DX_PI;
 
 	if (segments == -1)
 		segments = std::clamp(radius, 8, 128);
 
 	for (int i = 0; i < segments + 1; i++) {
-		double current_point = static_cast<double>(i / segments);
+		double current_point = static_cast<double>(i) / segments;
 
 		double x = pos.x + radius * cos(ang + 2 * c * current_point);
 		double y = pos.y + radius * sin(ang + 2 * c * current_point);
