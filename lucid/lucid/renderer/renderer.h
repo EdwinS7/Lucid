@@ -5,8 +5,7 @@
 #define CIRCLE_SEGMENTS 64
 
 enum corner_flags {
-	corner_none = 0,
-
+	corner_none = 0 << 0,
 	corner_top_left = 1 << 0,
 	corner_top_right = 1 << 1,
 	corner_bottom_left = 1 << 2,
