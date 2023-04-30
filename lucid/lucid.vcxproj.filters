@@ -51,6 +51,9 @@
     <ClCompile Include="lucid\framework\elements\checkbox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lucid\framework\elements\label.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\lucid.h">
@@ -102,6 +105,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\renderer\textinfo\text_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\clip\clip.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\renderer\vector\rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

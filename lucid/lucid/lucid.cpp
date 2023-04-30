@@ -38,6 +38,14 @@ void lucid_engine::ui::reset() {
 	m_group_id = -1;
 }
 
+void lucid_engine::ui::spacing(vec2_t spacing) {
+	return m_elements_pos += spacing;
+}
+
+style_t* lucid_engine::ui::get_style() {
+	return m_style;
+}
+
 void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
@@ -55,17 +63,18 @@ void lucid_engine::io::demo_window(bool open) {
 		g_ui.get()->add_tab("E", "skins");
 		g_ui.get()->handle_tabs();
 
-		g_ui.get()->create_group("i hit kids 4000", { 15, 40 }, group_size, group_size);
+		g_ui.get()->create_group("group 0", { 15, 40 }, group_size, group_size);
 		{
-			static bool test = false;
+			g_ui.get()->label("example label", g_ui.get()->get_style()->m_accent);
 
-			for (int i = 0; i < 40; i++) {
-				g_ui.get()->check_box("lol", &test);
-			}
+			static bool checkbox_example = false;
+			g_ui.get()->check_box("check box example", &checkbox_example);
+
+
 		}
 		g_ui.get()->end_group();
 
-		g_ui.get()->create_group("i hit kids 6000", { group_size.x + 30, 40 }, group_size, group_size);
+		g_ui.get()->create_group("group 1", { group_size.x + 30, 40 }, group_size, group_size);
 		{
 
 		}
