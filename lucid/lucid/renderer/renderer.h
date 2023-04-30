@@ -49,7 +49,7 @@ namespace lucid_engine {
 	public:
 		std::vector<font_t>		 m_fonts{ };
 		font_t                   m_defualt_font{ };
-		font_t                   m_primordial_font{ };
+		font_t                   m_logo_font{ };
 
 		void create_objects();
 		void destroy_objects();

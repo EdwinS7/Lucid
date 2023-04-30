@@ -20,13 +20,25 @@ void lucid_engine::ui::create_window(const char* title, vec2_t pos, vec2_t min_s
 
 	// render our window.
 	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id], m_window_size[m_window_id], m_style->m_window_background, m_style->m_window_rounding);
-	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id], vec2_t(m_window_size[m_window_id].x, 25), m_style->m_window_header, m_style->m_window_rounding, corner_top);
-	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 45), vec2_t(m_window_size[m_window_id].x, 45), m_style->m_window_header, m_style->m_window_rounding, corner_bottom);
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, 26), vec2_t(m_window_size[m_window_id].x, 1), m_style->m_accent);
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 46), vec2_t(m_window_size[m_window_id].x, 1), m_style->m_accent);
+	
+	// side bar.
+	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, 45), vec2_t(150, m_window_size[m_window_id].y - 70), m_style->m_panel_background);
+	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(150, 45), vec2_t(1, m_window_size[m_window_id].y - 70), m_style->m_group_outline);
+
+	// top bar.
+	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id], vec2_t(m_window_size[m_window_id].x, 45), m_style->m_window_header, m_style->m_window_rounding, corner_top);
+	g_renderer.get()->filled_gradient(m_window_pos[m_window_id] + vec2_t(0, 45), vec2_t(m_window_size[m_window_id].x, 10), color_t(0, 0, 0, 150), color_t(0, 0, 0, 0), true);
+	g_renderer.get()->filled_gradient(m_window_pos[m_window_id] + vec2_t(150, 45), vec2_t(m_window_size[m_window_id].x - 150, 1), m_style->m_accent.override_alpha(0), m_style->m_accent);
+
+	// bottom bar.
+	g_renderer.get()->filled_rounded_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 25), vec2_t(m_window_size[m_window_id].x, 25), m_style->m_window_header, m_style->m_window_rounding, corner_bottom);
+	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, m_window_size[m_window_id].y - 26), vec2_t(m_window_size[m_window_id].x, 1), m_style->m_accent);
+
+	// outline.
 	g_renderer.get()->rounded_rectangle(m_window_pos[m_window_id], m_window_size[m_window_id], m_style->m_window_outline, m_style->m_window_rounding);
 
-	g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_window_pos[m_window_id] + vec2_t((m_window_size[m_window_id].x / 2) - text_size.x / 2, 6), m_style->m_text_active);
+	// title.
+	g_renderer.get()->text(g_renderer.get()->m_logo_font, title, m_window_pos[m_window_id] + vec2_t(6, -1), m_style->m_text_active);
 }
 
 void lucid_engine::ui::end_window() {

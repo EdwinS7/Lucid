@@ -7,25 +7,25 @@ struct style_t {
 
 	int		m_window_rounding{ 5 },
 			m_group_rounding{ 5 },
-			m_element_rounding{ 3 },
+			m_element_rounding{ 0 },
 			m_group_padding{ 10 },
 			m_group_spacing{ 4 };
 
-	color_t m_accent{ color_t(207, 157, 173) },
+	color_t m_accent{ color_t(124, 110, 255) },
 
 			m_window_background{ color_t(20, 20, 20) },
-			m_window_outline{ color_t(0, 0, 0) },
+			m_window_outline{ color_t(35, 35, 35) },
 			m_window_header{ color_t(28, 28, 28) },
 
 			m_panel_background{ color_t(18, 18, 18) },
 
 			m_group_background{ color_t(18, 18, 18) },
-			m_group_outline{ color_t(0, 0, 0) },
+			m_group_outline{ color_t(35, 35, 35) },
 			m_group_header{ color_t(28, 28, 28) },
 
 			m_element_active{ m_accent },
 			m_element_inactive{ color_t(28, 28, 28, 255) },
-			m_element_outline{ color_t(0, 0, 0) },
+			m_element_outline{ color_t(35, 35, 35) },
 
 			m_text_active{ color_t(240, 240, 240) },
 			m_text_hovered{ color_t(255, 255, 255) },

@@ -61,11 +61,11 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("edwngui demo window", { 50, 50 }, { 600, 550 }, {600, 550 });
+	g_ui.get()->create_window("EDWNGUI", { 50, 50 }, { 680, 380 }, { 780, 480 });
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();
-		vec2_t group_size = { (window_size.x - 45) / 2, window_size.y - 100 };
+		vec2_t group_size = { (window_size.x - 195) / 2, window_size.y - 100 };
 
 		g_ui.get()->add_tab("A", "aimbot");
 		g_ui.get()->add_tab("B", "antiaim");
@@ -74,7 +74,8 @@ void lucid_engine::io::demo_window(bool open) {
 		g_ui.get()->add_tab("E", "skins");
 		g_ui.get()->handle_tabs();
 
-		g_ui.get()->create_group("group 0", { 15, 40 }, group_size, group_size);
+		
+		g_ui.get()->create_group("group 0", { 165, 60 }, group_size, group_size);
 		{
 			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
@@ -99,11 +100,11 @@ void lucid_engine::io::demo_window(bool open) {
 		}
 		g_ui.get()->end_group();
 
-		g_ui.get()->create_group("group 1", { group_size.x + 30, 40 }, group_size, group_size);
+		/*g_ui.get()->create_group("group 1", { group_size.x + 30, 40 }, group_size, group_size);
 		{
 
 		}
-		g_ui.get()->end_group();
+		g_ui.get()->end_group();*/
 	}
 	g_ui.get()->end_window();
 }
