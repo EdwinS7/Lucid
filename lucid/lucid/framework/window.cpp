@@ -36,6 +36,7 @@ void lucid_engine::ui::end_window() {
 
 	// prepare for next window/frame.
 	m_hovering_element = false;
+	m_hovering_popup = false;
 }
 
 vec2_t lucid_engine::ui::get_window_pos() {

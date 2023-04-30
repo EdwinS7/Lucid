@@ -17,7 +17,7 @@ bool lucid_engine::ui::button(const char* title) {
 
 	// check if our button is even visible and render if visible.
 	if (g_input.get()->rect_clipping_rect(m_elements_pos, button_size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26))) {
-		g_renderer.get()->filled_rounded_rectangle(m_elements_pos, button_size, pressed ? m_style->m_element_active : m_style->m_element_inactive, m_style->m_element_rounding);
+		g_renderer.get()->filled_rounded_rectangle(m_elements_pos, button_size, m_style->m_element_inactive, m_style->m_element_rounding);
 		g_renderer.get()->rounded_rectangle(m_elements_pos, button_size, pressed ? m_style->m_accent : m_style->m_element_outline, m_style->m_element_rounding);
 
 		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos + vec2_t(button_size.x / 2 - text_size.x / 2, button_size.y / 2 - text_size.y / 2), pressed ? m_style->m_accent : m_style->m_text_inactive);

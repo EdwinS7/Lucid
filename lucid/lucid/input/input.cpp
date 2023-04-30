@@ -55,6 +55,9 @@ std::map<int, bool> old_frame_key_pressed{ };
 bool lucid_engine::input::is_key_pressed(int key) {
 	bool pressed = false;
 
+	if (g_ui.get()->is_hovering_popup())
+		return false;
+
 	if (m_key_info[key].m_on && !old_frame_key_pressed[key]) {
 		old_frame_key_pressed[key] = true;
 		pressed = true;

@@ -58,6 +58,10 @@ struct slider_info_t {
 	bool in_use{ false };
 };
 
+struct combo_info_t {
+	bool in_use{ false };
+};
+
 namespace lucid_engine {
 	class ui {
 	private:
@@ -81,12 +85,19 @@ namespace lucid_engine {
 		std::map<int, slider_info_t> m_slider_info{ };
 		int                          m_slider_id{ 0 };
 
+		std::map<int, combo_info_t>  m_combo_info{ };
+		int                          m_combo_id{ 0 };
+
 		bool						 m_hovering_element{ false };
+		bool                         m_hovering_popup{ false };
 		vec2_t						 m_elements_pos{ };
 
 		style_t*					 m_style = new style_t;
 
 	public:
+		bool is_hovering_element();
+		bool is_hovering_popup();
+
 		vec2_t handle_dragging();
 		bool is_dragging();
 		bool is_this_dragging();
@@ -113,7 +124,7 @@ namespace lucid_engine {
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
-		void combo_box( const char* title, int* current_variable, std::vector<std::string> options );
+		void combo_box( const char* title, int* value, std::vector<const char*> options );
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();

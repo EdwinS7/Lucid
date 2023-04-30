@@ -37,6 +37,7 @@ void lucid_engine::ui::reset() {
 	m_window_id = -1;
 	m_group_id = -1;
 	m_slider_id = -1;
+	m_combo_id = -1;
 }
 
 void lucid_engine::ui::spacing(vec2_t spacing) {
@@ -45,6 +46,14 @@ void lucid_engine::ui::spacing(vec2_t spacing) {
 
 style_t* lucid_engine::ui::get_style() {
 	return m_style;
+}
+
+bool lucid_engine::ui::is_hovering_element() {
+	return m_hovering_element;
+}
+
+bool lucid_engine::ui::is_hovering_popup() {
+	return m_hovering_popup;
 }
 
 void lucid_engine::io::demo_window(bool open) {
