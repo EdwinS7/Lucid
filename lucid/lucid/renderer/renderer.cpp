@@ -455,8 +455,8 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
-	double ang = static_cast<double>( rotation * D3DX_PI ) * 0.0055555555555556;
-	double c = (completion * 0.01) * D3DX_PI;
+	double ang = static_cast<double>( rotation * 3.1415926535897932384 ) * 0.0055555555555556;
+	double c = (completion * 0.01) * 3.1415926535897932384;
 
 	if (segments == -1)
 		segments = std::clamp(radius, 8, 128);
