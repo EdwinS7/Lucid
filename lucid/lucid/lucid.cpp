@@ -80,6 +80,9 @@ void lucid_engine::io::demo_window(bool open) {
 
 			static float slider_float_example = 0;
 			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
+
+			static int combo_box_example = 0;
+			g_ui.get()->combo_box("combo box example", &combo_box_example, { "option 1", "option 2", "option 3" });
 		}
 		g_ui.get()->end_group();
 

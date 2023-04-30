@@ -113,6 +113,7 @@ namespace lucid_engine {
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
+		void combo_box( const char* title, int* current_variable, std::vector<std::string> options );
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();
