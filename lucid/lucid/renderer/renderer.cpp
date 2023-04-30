@@ -19,7 +19,7 @@ void lucid_engine::renderer::destroy_objects() {
 
 	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
-	for (font_t& font : m_fonts) {
+	for ( font_t& font : m_fonts) {
 		if (&font) {
 			font.m_dx_font->Release();
 			font.m_dx_font = nullptr;
@@ -228,7 +228,7 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
 
 	for (unsigned int i = 0; i < vertices.size(); ++i)
-		indices.at(i) = i;
+		indices[i] = i;
 
 	switch (m_draw_list) {
 	case default_draw_list:
@@ -314,17 +314,17 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for (const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points) {
-		vec2_t corner = std::get<0>(corner_tuple);
-		vec2_t corner_rounded = std::get<1>(corner_tuple);
-		int angle = std::get<2>(corner_tuple);
-		bool should_round = std::get<3>(corner_tuple);
-		if (should_round) {
-			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
-			points.insert(points.end(), corner_points.begin(), corner_points.end());
+	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
+		vec2_t corner = std::get<0>( corner_tuple );
+		vec2_t corner_rounded = std::get<1>( corner_tuple );
+		int angle = std::get<2>( corner_tuple );
+		bool should_round = std::get<3>( corner_tuple );
+		if ( should_round ) {
+			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
+			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
 		}
 		else {
-			points.push_back(corner);
+			points.push_back( corner );
 		}
 	}
 
@@ -353,17 +353,17 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for (const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points) {
-		vec2_t corner = std::get<0>(corner_tuple);
-		vec2_t corner_rounded = std::get<1>(corner_tuple);
-		int angle = std::get<2>(corner_tuple);
-		bool should_round = std::get<3>(corner_tuple);
-		if (should_round) {
-			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
-			points.insert(points.end(), corner_points.begin(), corner_points.end());
+	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
+		vec2_t corner = std::get<0>( corner_tuple );
+		vec2_t corner_rounded = std::get<1>( corner_tuple );
+		int angle = std::get<2>( corner_tuple );
+		bool should_round = std::get<3>( corner_tuple );
+		if ( should_round ) {
+			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
+			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
 		}
 		else {
-			points.push_back(corner);
+			points.push_back( corner );
 		}
 	}
 
@@ -455,7 +455,7 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
-	double ang = static_cast<double>(rotation * D3DX_PI) / 180.0;
+	double ang = static_cast<double>( rotation * D3DX_PI ) / 180.0;
 	double c = (completion / 100.f) * D3DX_PI;
 
 	if (segments == -1)
