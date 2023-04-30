@@ -53,6 +53,10 @@ void lucid_engine::ui::multi_combo_box(const char* title, std::vector<bool>* sel
 
 				g_renderer.get()->text(g_renderer.get()->m_defualt_font, options.at(i), bbox + vec2_t(3, 1), selected->at(i) ? m_style->m_accent : m_style->m_text_inactive);
 			}
+
+			// close our element if we click outside of it.
+			if (g_input.get()->is_key_pressed(VK_LBUTTON))
+				m_combo_info[m_multi_combo_id].in_use = false;
 		}
 
 		// restore draw list to default.
