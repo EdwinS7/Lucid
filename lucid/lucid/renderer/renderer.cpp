@@ -20,8 +20,8 @@ void lucid_engine::renderer::destroy_objects() {
 
 	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
-	for (auto& font : m_fonts) {
-		if (font.m_dx_font) {
+	for ( font_t& font : m_fonts) {
+		if (&font) {
 			font.m_dx_font->Release();
 			font.m_dx_font = nullptr;
 		}
@@ -308,20 +308,25 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 
 	std::vector<vec2_t> points;
 
-	auto gen_points = {
+	std::initializer_list<std::tuple<vec2_t, vec2_t, int, bool>> gen_points = {
 		std::tuple{vec2_t(pos.x, pos.y), vec2_t(pos.x + radius, pos.y + radius), 180, round_top_left},
 		std::tuple{vec2_t(pos.x + size.x, pos.y), vec2_t(pos.x + size.x - radius, pos.y + radius), 270, round_top_right},
 		std::tuple{vec2_t(pos.x + size.x, pos.y + size.y), vec2_t(pos.x + size.x - radius, pos.y + size.y - radius), 0, round_bottom_right},
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for (const auto& [corner, corner_rounded, angle, should_round] : gen_points) {
-		if (should_round) {
-			auto corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
-			points.insert(points.end(), corner_points.begin(), corner_points.end());
+	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
+		vec2_t corner = std::get<0>( corner_tuple );
+		vec2_t corner_rounded = std::get<1>( corner_tuple );
+		int angle = std::get<2>( corner_tuple );
+		bool should_round = std::get<3>( corner_tuple );
+		if ( should_round ) {
+			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
+			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
 		}
-		else
-			points.push_back(corner);
+		else {
+			points.push_back( corner );
+		}
 	}
 
 	points.emplace_back(points.front());
@@ -342,20 +347,25 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 
 	std::vector<vec2_t> points;
 
-	auto gen_points = {
+	std::initializer_list<std::tuple<vec2_t, vec2_t, int, bool>> gen_points = {
 		std::tuple{vec2_t(pos.x, pos.y), vec2_t(pos.x + radius, pos.y + radius), 180, round_top_left},
 		std::tuple{vec2_t(pos.x + size.x, pos.y), vec2_t(pos.x + size.x - radius, pos.y + radius), 270, round_top_right},
 		std::tuple{vec2_t(pos.x + size.x, pos.y + size.y), vec2_t(pos.x + size.x - radius, pos.y + size.y - radius), 0, round_bottom_right},
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for (const auto& [corner, corner_rounded, angle, should_round] : gen_points) {
-		if (should_round) {
-			auto corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
-			points.insert(points.end(), corner_points.begin(), corner_points.end());
+	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
+		vec2_t corner = std::get<0>( corner_tuple );
+		vec2_t corner_rounded = std::get<1>( corner_tuple );
+		int angle = std::get<2>( corner_tuple );
+		bool should_round = std::get<3>( corner_tuple );
+		if ( should_round ) {
+			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
+			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
 		}
-		else
-			points.push_back(corner);
+		else {
+			points.push_back( corner );
+		}
 	}
 
 	polygon(points, color);
@@ -468,7 +478,7 @@ void lucid_engine::renderer::circle(const vec2_t pos, int radius, int completion
 	std::vector<vec2_t> points = generate_circle_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
 
-	for (const auto& point : points)
+	for (const vec2_t& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color)));
 
 	write_vertex(D3DPT_LINESTRIP, vertices, true);
@@ -480,7 +490,7 @@ void lucid_engine::renderer::filled_circle(const vec2_t pos, int radius, int com
 
 	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
 
-	for (const auto& point : points)
+	for (const vec2_t& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color)));
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
@@ -492,7 +502,7 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 
 	vertices.emplace_back(vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)));
 
-	for (const auto& point : points)
+	for (const vec2_t& point : points)
 		vertices.emplace_back(vertex_t(point.x, point.y, 0.f, 1.f, color_t::translate(color2)));
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
