@@ -61,7 +61,7 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("EDWNGUI", { 50, 50 }, { 680, 380 }, { 780, 480 });
+	g_ui.get()->create_window("edwnGui", { 50, 50 }, { 680, 430 }, { 680, 430 });
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();

@@ -7,7 +7,7 @@ void lucid_engine::renderer::create_objects() {
 	D3DXCreateSprite(g_graphics.get()->m_direct_3d_device, &m_font_sprite);
 
 	m_defualt_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
-	m_logo_font = create_font("Wavelight Script Typeface", 46, 400, font_flags_t(true, false, false));
+	m_logo_font = create_font("Museo Sans Rounded", 46, 400, font_flags_t(true, false, false));
 }
 
 void lucid_engine::renderer::destroy_objects() {
