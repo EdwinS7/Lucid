@@ -45,7 +45,7 @@ bool lucid_engine::input::mouse_hovering_rect(vec2_t pos, vec2_t size) {
 }
 
 bool lucid_engine::input::is_key_held(int key) {
-	if (m_key_info.at(key).m_on && m_key_info.at(key).m_style == key_style::key_hold)
+	if (m_key_info[key].m_on && m_key_info[key].m_style == key_style::key_hold)
 		return true;
 
 	return false;
@@ -58,12 +58,12 @@ bool lucid_engine::input::is_key_pressed(int key) {
 	if (g_ui.get()->is_hovering_popup())
 		return false;
 
-	if (m_key_info.at(key).m_on && !old_frame_key_pressed.at(key)) {
-		old_frame_key_pressed.at(key) = true;
+	if (m_key_info[key].m_on && !old_frame_key_pressed[key]) {
+		old_frame_key_pressed[key] = true;
 		pressed = true;
 	}
-	else if (!m_key_info.at(key).m_on && old_frame_key_pressed.at(key))
-		old_frame_key_pressed.at(key) = false;
+	else if (!m_key_info[key].m_on && old_frame_key_pressed[key])
+		old_frame_key_pressed[key] = false;
 
 	return pressed;
 }
