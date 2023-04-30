@@ -173,6 +173,7 @@
     <ClCompile Include="lucid\framework\elements\checkbox.cpp" />
     <ClCompile Include="lucid\framework\elements\label.cpp" />
     <ClCompile Include="lucid\framework\elements\popup.cpp" />
+    <ClCompile Include="lucid\framework\elements\slider.cpp" />
     <ClCompile Include="lucid\framework\group.cpp" />
     <ClCompile Include="lucid\framework\helpers\dragging.cpp" />
     <ClCompile Include="lucid\framework\helpers\resizing.cpp" />

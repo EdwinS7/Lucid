@@ -54,30 +54,37 @@ struct group_info_t {
 		  m_scroll(scroll), m_original_pos(original_pos) {}
 };
 
+struct slider_info_t {
+	bool in_use{ false };
+};
+
 namespace lucid_engine {
 	class ui {
 	private:
-		int							m_window_id{ -1 },
-									m_group_id{ -1 };
+		int							 m_window_id{ -1 },
+									 m_group_id{ -1 };
 
-		std::map<int, bool>			m_this_window_setup{ };
-		std::map<int, vec2_t>		m_window_pos{ },
-									m_window_min_size{ },
-									m_window_size{ };
+		std::map<int, bool>			 m_this_window_setup{ };
+		std::map<int, vec2_t>		 m_window_pos{ },
+									 m_window_min_size{ },
+									 m_window_size{ };
 
-		std::map<int, bool>			m_this_group_setup{ };
-		std::map<int, vec2_t>		m_group_pos{ },
-									m_group_min_size{ },
-									m_group_size{ };
-		std::map<int, group_info_t> m_groups;
+		std::map<int, bool>			 m_this_group_setup{ };
+		std::map<int, vec2_t>		 m_group_pos{ },
+									 m_group_min_size{ },
+									 m_group_size{ };
+		std::map<int, group_info_t>  m_groups;
 
-		std::vector<tab_info_t>		m_tabs;
-		int							m_tab{ 0 };
+		std::vector<tab_info_t>		 m_tabs;
+		int							 m_tab{ 0 };
 
-		bool						m_hovering_element{ false };
-		vec2_t						m_elements_pos{ };
+		std::map<int, slider_info_t> m_slider_info{ };
+		int                          m_slider_id{ 0 };
 
-		style_t*					m_style = new style_t;
+		bool						 m_hovering_element{ false };
+		vec2_t						 m_elements_pos{ };
+
+		style_t*					 m_style = new style_t;
 
 	public:
 		vec2_t handle_dragging();
@@ -101,6 +108,8 @@ namespace lucid_engine {
 		void spacing(vec2_t spacing = vec2_t(0, 10));
 
 		bool button(const char* title);
+		void slider_int(const char* title, int min, int max, int* value);
+		//void slider_float(const char* title float* value);
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);

@@ -36,6 +36,7 @@ void lucid_engine::io::reset() {
 void lucid_engine::ui::reset() {
 	m_window_id = -1;
 	m_group_id = -1;
+	m_slider_id = -1;
 }
 
 void lucid_engine::ui::spacing(vec2_t spacing) {
@@ -73,6 +74,9 @@ void lucid_engine::io::demo_window(bool open) {
 			if (g_ui.get()->button("button example")) {
 				printf("button pressed\n");
 			}
+
+			static int slider_example = 0;
+			g_ui.get()->slider_int("slider example", 0, 100, &slider_example);
 		}
 		g_ui.get()->end_group();
 
