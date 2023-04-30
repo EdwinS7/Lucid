@@ -7,10 +7,10 @@ void lucid_engine::io::create() {
 void lucid_engine::io::update() {
 	g_input.get()->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
 
-	auto high_resolution_clock = std::chrono::high_resolution_clock::now();
+	std::chrono::steady_clock::time_point high_resolution_clock = std::chrono::high_resolution_clock::now();
 	m_real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
 
-	static auto old_frame_time = std::chrono::high_resolution_clock::now();
+	static std::chrono::steady_clock::time_point old_frame_time = std::chrono::high_resolution_clock::now();
 	m_delta_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock - old_frame_time).count());
 	old_frame_time = high_resolution_clock;
 
@@ -61,7 +61,7 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("edwngui demo window", { 50, 50 }, { 600, 550 }, {600, 550 });
+	g_ui.get()->create_window("edwngui demo window", { 50, 50 }, { 600, 550 }, { 600, 550 });
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();

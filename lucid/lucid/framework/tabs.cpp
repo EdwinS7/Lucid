@@ -16,14 +16,14 @@ void lucid_engine::ui::handle_tabs() {
 	vec2_t area = { 45, 45 };
 
 	// get the draw position and fix the draw position to work with the amount of m_tabs. (center)
-	draw_position.x = (m_window_pos[m_window_id].x + (m_window_size[m_window_id].x / 2)) - (area.x * m_tabs.size()) / 2;
-	draw_position.y = m_window_pos[m_window_id].y + m_window_size[m_window_id].y - area.y;
+	draw_position.x = (m_window_pos.at(m_window_id).x + (m_window_size.at(m_window_id).x / 2)) - (area.x * m_tabs.size()) / 2;
+	draw_position.y = m_window_pos.at(m_window_id).y + m_window_size.at(m_window_id).y - area.y;
 
 	// each m_tab in our vector.
 	for (int i = 0; i < m_tabs.size(); i++) {
 		// calculate text sizes.
-		vec2_t title_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, m_tabs[i].m_title);
-		vec2_t icon_size = g_renderer.get()->get_text_size(g_renderer.get()->m_primordial_font, m_tabs[i].m_icon);
+		vec2_t title_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, m_tabs.at(i).m_title);
+		vec2_t icon_size = g_renderer.get()->get_text_size(g_renderer.get()->m_primordial_font, m_tabs.at(i).m_icon);
 
 		// check for hovering affect and used for click detection.
 		bool hovered = g_input.get()->mouse_hovering_rect(draw_position, area);
@@ -33,8 +33,8 @@ void lucid_engine::ui::handle_tabs() {
 			g_renderer.get()->filled_rectangle(draw_position, area - vec2_t(0, 2), m_style->m_window_background);
 			g_renderer.get()->filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), m_style->m_accent);
 
-			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_active);
-			g_renderer.get()->text(g_renderer.get()->m_primordial_font, m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_active);
+			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs.at(i).m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_active);
+			g_renderer.get()->text(g_renderer.get()->m_primordial_font, m_tabs.at(i).m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_active);
 		}
 		else {
 			if (hovered) {
@@ -42,8 +42,8 @@ void lucid_engine::ui::handle_tabs() {
 				g_renderer.get()->filled_rectangle(draw_position + vec2_t(0, area.x - 2), vec2_t(area.x, 2), m_style->m_accent.override_alpha(150));
 			}
 
-			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_inactive);
-			g_renderer.get()->text(g_renderer.get()->m_primordial_font, m_tabs[i].m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_inactive);
+			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs.at(i).m_title, draw_position + vec2_t(-title_size.x / 2 + area.x / 2, area.x - 2 - title_size.y), m_style->m_text_inactive);
+			g_renderer.get()->text(g_renderer.get()->m_primordial_font, m_tabs.at(i).m_icon, draw_position + vec2_t(-icon_size.x / 2 + area.x / 2, area.x - 2 - title_size.y - icon_size.y), m_style->m_text_inactive);
 		}
 
 		// check if mouse is hovering the bounds of this m_tab.

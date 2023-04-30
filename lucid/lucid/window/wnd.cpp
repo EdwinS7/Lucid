@@ -15,22 +15,22 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		return 0;
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
-		key_state[1].m_on = (msg == WM_LBUTTONDOWN);
+		key_state.at(1).m_on = ( msg == WM_LBUTTONDOWN );
 
 		break;
 	case WM_RBUTTONDOWN:
 	case WM_RBUTTONUP:
-		key_state[2].m_on = (msg == WM_LBUTTONDOWN);
+		key_state.at(2).m_on = ( msg == WM_LBUTTONDOWN );
 
 		break;
 	case WM_MBUTTONDOWN:
 	case WM_MBUTTONUP:
-		key_state[4].m_on = (msg == WM_LBUTTONDOWN);
+		key_state.at(4).m_on = ( msg == WM_LBUTTONDOWN );
 
 		break;
 	case WM_XBUTTONDOWN:
 	case WM_XBUTTONUP:
-		key_state[5].m_on = (msg == WM_LBUTTONDOWN);
+		key_state.at(5).m_on = ( msg == WM_LBUTTONDOWN );
 
 		break;
 	case WM_KEYDOWN:
@@ -40,8 +40,8 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		if (wParam <= 256) {
 			bool held = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
 
-			key_state[static_cast<int>(wParam)].m_style = (held ? key_style::key_hold : key_style::key_press);
-			key_state[static_cast<int>(wParam)].m_on = true;
+			key_state.at(static_cast<int>(wParam)).m_style = (held ? key_style::key_hold : key_style::key_press);
+			key_state.at(static_cast<int>(wParam)).m_on = true;
 		}
 
 		break;
