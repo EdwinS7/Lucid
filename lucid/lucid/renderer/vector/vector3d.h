@@ -1,9 +1,9 @@
 #pragma once
 
 struct vec3_t {
-    float x, y, z;
+    double x, y, z;
 
     vec3_t() {}
-    vec3_t(float _x, float _y, float _z)
+    vec3_t(double _x, double _y, double _z)
         : x(_x), y(_y), z(_z) {}
 };
