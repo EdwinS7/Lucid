@@ -38,6 +38,7 @@ void lucid_engine::ui::reset() {
 	m_group_id = -1;
 	m_slider_id = -1;
 	m_combo_id = -1;
+	m_multi_combo_id = -1;
 }
 
 void lucid_engine::ui::spacing(vec2_t spacing) {
@@ -77,21 +78,24 @@ void lucid_engine::io::demo_window(bool open) {
 		{
 			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
-			static bool checkbox_example = false;
+			static bool checkbox_example{ false };
 			g_ui.get()->check_box("check box example", &checkbox_example);
 
 			if (g_ui.get()->button("button example")) {
 				printf("button pressed\n");
 			}
 
-			static int slider_int_example = 0;
+			static int slider_int_example{ 0 };
 			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
 
-			static float slider_float_example = 0;
+			static float slider_float_example{ 0 };
 			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
 
-			static int combo_box_example = 0;
-			g_ui.get()->combo_box("combo box example", &combo_box_example, { "option 1", "option 2", "option 3" });
+			static int combo_example{ 0 };
+			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
+
+			static std::vector<bool> multi_combo_example{ };
+			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 		}
 		g_ui.get()->end_group();
 

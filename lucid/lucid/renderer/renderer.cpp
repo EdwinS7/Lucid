@@ -166,7 +166,7 @@ void lucid_engine::renderer::render_draw_data() {
 			text_info_t text_info = data.m_text_info;
 
 			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
-			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, data.m_clip_info.m_clipping);
+			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, (i == default_draw_list) && data.m_clip_info.m_clipping);
 			g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
 
 			if (text_info.m_setup) {

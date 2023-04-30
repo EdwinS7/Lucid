@@ -85,8 +85,10 @@ namespace lucid_engine {
 		std::map<int, slider_info_t> m_slider_info{ };
 		int                          m_slider_id{ 0 };
 
-		std::map<int, combo_info_t>  m_combo_info{ };
-		int                          m_combo_id{ 0 };
+		std::map<int, combo_info_t>  m_combo_info{ },
+									 m_multi_combo_info{ };
+		int                          m_combo_id{ 0 },
+			                         m_multi_combo_id{ 0 };
 
 		bool						 m_hovering_element{ false };
 		bool                         m_hovering_popup{ false };
@@ -124,7 +126,8 @@ namespace lucid_engine {
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
-		void combo_box( const char* title, int* value, std::vector<const char*> options );
+		void combo_box(const char* title, int* value, std::vector<const char*> options);
+		void multi_combo_box(const char* title, std::vector<bool>* selected, std::vector<const char*> options);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();
