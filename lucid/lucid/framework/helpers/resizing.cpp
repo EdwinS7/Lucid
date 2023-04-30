@@ -21,7 +21,7 @@ vec2_t lucid_engine::ui::handle_resizing() {
 	bool held = g_input.get()->is_key_held(VK_LBUTTON);
 	bool inside_bounds = g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id] + m_window_size[m_window_id] - area, area);
 
-	auto& window_info = info[m_window_id];
+	resizing_info& window_info = info[m_window_id];
 	if (!window_info.outside_bounds && ((held && !inside_bounds) || m_hovering_element))
 		window_info.outside_bounds = true;
 	else if (window_info.outside_bounds && !held)

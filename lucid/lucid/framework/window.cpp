@@ -37,7 +37,6 @@ void lucid_engine::ui::create_window(const char* title, vec2_t pos, vec2_t min_s
 	// outline.
 	g_renderer.get()->rounded_rectangle(m_window_pos[m_window_id], m_window_size[m_window_id], m_style->m_window_outline, m_style->m_window_rounding);
 
-	// title.
 	g_renderer.get()->text(g_renderer.get()->m_logo_font, title, m_window_pos[m_window_id] + vec2_t(6, -1), m_style->m_text_active);
 }
 
