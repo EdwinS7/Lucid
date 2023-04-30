@@ -20,7 +20,7 @@ bool lucid_engine::ui::button(const char* title) {
 		g_renderer.get()->filled_rounded_rectangle(m_elements_pos, button_size, m_style->m_element_inactive, m_style->m_element_rounding);
 		g_renderer.get()->rounded_rectangle(m_elements_pos, button_size, pressed ? m_style->m_accent : m_style->m_element_outline, m_style->m_element_rounding);
 
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos + vec2_t(button_size.x / 2 - text_size.x / 2, button_size.y / 2 - text_size.y / 2), pressed ? m_style->m_accent : m_style->m_text_inactive);
+		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos + vec2_t((button_size.x - text_size.x) * 0.5, (button_size.y - text_size.y) * 0.5), pressed ? m_style->m_accent : m_style->m_text_inactive);
 	}
 
 	// apply new position.

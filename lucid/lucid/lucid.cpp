@@ -65,7 +65,7 @@ void lucid_engine::io::demo_window(bool open) {
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();
-		vec2_t group_size = { (window_size.x - 45) / 2, window_size.y - 100 };
+		vec2_t group_size = { (window_size.x - 45) * 0.5, window_size.y - 100 };
 
 		g_ui.get()->add_tab("A", "aimbot");
 		g_ui.get()->add_tab("B", "antiaim");

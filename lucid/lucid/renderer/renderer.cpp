@@ -173,7 +173,7 @@ void lucid_engine::renderer::render_draw_data() {
 				text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
 			}
 			else
-				g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count / 3);
+				g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
 
 			start_vertex += data.m_vertex_count;
 			start_index += data.m_index_count;
@@ -420,7 +420,7 @@ void lucid_engine::renderer::filled_gradient_four(const vec2_t pos, const vec2_t
 
 void lucid_engine::renderer::triangle(const vec2_t pos, const vec2_t size, const color_t color) {
 	std::vector<vertex_t> vertices = {
-		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x * 0.5, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 	};
@@ -432,7 +432,7 @@ void lucid_engine::renderer::triangle(const vec2_t pos, const vec2_t size, const
 
 void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size, const color_t color) {
 	std::vector<vertex_t> vertices = {
-		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x * 0.5, pos.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
 	};
@@ -442,10 +442,10 @@ void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size
 
 void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2) {
 	std::vector<vertex_t> vertices = {
-		vertex_t(pos.x + size.x / 2, pos.y, 0.f, 1.f, color_t::translate(color2)),
-		vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x * 0.5, pos.y, 0.f, 1.f, color_t::translate(color2)),
+		vertex_t(pos.x + size.x * 0.5, pos.y + size.y * 0.5, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2)),
-		vertex_t(pos.x + size.x / 2, pos.y + size.y / 2, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x * 0.5, pos.y + size.y * 0.5, 0.f, 1.f, color_t::translate(color)),
 		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color2))
 	};
 
@@ -455,8 +455,8 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
-	double ang = static_cast<double>( rotation * D3DX_PI ) / 180.0;
-	double c = (completion / 100.f) * D3DX_PI;
+	double ang = static_cast<double>( rotation * D3DX_PI ) * 0.0055555555555556;
+	double c = (completion * 0.01) * D3DX_PI;
 
 	if (segments == -1)
 		segments = std::clamp(radius, 8, 128);
