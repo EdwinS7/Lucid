@@ -20,7 +20,7 @@ vec2_t lucid_engine::ui::handle_dragging() {
 	bool inside_bounds = g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id], m_window_size[m_window_id]);
 
 	auto& window_info = info[m_window_id];
-	if (!window_info.outside_bounds && ((held && !inside_bounds) || m_hovering_element))
+	if (!window_info.outside_bounds && ((held && !inside_bounds) || m_hovering_element || is_hovering_popup()))
 		window_info.outside_bounds = true;
 	else if (window_info.outside_bounds && !held)
 		window_info.outside_bounds = false;
