@@ -75,8 +75,11 @@ void lucid_engine::io::demo_window(bool open) {
 				printf("button pressed\n");
 			}
 
-			static int slider_example = 0;
-			g_ui.get()->slider_int("slider example", 0, 100, &slider_example);
+			static int slider_int_example = 0;
+			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
+
+			static float slider_float_example = 0;
+			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
 		}
 		g_ui.get()->end_group();
 

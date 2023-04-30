@@ -109,7 +109,7 @@ namespace lucid_engine {
 
 		bool button(const char* title);
 		void slider_int(const char* title, int min, int max, int* value);
-		//void slider_float(const char* title float* value);
+		void slider_float(const char* title, float min, float max, float* value);
 		void check_box(const char* title, bool* state);
 		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
