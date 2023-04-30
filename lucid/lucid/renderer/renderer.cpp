@@ -306,15 +306,15 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 }
 
 void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
-	if (radius < 0.5f || flags == corner_flags::corner_none) {
+	if (radius < 0.5f || (flags & corner_none)) {
 		filled_rectangle(pos, size, color);
 		return;
 	}
 
-	const bool round_top_left = (flags & corner_top_left) != 0;
-	const bool round_top_right = (flags & corner_top_right) != 0;
-	const bool round_bottom_left = (flags & corner_bottom_left) != 0;
-	const bool round_bottom_right = (flags & corner_bottom_right) != 0;
+	const bool round_top_left = (flags & corner_top_left);
+	const bool round_top_right = (flags & corner_top_right);
+	const bool round_bottom_left = (flags & corner_bottom_left);
+	const bool round_bottom_right = (flags & corner_bottom_right);
 
 	std::vector<vec2_t> points;
 
