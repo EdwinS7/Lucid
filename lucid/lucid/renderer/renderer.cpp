@@ -33,7 +33,7 @@ void lucid_engine::renderer::destroy_objects() {
 void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; ++i) {
 		std::vector<draw_data_t> draw_data_ptr;
 		
 		switch (i) {
@@ -134,7 +134,7 @@ void lucid_engine::renderer::render_draw_data() {
 
 	int start_vertex = 0;
 	int start_index = 0;
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 3; ++i) {
 		std::vector<draw_data_t> draw_data_ptr;
 
 		switch (i) {
@@ -228,7 +228,7 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 
 	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
 
-	for (unsigned int i = 0; i < vertices.size(); i++)
+	for (unsigned int i = 0; i < vertices.size(); ++i)
 		indices[i] = i;
 
 	switch (m_draw_list) {
@@ -462,7 +462,7 @@ std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t 
 	if (segments == -1)
 		segments = std::clamp(radius, 8, 128);
 
-	for (int i = 0; i < segments + 1; i++) {
+	for (int i = 0; i < segments + 1; ++i) {
 		double current_point = static_cast<double>(i) / segments;
 
 		double x = pos.x + radius * cos(ang + 2 * c * current_point);
