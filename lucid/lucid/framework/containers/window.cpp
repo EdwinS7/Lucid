@@ -1,4 +1,4 @@
-#include "framework.h"
+#include "../framework.h"
 
 void lucid_engine::ui::create_window(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size) {
 	m_window_id++;

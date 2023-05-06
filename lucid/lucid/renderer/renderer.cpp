@@ -455,19 +455,16 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
-	double ang = static_cast<double>( rotation * 3.1415926535897932384 ) * 0.0055555555555556;
-	double c = (completion * 0.01) * 3.1415926535897932384;
+	double ang = static_cast<double>( rotation * D3DX_PI) / 180.0;
+	double comp = (completion * 0.01) * D3DX_PI;
 
 	if (segments == -1)
 		segments = std::clamp(radius, 8, 128);
 
-	for (int i = 0; i < segments + 1; ++i) {
-		double current_point = static_cast<double>(i) / segments;
+	for (int i = 0; i <= segments; ++i) {
+		double theta = ang + 2.0 * comp * static_cast<double>(i) / static_cast<double>(segments);
 
-		double x = pos.x + radius * cos(ang + 2 * c * current_point);
-		double y = pos.y + radius * sin(ang + 2 * c * current_point);
-
-		points.emplace_back(vec2_t(x, y));
+		points.emplace_back(vec2_t(pos.x + radius * cosf(theta), pos.y + radius * sinf(theta)));
 	}
 
 	return points;
