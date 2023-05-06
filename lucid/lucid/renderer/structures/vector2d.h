@@ -7,6 +7,12 @@ struct vec2_t {
     vec2_t(double _x, double _y)
         : x(_x), y(_y) {}
 
+    vec2_t add(double x, double y) {
+        this->x += x;
+        this->y += y;
+        return *this;
+    }
+
     vec2_t operator + (const vec2_t& other) {
         return vec2_t(x + other.x, y + other.y);
     }

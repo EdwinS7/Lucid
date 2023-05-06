@@ -61,7 +61,7 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("edwnGui", { 50, 50 }, { 680, 430 }, { 680, 430 });
+	g_ui.get()->create_window("Lucid", { 50, 50 }, { 680, 430 }, { 680, 430 });
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();
@@ -72,6 +72,7 @@ void lucid_engine::io::demo_window(bool open) {
 		g_ui.get()->add_tab("C", "visuals");
 		g_ui.get()->add_tab("D", "misc");
 		g_ui.get()->add_tab("E", "skins");
+
 		g_ui.get()->handle_tabs();
 
 		switch (g_ui.get()->get_tab_index()) {

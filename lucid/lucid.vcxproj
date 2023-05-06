@@ -168,7 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="lol.cpp" />
+    <ClCompile Include="example.cpp" />
     <ClCompile Include="lucid\framework\elements\button.cpp" />
     <ClCompile Include="lucid\framework\elements\check_box.cpp" />
     <ClCompile Include="lucid\framework\elements\combo.cpp" />
