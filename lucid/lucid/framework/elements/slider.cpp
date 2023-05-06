@@ -27,7 +27,7 @@ void lucid_engine::ui::slider_int(const char* title, int min, int max, int* valu
 
 	// check if slider is even visible and render if visible.
 	if (g_input.get()->rect_clipping_rect(m_elements_pos, slider_size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26))) {
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos, m_style->m_text_inactive);
+		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
 
 		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), slider_size, m_style->m_element_inactive);
 		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), vec2_t(g_animations.get()->map(*value, min, max, 0, slider_size.x), slider_size.y), m_style->m_accent);
@@ -66,7 +66,7 @@ void lucid_engine::ui::slider_float(const char* title, float min, float max, flo
 
 	// check if slider is even visible and render if visible.
 	if (g_input.get()->rect_clipping_rect(m_elements_pos, slider_size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26))) {
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos, m_style->m_text_inactive);
+		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
 
 		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), slider_size, m_style->m_element_inactive);
 		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), vec2_t(g_animations.get()->map(*value, min, max, 0, slider_size.x), slider_size.y), m_style->m_accent);

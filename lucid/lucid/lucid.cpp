@@ -85,10 +85,6 @@ void lucid_engine::io::demo_window(bool open) {
 					static bool checkbox_example { false };
 					g_ui.get()->check_box("check box example", &checkbox_example);
 
-					if (g_ui.get()->button("button example")) {
-						printf("button pressed\n");
-					}
-
 					static int slider_int_example { 0 };
 					g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
 
@@ -100,6 +96,10 @@ void lucid_engine::io::demo_window(bool open) {
 
 					static std::vector<bool> multi_combo_example { };
 					g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+
+					if (g_ui.get()->button("button example")) {
+						printf("button pressed\n");
+					}
 				}
 				g_ui.get()->end_group();
 
@@ -110,10 +110,6 @@ void lucid_engine::io::demo_window(bool open) {
 					static bool checkbox_example { false };
 					g_ui.get()->check_box("check box example", &checkbox_example);
 
-					if (g_ui.get()->button("button example")) {
-						printf("button pressed\n");
-					}
-
 					static int slider_int_example { 0 };
 					g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
 
@@ -125,6 +121,10 @@ void lucid_engine::io::demo_window(bool open) {
 
 					static std::vector<bool> multi_combo_example { };
 					g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+
+					if (g_ui.get()->button("button example")) {
+						printf("button pressed\n");
+					}
 				}
 				g_ui.get()->end_group();
 			}

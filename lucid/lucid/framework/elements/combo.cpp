@@ -20,7 +20,7 @@ void lucid_engine::ui::combo_box(const char* title, int* value, std::vector<cons
 	// check if combo box is even visible and render if visible.
 	if (g_input.get()->rect_clipping_rect(m_elements_pos + vec2_t(0, text_size.y), combo_size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26))) {
 		// render our element.
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos, m_style->m_text_active);
+		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
 
 		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_inactive);
 		g_renderer.get()->rectangle(m_elements_pos + vec2_t(0, text_size.y) + vec2_t(1, 1), combo_size - vec2_t(2, 2), m_style->m_element_in_outline);
