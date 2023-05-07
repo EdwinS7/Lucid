@@ -57,6 +57,7 @@ namespace lucid_engine {
 
 		std::vector<draw_data_t>* get_draw_list(int id = -1);
 		void set_draw_list(draw_list_t draw_list);
+		void reset_draw_list();
 
 		void push_clip(const vec2_t pos, const vec2_t size);
 		void pop_clip();

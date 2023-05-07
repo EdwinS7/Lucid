@@ -54,8 +54,9 @@ void lucid_engine::renderer::render_draw_data() {
 
 		if (g_graphics.get()->m_direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &m_vertex_buffer, nullptr) < 0)
-			throw std::runtime_error{ "CreateVertexBuffer error" };
+			throw std::runtime_error{ "render_draw_data error (CreateVertexBuffer)" };
 	}
+
 	if (!m_index_buffer || m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
 		if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
 
@@ -63,7 +64,7 @@ void lucid_engine::renderer::render_draw_data() {
 
 		if (g_graphics.get()->m_direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &m_index_buffer, nullptr) < 0)
-			throw std::runtime_error{ "CreateIndexBuffer error" };
+			throw std::runtime_error{ "render_draw_data error (CreateIndexBuffer)" };
 	}
 
 	IDirect3DStateBlock9* state_block{ };
@@ -71,28 +72,23 @@ void lucid_engine::renderer::render_draw_data() {
 		return;
 
 	if (state_block->Capture() < 0) {
-		throw std::runtime_error{ "state_block->Capture error" };
+		throw std::runtime_error{ "render_draw_data error (state_block->Capture)" };
 		state_block->Release();
 		return;
 	}
-
-	D3DMATRIX last_world, last_view, last_projection;
-	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_WORLD, &last_world);
-	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_VIEW, &last_view);
-	g_graphics.get()->m_direct_3d_device->GetTransform(D3DTS_PROJECTION, &last_projection);
 
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
 	if (m_vertex_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t)),
 		(void**)&vertex_data, D3DLOCK_DISCARD) < 0) {
-		throw std::runtime_error{ "vtx_buffer->Lock error" };
+		throw std::runtime_error{ "render_draw_data error (vtx_buffer->Lock)" };
 		state_block->Release();
 		return;
 	}
 
 	if (m_index_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t)),
 		(void**)&index_data, D3DLOCK_DISCARD) < 0) {
-		throw std::runtime_error{ "idx_buffer->Lock error" };
+		throw std::runtime_error{ "render_draw_data error (idx_buffer->Lock)" };
 		m_vertex_buffer->Unlock();
 		state_block->Release();
 		return;
@@ -107,44 +103,34 @@ void lucid_engine::renderer::render_draw_data() {
 	g_graphics.get()->m_direct_3d_device->SetStreamSource(0, m_vertex_buffer, 0, sizeof(vertex_t));
 	g_graphics.get()->m_direct_3d_device->SetIndices(m_index_buffer);
 
-	int start_vertex = 0;
-	int start_index = 0;
+	int start_vertex = 0, start_index = 0;
 	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t>* draw_data = get_draw_list(i);
+		for (auto& data : *get_draw_list(i)) {
+			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
+			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, (i == default_draw_list) && data.m_clip_info.m_clipping);
 
-		for (const draw_data_t& data : *draw_data) {
-			RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
-			text_info_t text_info = data.m_text_info;
+			auto clip = data.m_clip_info.m_clip;
+			RECT rect = RECT((LONG)clip.x, (LONG)clip.y, (LONG)clip.x + (LONG)clip.w, (LONG)clip.y + (LONG)clip.h);
 
-			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
-			g_graphics.get()->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, (i == default_draw_list) && data.m_clip_info.m_clipping);
-			g_graphics.get()->m_direct_3d_device->SetScissorRect(&clip);
+			g_graphics->m_direct_3d_device->SetScissorRect(&rect);
 
-			if (text_info.m_setup) {
-				RECT rect = { text_info.m_pos.x, text_info.m_pos.y, 0, 0 };
-				text_info.m_font.m_dx_font->DrawTextA(NULL, text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(text_info.m_color));
+			if (data.m_text_info.m_setup) {
+				RECT rect = { data.m_text_info.m_pos.x, data.m_text_info.m_pos.y, 0, 0 };
+				auto& font = data.m_text_info.m_font.m_dx_font;
+				font->DrawTextA(nullptr, data.m_text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(data.m_text_info.m_color));
 			}
 			else
-				g_graphics.get()->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
+				g_graphics->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
 
 			start_vertex += data.m_vertex_count;
 			start_index += data.m_index_count;
 		}
 	}
 
-	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_WORLD, &last_world);
-	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_VIEW, &last_view);
-	g_graphics.get()->m_direct_3d_device->SetTransform(D3DTS_PROJECTION, &last_projection);
-
 	state_block->Apply();
 	state_block->Release();
 
-	m_compiled_draw_data = {};
-	m_foreground_draw_data.clear();
-	m_background_draw_data.clear();
-	m_default_draw_data.clear();
-
-	m_clip_info.clear();
+	reset_draw_list();
 }
 
 std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
@@ -167,6 +153,13 @@ std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
 
 void lucid_engine::renderer::set_draw_list(draw_list_t draw_list) {
 	m_draw_list = draw_list;
+}
+void lucid_engine::renderer::reset_draw_list() {
+	m_compiled_draw_data = {};
+	m_foreground_draw_data.clear();
+	m_background_draw_data.clear();
+	m_default_draw_data.clear();
+	m_clip_info.clear();
 }
 
 void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {

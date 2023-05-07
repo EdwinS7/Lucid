@@ -34,11 +34,10 @@ struct style_t {
 };
 
 struct tab_info_t {
-	const char* m_icon{ },
-			  * m_title{ };
+	const char* m_title{ };
 
-	tab_info_t(const char* icon, const char* title)
-		: m_icon(icon), m_title(title) {}
+	tab_info_t(const char* title)
+		: m_title(title) {}
 };
 
 struct group_info_t {
@@ -116,7 +115,7 @@ namespace lucid_engine {
 		void end_group();
 
 		void set_tabs_pos(vec2_t pos);
-		void add_tab(const char* icon, const char* title);
+		void add_tab(const char* title);
 		void handle_tabs();
 		int get_tab_index();
 

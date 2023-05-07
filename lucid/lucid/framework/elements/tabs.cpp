@@ -6,9 +6,9 @@ void lucid_engine::ui::set_tabs_pos(vec2_t pos) {
 	draw_position = pos;
 }
 
-void lucid_engine::ui::add_tab(const char* icon, const char* title) {
+void lucid_engine::ui::add_tab(const char* title) {
 	// add a new m_tab to our vector.
-	m_tabs.emplace_back(tab_info_t(icon, title));
+	m_tabs.emplace_back(tab_info_t(title));
 }
 
 void lucid_engine::ui::handle_tabs() {
