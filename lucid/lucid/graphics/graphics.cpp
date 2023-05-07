@@ -19,15 +19,7 @@ bool lucid_engine::graphics::create_direct_3d() {
     return true;
 }
 
-bool lucid_engine::graphics::create_device() {
-    if (m_direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
-        g_window.get()->get_hwnd(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_direct_3d_paramaters, &m_direct_3d_device) < 0) {
-        throw std::runtime_error{ "CreateDevice error" };
-        return false;
-    }
-
-    m_direct_3d_device->SetPixelShader(nullptr);
-    m_direct_3d_device->SetVertexShader(nullptr);
+void  lucid_engine::graphics::setup_render_states() { 
     m_direct_3d_device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
     m_direct_3d_device->SetRenderState(D3DRS_SHADEMODE, D3DSHADE_GOURAUD);
     m_direct_3d_device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
@@ -49,6 +41,8 @@ bool lucid_engine::graphics::create_device() {
     m_direct_3d_device->SetRenderState(D3DRS_CLIPPING, TRUE);
     m_direct_3d_device->SetRenderState(D3DRS_LIGHTING, FALSE);
     m_direct_3d_device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
+    m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
+
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
@@ -57,12 +51,24 @@ bool lucid_engine::graphics::create_device() {
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_DIFFUSE);
     m_direct_3d_device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
     m_direct_3d_device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
+
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
+
     m_direct_3d_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
     m_direct_3d_device->SetTexture(NULL, NULL);
+    m_direct_3d_device->SetVertexShader(nullptr);
     m_direct_3d_device->SetPixelShader(nullptr);
-    m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
+}
+
+bool lucid_engine::graphics::create_device() {
+    if (m_direct_3d->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL,
+        g_window.get()->get_hwnd(), D3DCREATE_HARDWARE_VERTEXPROCESSING, &m_direct_3d_paramaters, &m_direct_3d_device) < 0) {
+        throw std::runtime_error{ "CreateDevice error" };
+        return false;
+    }
+
+    setup_render_states();
 
     return true;
 }

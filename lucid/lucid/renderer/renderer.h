@@ -54,9 +54,13 @@ namespace lucid_engine {
 		void create_objects();
 		void destroy_objects();
 		void render_draw_data();
+
+		std::vector<draw_data_t>* get_draw_list(int id = -1);
 		void set_draw_list(draw_list_t draw_list);
+
 		void push_clip(const vec2_t pos, const vec2_t size);
 		void pop_clip();
+
 		font_t create_font(const std::string font_name, int radius, int weight = 400, const font_flags_t font_flags = font_flags_t());
 		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
 		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);

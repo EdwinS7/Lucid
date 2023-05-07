@@ -11,6 +11,7 @@ namespace lucid_engine {
 		D3DPRESENT_PARAMETERS m_direct_3d_paramaters{ };
 
 		bool create_direct_3d();
+		void setup_render_states();
 		bool create_device();
 
 		bool begin_scene(color_t color);

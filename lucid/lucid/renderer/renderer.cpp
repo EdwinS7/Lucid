@@ -33,33 +33,9 @@ void lucid_engine::renderer::render_draw_data() {
 	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
 
 	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t> draw_data_ptr;
-		
-		switch (i) {
-		case background_draw_list:
-			if (m_background_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_background_draw_data;
+		std::vector<draw_data_t>* draw_data = get_draw_list(i);
 
-			break;
-		case default_draw_list:
-			if (m_default_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_default_draw_data;
-
-			break;
-		case foreground_draw_list:
-			if (m_foreground_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_foreground_draw_data;
-
-			break;
-		}
-
-		for (const draw_data_t& data : draw_data_ptr) {
+		for (const draw_data_t& data : *draw_data) {
 			for (vertex_t vertex : data.m_vertices)
 				m_compiled_draw_data.m_vertices.emplace_back(vertex);
 
@@ -134,33 +110,9 @@ void lucid_engine::renderer::render_draw_data() {
 	int start_vertex = 0;
 	int start_index = 0;
 	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t> draw_data_ptr;
+		std::vector<draw_data_t>* draw_data = get_draw_list(i);
 
-		switch (i) {
-		case background_draw_list:
-			if (m_background_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_background_draw_data;
-
-			break;
-		case default_draw_list:
-			if (m_default_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_default_draw_data;
-
-			break;
-		case foreground_draw_list:
-			if (m_foreground_draw_data.empty())
-				break;
-			else
-				draw_data_ptr = m_foreground_draw_data;
-
-			break;
-		}
-
-		for (const draw_data_t& data : draw_data_ptr) {
+		for (const draw_data_t& data : *draw_data) {
 			RECT clip = { data.m_clip_info.m_clip.x, data.m_clip_info.m_clip.y, data.m_clip_info.m_clip.x + data.m_clip_info.m_clip.w, data.m_clip_info.m_clip.y + data.m_clip_info.m_clip.h };
 			text_info_t text_info = data.m_text_info;
 
@@ -193,6 +145,24 @@ void lucid_engine::renderer::render_draw_data() {
 	m_default_draw_data.clear();
 
 	m_clip_info.clear();
+}
+
+std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
+	draw_list_t draw_list = draw_list_t(id);
+
+	if (id == -1)
+		draw_list = m_draw_list;
+
+	switch (draw_list) {
+	case background_draw_list:
+		return &m_background_draw_data;
+	case default_draw_list:
+		return &m_default_draw_data;
+	case foreground_draw_list:
+		return &m_foreground_draw_data;
+	}
+
+	throw std::runtime_error{ "get_draw_list error (invalid draw_list)" };
 }
 
 void lucid_engine::renderer::set_draw_list(draw_list_t draw_list) {
@@ -230,17 +200,8 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 	for (unsigned int i = 0; i < vertices.size(); ++i)
 		indices[i] = i;
 
-	switch (m_draw_list) {
-	case default_draw_list:
-		m_default_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
-		break;
-	case background_draw_list:
-		m_background_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
-		break;
-	case foreground_draw_list:
-		m_foreground_draw_data.emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
-		break;
-	}
+	std::vector<draw_data_t>* draw_list = get_draw_list();
+	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
 }
 
 void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
