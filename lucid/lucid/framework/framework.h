@@ -99,6 +99,7 @@ namespace lucid_engine {
 	public:
 		bool is_hovering_element();
 		bool is_hovering_popup();
+		bool is_element_visible(vec2_t pos, vec2_t size);
 
 		vec2_t handle_dragging();
 		bool is_dragging();

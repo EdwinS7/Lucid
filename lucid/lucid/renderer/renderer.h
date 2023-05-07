@@ -29,22 +29,29 @@ enum draw_list_t {
 namespace lucid_engine {
 	class renderer {
 	private:
-		compiled_draw_data_t	 m_compiled_draw_data{ };
-		std::vector<draw_data_t> m_default_draw_data{ },
-								 m_background_draw_data{ },
-			                     m_foreground_draw_data{ };
+		int							m_vertex_buffer_size{ 5000 },
+									m_index_buffer_size{ 10000 };
 
-		IDirect3DVertexBuffer9*  m_vertex_buffer{ };
-		IDirect3DIndexBuffer9*   m_index_buffer{ };
+		compiled_draw_data_t		m_compiled_draw_data{ };
+		std::vector<draw_data_t>	m_default_draw_data{ },
+									m_background_draw_data{ },
+									m_foreground_draw_data{ };
 
-		LPDIRECT3DTEXTURE9		 m_font_texture{ };
-		LPD3DXSPRITE			 m_font_sprite{ };
+		IDirect3DVertexBuffer9*		m_vertex_buffer{ };
+		IDirect3DIndexBuffer9*		m_index_buffer{ };
 
-		clip_info_t              m_clip_info{ };
+		LPDIRECT3DTEXTURE9			m_font_texture{ };
+		LPD3DXSPRITE				m_font_sprite{ };
 
-		draw_list_t              m_draw_list{ default_draw_list };
+		std::vector<RECT>			m_clip_info{ };
+
+		draw_list_t					m_draw_list{ default_draw_list };
+
+		RECT                        m_screen_data{ };
 
 		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
+		void compile_draw_data();
+		void reset_draw_list();
 
 	public:
 		std::vector<font_t>		 m_fonts{ };
@@ -55,15 +62,12 @@ namespace lucid_engine {
 		void destroy_objects();
 		void render_draw_data();
 
+		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
 		std::vector<draw_data_t>* get_draw_list(int id = -1);
 		void set_draw_list(draw_list_t draw_list);
-		void reset_draw_list();
 
-		void push_clip(const vec2_t pos, const vec2_t size);
-		void pop_clip();
+		font_t create_font(const std::string font_name, int size, int weight = 400, const font_flags_t font_flags = font_flags_t());
 
-		font_t create_font(const std::string font_name, int radius, int weight = 400, const font_flags_t font_flags = font_flags_t());
-		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
 		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
 		void polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
 		void polygon(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
@@ -83,6 +87,8 @@ namespace lucid_engine {
 		void gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2);
 		void text(const font_t font, const std::string string, const vec2_t pos, const color_t color);
 		vec2_t get_text_size(const font_t font, const std::string string);
+		void push_clip(const vec2_t pos, const vec2_t size);
+		void pop_clip();
 	};
 	inline const auto g_renderer = std::make_unique< renderer >();
 }

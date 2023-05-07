@@ -23,7 +23,6 @@
 #include "renderer/structures/vector4d.h"
 #include "renderer/structures/vertex.h"
 #include "renderer/structures/matrix.h"
-#include "renderer/structures/clip.h"
 #include "renderer/structures/font.h"
 #include "renderer/structures/text_flags.h"
 #include "renderer/structures/text_info.h"

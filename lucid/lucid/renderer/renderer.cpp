@@ -30,39 +30,26 @@ void lucid_engine::renderer::destroy_objects() {
 }
 
 void lucid_engine::renderer::render_draw_data() {
-	static int vertex_buffer_size{ 5000 }, index_buffer_size{ 10000 };
+	m_screen_data = RECT(0, 0, g_window.get()->get_window_size().x, g_window.get()->get_window_size().y);
+	g_graphics.get()->setup_render_states();
+	compile_draw_data();
 
-	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t>* draw_data = get_draw_list(i);
-
-		for (const draw_data_t& data : *draw_data) {
-			for (vertex_t vertex : data.m_vertices)
-				m_compiled_draw_data.m_vertices.emplace_back(vertex);
-
-			for (std::uint32_t index : data.m_indices)
-				m_compiled_draw_data.m_indices.emplace_back(index);
-
-			m_compiled_draw_data.m_total_index_count += data.m_index_count;
-			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
-		}
-	}
-
-	if (!m_vertex_buffer || m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t) > vertex_buffer_size) {
+	if (!m_vertex_buffer || m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t) > m_vertex_buffer_size) {
 		if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
 
-		vertex_buffer_size = m_compiled_draw_data.m_total_vertex_count + 5000;
+		m_vertex_buffer_size = m_compiled_draw_data.m_total_vertex_count + 5000;
 
-		if (g_graphics.get()->m_direct_3d_device->CreateVertexBuffer(vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
+		if (g_graphics.get()->m_direct_3d_device->CreateVertexBuffer(m_vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &m_vertex_buffer, nullptr) < 0)
 			throw std::runtime_error{ "render_draw_data error (CreateVertexBuffer)" };
 	}
 
-	if (!m_index_buffer || m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t) > index_buffer_size) {
+	if (!m_index_buffer || m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t) > m_index_buffer_size) {
 		if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
 
-		index_buffer_size = m_compiled_draw_data.m_total_index_count + 10000;
+		m_index_buffer_size = m_compiled_draw_data.m_total_index_count + 10000;
 
-		if (g_graphics.get()->m_direct_3d_device->CreateIndexBuffer(index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
+		if (g_graphics.get()->m_direct_3d_device->CreateIndexBuffer(m_index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &m_index_buffer, nullptr) < 0)
 			throw std::runtime_error{ "render_draw_data error (CreateIndexBuffer)" };
 	}
@@ -107,17 +94,15 @@ void lucid_engine::renderer::render_draw_data() {
 	for (int i = 0; i < 3; ++i) {
 		for (auto& data : *get_draw_list(i)) {
 			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
-			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_SCISSORTESTENABLE, (i == default_draw_list) && data.m_clip_info.m_clipping);
 
-			auto clip = data.m_clip_info.m_clip;
-			RECT rect = RECT((LONG)clip.x, (LONG)clip.y, (LONG)clip.x + (LONG)clip.w, (LONG)clip.y + (LONG)clip.h);
-
-			g_graphics->m_direct_3d_device->SetScissorRect(&rect);
+			if (!data.m_clips.empty())
+				g_graphics->m_direct_3d_device->SetScissorRect(&data.m_clips.back());
+			else
+				g_graphics->m_direct_3d_device->SetScissorRect(&m_screen_data);
 
 			if (data.m_text_info.m_setup) {
 				RECT rect = { data.m_text_info.m_pos.x, data.m_text_info.m_pos.y, 0, 0 };
-				auto& font = data.m_text_info.m_font.m_dx_font;
-				font->DrawTextA(nullptr, data.m_text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(data.m_text_info.m_color));
+				data.m_text_info.m_font.m_dx_font->DrawTextA(nullptr, data.m_text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(data.m_text_info.m_color));
 			}
 			else
 				g_graphics->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
@@ -131,6 +116,19 @@ void lucid_engine::renderer::render_draw_data() {
 	state_block->Release();
 
 	reset_draw_list();
+}
+
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
+	if (vertices.empty())
+		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
+
+	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
+
+	for (unsigned int i = 0; i < vertices.size(); ++i)
+		indices[i] = i;
+
+	std::vector<draw_data_t>* draw_list = get_draw_list();
+	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
 }
 
 std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
@@ -154,47 +152,31 @@ std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
 void lucid_engine::renderer::set_draw_list(draw_list_t draw_list) {
 	m_draw_list = draw_list;
 }
+
 void lucid_engine::renderer::reset_draw_list() {
 	m_compiled_draw_data = {};
 	m_foreground_draw_data.clear();
 	m_background_draw_data.clear();
 	m_default_draw_data.clear();
-	m_clip_info.clear();
 }
 
-void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
-	m_clip_info.m_old_clips.push(std::make_pair(m_clip_info.m_clipping, m_clip_info.m_clip));
+void lucid_engine::renderer::compile_draw_data() {
+	for (int i = 0; i < 3; ++i) {
+		std::vector<draw_data_t>* draw_data = get_draw_list(i);
 
-	m_clip_info.m_clipping = true;
-	m_clip_info.m_clip = { pos.x, pos.y, size.x, size.y };
-}
+		for (const draw_data_t& data : *draw_data) {
+			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), data.m_vertices.begin(), data.m_vertices.end());
+			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), data.m_indices.begin(), data.m_indices.end());
 
-void lucid_engine::renderer::pop_clip() {
-	if (!m_clip_info.m_old_clips.empty()) {
-		m_clip_info.m_clipping = m_clip_info.m_old_clips.top().first;
-		m_clip_info.m_clip = m_clip_info.m_old_clips.top().second;
-		m_clip_info.m_old_clips.pop();
+			m_compiled_draw_data.m_total_index_count += data.m_index_count;
+			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
+		}
 	}
-	else
-		m_clip_info.clear();
 }
 
 font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, const font_flags_t font_flags) {
 	m_fonts.push_back(font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags));
 	return m_fonts.back();
-}
-
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
-	if (vertices.empty())
-		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
-
-	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
-
-	for (unsigned int i = 0; i < vertices.size(); ++i)
-		indices[i] = i;
-
-	std::vector<draw_data_t>* draw_list = get_draw_list();
-	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
 }
 
 void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
@@ -473,4 +455,12 @@ vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::strin
 		strlen(string.c_str()), &text_clip, DT_CALCRECT, D3DCOLOR_ARGB(0, 0, 0, 0));
 
 	return vec2_t(text_clip.right - text_clip.left, text_clip.bottom - text_clip.top);
+}
+
+void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
+	m_clip_info.push_back(RECT{ (LONG)pos.x, (LONG)pos.y, (LONG)pos.x + (LONG)size.x, (LONG)pos.y + (LONG)size.y });
+}
+
+void lucid_engine::renderer::pop_clip() {
+	m_clip_info.pop_back();
 }

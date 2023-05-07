@@ -38,7 +38,6 @@ vec2_t lucid_engine::ui::handle_resizing() {
 		return m_window_size[m_window_id];
 
 	vec2_t new_size = (g_input.get()->m_mouse_pos - m_window_pos[m_window_id]) - window_info.difference;
-
 	new_size = vec2_t{ std::max(new_size.x, m_window_min_size[m_window_id].x), std::max(new_size.y, m_window_min_size[m_window_id].y) };
 
 	g_input.get()->m_cursor_style = LoadCursor(NULL, IDC_SIZENWSE);

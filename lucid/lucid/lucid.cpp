@@ -57,6 +57,10 @@ bool lucid_engine::ui::is_hovering_popup() {
 	return m_hovering_popup;
 }
 
+bool lucid_engine::ui::is_element_visible(vec2_t pos, vec2_t size) {
+	return g_input.get()->rect_clipping_rect(pos, size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26));
+}
+
 void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
@@ -78,6 +82,13 @@ void lucid_engine::io::demo_window(bool open) {
 			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
 			g_ui.get()->check_box("check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
@@ -103,6 +114,13 @@ void lucid_engine::io::demo_window(bool open) {
 			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
 			g_ui.get()->check_box("check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };

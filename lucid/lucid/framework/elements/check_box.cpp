@@ -15,8 +15,7 @@ void lucid_engine::ui::check_box(const char* title, bool* state) {
 	}
 
 	// check if check box is even visible and render if visible.
-	if (g_input.get()->rect_clipping_rect(m_elements_pos, check_box_size,
-		m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26))) {
+	if (is_element_visible(m_elements_pos, check_box_size)) {
 		g_renderer.get()->filled_rectangle(m_elements_pos, check_box_size, *state ? m_style->m_element_active : m_style->m_element_inactive);
 		g_renderer.get()->rectangle(m_elements_pos + vec2_t(1, 1), check_box_size - vec2_t(2, 2), m_style->m_element_in_outline);
 		g_renderer.get()->rectangle(m_elements_pos, check_box_size, m_style->m_element_outline);

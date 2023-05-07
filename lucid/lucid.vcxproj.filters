@@ -122,9 +122,6 @@
     <ClInclude Include="lucid\renderer\structures\text_info.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lucid\renderer\structures\clip.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="lucid\renderer\structures\rect.h">
       <Filter>Header Files</Filter>
     </ClInclude>

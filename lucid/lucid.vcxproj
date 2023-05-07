@@ -192,7 +192,6 @@
     <ClInclude Include="lucid\graphics\graphics.h" />
     <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
-    <ClInclude Include="lucid\renderer\structures\clip.h" />
     <ClInclude Include="lucid\renderer\structures\color.h" />
     <ClInclude Include="lucid\renderer\structures\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\structures\draw_data.h" />
