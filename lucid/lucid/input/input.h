@@ -26,6 +26,8 @@ namespace lucid_engine {
 		bool button_behavior(int key, key_style style, vec2_t pos, vec2_t size);
 		bool is_key_pressed(int key);
 		bool is_key_held(int key);
+
 	};
+
 	inline const auto g_input = std::make_unique< input >();
 }

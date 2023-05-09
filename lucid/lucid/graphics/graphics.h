@@ -4,7 +4,6 @@
 
 namespace lucid_engine {
 	class graphics {
-	private:
 	public:
 		IDirect3D9*			  m_direct_3d{ nullptr };
 		IDirect3DDevice9*	  m_direct_3d_device{ nullptr };
@@ -19,6 +18,8 @@ namespace lucid_engine {
 
 		void reset_device();
 		void release();
+
 	};
+
 	inline const auto g_graphics = std::make_unique< graphics >();
 }

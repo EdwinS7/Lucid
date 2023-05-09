@@ -28,31 +28,6 @@ enum draw_list_t {
 
 namespace lucid_engine {
 	class renderer {
-	private:
-		int							m_vertex_buffer_size{ 5000 },
-									m_index_buffer_size{ 10000 };
-
-		compiled_draw_data_t		m_compiled_draw_data{ };
-		std::vector<draw_data_t>	m_default_draw_data{ },
-									m_background_draw_data{ },
-									m_foreground_draw_data{ };
-
-		IDirect3DVertexBuffer9*		m_vertex_buffer{ };
-		IDirect3DIndexBuffer9*		m_index_buffer{ };
-
-		LPDIRECT3DTEXTURE9			m_font_texture{ };
-		LPD3DXSPRITE				m_font_sprite{ };
-
-		std::vector<RECT>			m_clip_info{ };
-
-		draw_list_t					m_draw_list{ default_draw_list };
-
-		RECT                        m_screen_data{ };
-
-		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
-		void compile_draw_data();
-		void reset_draw_list();
-
 	public:
 		std::vector<font_t>		 m_fonts{ };
 		font_t                   m_defualt_font{ };
@@ -89,6 +64,33 @@ namespace lucid_engine {
 		vec2_t get_text_size(const font_t font, const std::string string);
 		void push_clip(const vec2_t pos, const vec2_t size);
 		void pop_clip();
+
+	private:
+		int							m_vertex_buffer_size{ 5000 },
+									m_index_buffer_size{ 10000 };
+
+		compiled_draw_data_t		m_compiled_draw_data{ };
+		std::vector<draw_data_t>	m_default_draw_data{ },
+									m_background_draw_data{ },
+									m_foreground_draw_data{ };
+
+		IDirect3DVertexBuffer9*		m_vertex_buffer{ };
+		IDirect3DIndexBuffer9*		m_index_buffer{ };
+
+		LPDIRECT3DTEXTURE9			m_font_texture{ };
+		LPD3DXSPRITE				m_font_sprite{ };
+
+		std::vector<RECT>			m_clip_info{ };
+
+		draw_list_t					m_draw_list{ default_draw_list };
+
+		RECT                        m_screen_data{ };
+
+		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
+		void compile_draw_data();
+		void reset_draw_list();
+
 	};
+
 	inline const auto g_renderer = std::make_unique< renderer >();
 }

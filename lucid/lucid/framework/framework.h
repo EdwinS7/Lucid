@@ -52,31 +52,9 @@ struct combo_info_t {
 
 namespace lucid_engine {
 	class ui {
-	private:
-		std::map<int, bool>					m_this_window_setup{ };
-		std::map<int, vec2_t>				m_window_pos{ },
-														m_window_min_size{ },
-														m_window_size{ };
-
-		std::vector<tab_info_t>			m_tabs;
-		int											m_tab{ 0 };
-
-		std::map<int, slider_info_t>		m_slider_info{ };
-		int											m_slider_id{ 0 };
-
-		std::map<int, combo_info_t>  m_combo_info{ },
-														m_multi_combo_info{ };
-		int											m_combo_id{ 0 },
-														m_multi_combo_id{ 0 };
-
-		bool											m_hovering_element{ false };
-		bool											m_hovering_popup{ false };
-
-		style_t*										m_style = new style_t;
-
 	public:
 		int	m_window_id{ -1 },
-				m_group_id{ -1 };
+			m_group_id{ -1 };
 
 		bool is_hovering_element();
 		bool is_hovering_popup();
@@ -114,6 +92,30 @@ namespace lucid_engine {
 		style_t* get_style();
 
 		void reset();
+
+	private:
+		std::map<int, bool>				m_this_window_setup{ };
+		std::map<int, vec2_t>			m_window_pos{ },
+										m_window_min_size{ },
+										m_window_size{ };
+
+		std::vector<tab_info_t>			m_tabs;
+		int								m_tab{ 0 };
+
+		std::map<int, slider_info_t>	m_slider_info{ };
+		int								m_slider_id{ 0 };
+
+		std::map<int, combo_info_t>		m_combo_info{ },
+										m_multi_combo_info{ };
+		int								m_combo_id{ 0 },
+										m_multi_combo_id{ 0 };
+
+		bool							m_hovering_element{ false };
+		bool							m_hovering_popup{ false };
+
+		style_t*						m_style = new style_t;
+
 	};
+
 	inline const auto g_ui = std::make_unique< ui >();
 }

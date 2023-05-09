@@ -11,6 +11,7 @@ namespace lucid_engine {
 	public:
 		double map(float x, float in_min, float in_max, float out_min, float out_max);
 		double animate(animation_type animation, double from, double to, double speed_multiplier = 1.f);
+
 	};
 
 	inline const auto g_math = std::make_unique< math >();

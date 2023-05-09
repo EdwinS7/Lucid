@@ -41,6 +41,8 @@ namespace lucid_engine {
 			  m_real_time{ 0.f };
 		int	  m_frame_rate{ 0 },
 			  m_frame_rate_average{ 0 };
+
 	};
+
 	inline const auto g_io = std::make_unique< io >();
 }
