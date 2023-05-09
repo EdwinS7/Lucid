@@ -69,6 +69,12 @@
     <ClCompile Include="lucid\framework\elements\multi_combo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="lucid\math\animation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="lucid\math\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="lucid\lucid.h">
@@ -101,9 +107,6 @@
     <ClInclude Include="lucid\renderer\structures\compiled_draw_data.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="lucid\renderer\structures\matrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="lucid\renderer\structures\vector4d.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -123,6 +126,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="lucid\renderer\structures\rect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\framework\containers\containers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="lucid\math\math.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

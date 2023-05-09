@@ -1,9 +1,10 @@
 #pragma once
 
 struct vec2_t {
-    double x, y;
+    double  x = 0,
+            y = 0;
 
-    vec2_t() {}
+    vec2_t() { }
     vec2_t(double _x, double _y)
         : x(_x), y(_y) {}
 

@@ -6,7 +6,7 @@ struct text_info_t {
 	font_t		m_font{ };
 	std::string m_string{ };
 	vec2_t		m_pos{ };
-	color_t		m_color{ };
+	color_t		m_color{ 255, 255, 255, 255 };
 
 	text_info_t() {}
 	text_info_t(font_t font, std::string string, vec2_t pos, color_t color)

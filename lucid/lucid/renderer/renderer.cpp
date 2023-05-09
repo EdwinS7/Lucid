@@ -30,7 +30,7 @@ void lucid_engine::renderer::destroy_objects() {
 }
 
 void lucid_engine::renderer::render_draw_data() {
-	m_screen_data = RECT(0, 0, g_window.get()->get_window_size().x, g_window.get()->get_window_size().y);
+	m_screen_data = RECT(0, 0, (LONG)g_window.get()->get_window_size().x, (LONG)g_window.get()->get_window_size().y);
 	g_graphics.get()->setup_render_states();
 	compile_draw_data();
 
@@ -95,13 +95,13 @@ void lucid_engine::renderer::render_draw_data() {
 		for (auto& data : *get_draw_list(i)) {
 			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
 
-			if (!data.m_clips.empty())
+			if (!data.m_clips.empty() && i == draw_list_t::default_draw_list)
 				g_graphics->m_direct_3d_device->SetScissorRect(&data.m_clips.back());
 			else
 				g_graphics->m_direct_3d_device->SetScissorRect(&m_screen_data);
 
 			if (data.m_text_info.m_setup) {
-				RECT rect = { data.m_text_info.m_pos.x, data.m_text_info.m_pos.y, 0, 0 };
+				RECT rect = { (LONG)data.m_text_info.m_pos.x, (LONG)data.m_text_info.m_pos.y, 0, 0 };
 				data.m_text_info.m_font.m_dx_font->DrawTextA(nullptr, data.m_text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(data.m_text_info.m_color));
 			}
 			else

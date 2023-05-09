@@ -1,12 +1,12 @@
 #include "../framework.h"
 
-void lucid_engine::ui::label(const char* title, color_t color) {
-	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, title);
+void lucid_engine::ui::label(group_box* node, const char* title, color_t color) {
+	auto renderer = g_renderer.get();
 
-	// render our element.
-	if (is_element_visible(m_elements_pos, text_size))
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos, color);
+	vec2_t text_size = renderer->get_text_size(renderer->m_defualt_font, title);
 
-	// apply new position.
-	m_elements_pos += vec2_t(0, text_size.y + m_style->m_group_spacing);
+	if (node->element_visible(node->m_elements_pos, text_size))
+		renderer->text(renderer->m_defualt_font, title, node->m_elements_pos, color);
+
+	node->m_elements_pos += vec2_t(0, text_size.y + m_style->m_group_spacing);
 }

@@ -1,54 +1,81 @@
-#include "../framework.h"
+#include "../../lucid.h"
 
-void lucid_engine::ui::create_group(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size) {
-	m_group_id++;
+group_box::group_box(const char* title, vec2_t pos, vec2_t size) {
+	m_title = title;
+	m_pos = pos;
+	m_size = size;
 
-	// check for invalid paramaters.
-	if (!m_this_group_setup[m_group_id]) {
-		if (min_size > default_size)
-			throw std::runtime_error{ "create_group error (default group size < min group size)" };
-
-		m_this_group_setup[m_group_id] = true;
-	}
-
-	// set group data.
-	m_group_pos[m_group_id] = pos;
-	m_group_min_size[m_group_id] = min_size;
-	m_group_size[m_group_id] = default_size;
-
-	vec2_t group_pos = m_window_pos[m_window_id] + m_group_pos[m_group_id];
-
-	// render our group box.
-	g_renderer.get()->filled_rounded_rectangle(group_pos, m_group_size[m_group_id], m_style->m_group_background, m_style->m_group_rounding);
-	g_renderer.get()->filled_rounded_rectangle(group_pos, vec2_t(m_group_size[m_group_id].x, 25), m_style->m_group_header, m_style->m_group_rounding, corner_top);
-	g_renderer.get()->filled_rectangle(group_pos + vec2_t(0, 25), vec2_t(m_group_size[m_group_id].x, 1), m_style->m_accent);
-	g_renderer.get()->rounded_rectangle(group_pos, m_group_size[m_group_id], m_style->m_group_outline, m_style->m_group_rounding);
-
-	g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, group_pos + vec2_t(4, 6), m_style->m_text_active);
-
-	// handle scrolling data.
-	m_groups[m_group_id].m_hovered = g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id] + pos, m_group_size[m_group_id]);
-	m_groups[m_group_id].m_original_pos = group_pos + vec2_t(m_style->m_group_padding, 25 + m_style->m_group_padding);
-
-	// apply origin for elements to render.
-	m_elements_pos = group_pos + vec2_t(m_style->m_group_padding * 2, 25 + m_style->m_group_padding + m_groups[m_group_id].m_scroll);
-
-	g_renderer.get()->push_clip(group_pos + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26));
+	handle_input();
+	handle_render();
 }
 
-void lucid_engine::ui::end_group() {
-	g_renderer.get()->pop_clip();
+void group_box::handle_render() {
+	auto renderer = lucid_engine::g_renderer.get();
+	auto style = lucid_engine::g_ui.get()->get_style();
 
-	// get the amount that should be scrolled to get to the bottom from current scrolled amount.
-	float left_over = m_groups[m_group_id].m_original_pos.y + m_group_size[m_group_id].y - 26 /* header */ - m_style->m_group_padding;
-	float scroll_max_range = left_over - ((m_elements_pos.y - m_groups[m_group_id].m_scroll) + m_groups[m_group_id].m_scroll_abs);
+	//background
+	renderer->filled_rounded_rectangle(m_pos + vec2_t(0, style->m_group_header_size), m_size - vec2_t(0, style->m_group_header_size), style->m_group_background, style->m_group_rounding, corner_bottom);
 
-	// apply values, the absolute and the lerped value.
-	if (m_elements_pos.y - left_over >= 0 && !is_dragging() && !is_resizing() && g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26)))
-		m_groups[m_group_id].m_scroll_abs = std::clamp(m_groups[m_group_id].m_scroll_abs + g_input.get()->m_mouse_wheel_delta, scroll_max_range + m_groups[m_group_id].m_scroll_abs, 0.f);
+	//header
+	renderer->filled_rounded_rectangle(m_pos, vec2_t(m_size.x, style->m_group_header_size), style->m_group_header, style->m_group_rounding, corner_top);
+	renderer->filled_rectangle(m_pos + vec2_t(0, style->m_group_header_size), vec2_t(m_size.x, 1), style->m_accent);
 
-	m_groups[m_group_id].m_scroll = g_animations.get()->lerp(m_groups[m_group_id].m_scroll, m_groups[m_group_id].m_scroll_abs, g_io.get()->m_delta_time * 8);
+	//border
+	renderer->rounded_rectangle(m_pos, m_size, style->m_group_outline, style->m_group_rounding);
 
-	// prepare for next frame.
-	m_elements_pos = { };
+	//title
+	renderer->text(renderer->m_defualt_font, m_title, m_pos + vec2_t(4, 6), style->m_text_active);
+
+	//clipping
+	renderer->push_clip(m_pos + vec2_t(0, style->m_group_header_size + 1), m_size - vec2_t(0, style->m_group_header_size + 1));
+}
+
+std::map<int, double> m_scroll{}, m_scroll_lerp{};
+
+void group_box::handle_input() {
+	int& m_group_id = lucid_engine::g_ui.get()->m_group_id;
+	auto style = lucid_engine::g_ui.get()->get_style();
+	auto input = lucid_engine::g_input.get();
+
+	//new group, assign new id.
+	m_group_id++;
+
+	//are we hovering our group box? (used for should scroll conditions).
+	m_hovered = input->mouse_hovering_rect(m_pos, m_size);
+	m_elements_pos = m_pos + vec2_t(style->m_group_padding * 2, style->m_group_header_size + style->m_group_padding + m_scroll_lerp[m_group_id]);
+}
+
+void group_box::destroy() {
+	auto m_group_id = lucid_engine::g_ui.get()->m_group_id;
+	auto style = lucid_engine::g_ui.get()->get_style();
+	auto renderer = lucid_engine::g_renderer.get();
+	auto input = lucid_engine::g_input.get();
+	auto math = lucid_engine::g_math.get();
+	auto ui = lucid_engine::g_ui.get();
+	auto io = lucid_engine::g_io.get();
+
+	//get the range for how much we can scroll and how how we need to get their from current scroll amount.
+	double scoll_to_bottom = (m_pos.y + style->m_group_header_size + style->m_group_padding) + m_size.y - style->m_group_header_size - style->m_group_padding * 2;
+	double scrollable = scoll_to_bottom - ((m_elements_pos.y - m_scroll_lerp[m_group_id]) + m_scroll[m_group_id]);
+
+	//can we scroll? conditions & absolute value.
+	if (m_elements_pos.y - scoll_to_bottom  >= 0 && !ui->is_dragging() && !ui->is_resizing() && m_hovered)
+		m_scroll[m_group_id] = std::clamp(m_scroll[m_group_id] + (double)input->m_mouse_wheel_delta, scrollable + m_scroll[m_group_id], 0.0);
+
+	//apply lerped value (animated).
+	m_scroll_lerp[m_group_id] = math->animate(animation_type::lerp, m_scroll_lerp[m_group_id], m_scroll[m_group_id], 8);
+
+	//pop clip from earlier. prevents elements from clipping outside of group box bounds.
+	renderer->pop_clip();
+
+	//dereference our group box.
+	delete this;
+}
+
+bool group_box::element_visible(vec2_t pos, vec2_t size) {
+	auto style = lucid_engine::g_ui.get()->get_style();
+	auto input = lucid_engine::g_input.get();
+
+	//Is every point (top left, top right, bottom right, bottom left) within the other rectangle. (true/false).
+	return input->rect_clipping_rect(pos, size, m_pos + vec2_t(0, style->m_group_header_size), m_size - vec2_t(0, style->m_group_header_size));
 }

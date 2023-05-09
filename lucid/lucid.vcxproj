@@ -72,39 +72,39 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Output\</OutDir>
+    <OutDir>..\Output\Debug\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
-    <TargetName>lucid</TargetName>
+    <TargetName>Lucid</TargetName>
     <IncludePath>$(DXSDK_DIR)Include;$(ProjectDir)libs;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib/x86;$(ProjectDir)libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Output\</OutDir>
+    <OutDir>..\Output\Release\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
-    <TargetName>lucid</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include;C:\Users\RareD\Documents\freetype-2.13.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib/x86;C:\Users\RareD\Documents\freetype-2.13.0\include;$(LibraryPath)</LibraryPath>
+    <TargetName>Lucid</TargetName>
+    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>..\Output</OutDir>
-    <IntDir>..\Output\Object</IntDir>
-    <TargetName>lucid</TargetName>
+    <OutDir>..\Output\Debug\</OutDir>
+    <IntDir>..\Output\Object\</IntDir>
+    <TargetName>Lucid(x64)</TargetName>
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib/x64;$(IncludePath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>..\Output\</OutDir>
+    <OutDir>..\Output\Release\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
-    <TargetName>lucid</TargetName>
+    <TargetName>Lucid(x64)</TargetName>
     <IncludePath>$(DXSDK_DIR)Include;C:\Users\RareD\Documents\freetype-2.13.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib/x64;C:\Users\RareD\Documents\freetype-2.13.0\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
-      <WarningLevel>Level1</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
@@ -114,12 +114,12 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d9.lib;d3dx9.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <WarningLevel>Level1</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
@@ -133,6 +133,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,6 +148,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;d3dx9.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -165,6 +167,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(CoreLibraryDependencies);%(AdditionalDependencies);d3d9.lib;d3dx9.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -184,19 +187,22 @@
     <ClCompile Include="lucid\graphics\graphics.cpp" />
     <ClCompile Include="lucid\input\input.cpp" />
     <ClCompile Include="lucid\lucid.cpp" />
+    <ClCompile Include="lucid\math\animation.cpp" />
+    <ClCompile Include="lucid\math\math.cpp" />
     <ClCompile Include="lucid\renderer\renderer.cpp" />
     <ClCompile Include="lucid\window\wnd.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="lucid\framework\containers\containers.h" />
     <ClInclude Include="lucid\framework\framework.h" />
     <ClInclude Include="lucid\graphics\graphics.h" />
     <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
+    <ClInclude Include="lucid\math\math.h" />
     <ClInclude Include="lucid\renderer\structures\color.h" />
     <ClInclude Include="lucid\renderer\structures\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\structures\draw_data.h" />
     <ClInclude Include="lucid\renderer\structures\font.h" />
-    <ClInclude Include="lucid\renderer\structures\matrix.h" />
     <ClInclude Include="lucid\renderer\structures\rect.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
     <ClInclude Include="lucid\renderer\structures\text_flags.h" />

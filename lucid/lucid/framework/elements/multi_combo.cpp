@@ -1,30 +1,25 @@
 #include "../framework.h"
 
-void lucid_engine::ui::multi_combo_box(const char* title, std::vector<bool>* selected, std::vector<const char*> options) {
+void lucid_engine::ui::multi_combo_box(group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options) {
+	auto renderer = g_renderer.get();
 	m_multi_combo_id++;
 
-	// calculate sizes for group and text.
-	vec2_t combo_size = vec2_t(m_group_size[m_group_id].x - m_style->m_group_padding * 4, 16);
-	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, title).add(0, 2);
+	vec2_t combo_size = vec2_t(node->m_size.x - m_style->m_group_padding * 4, 16);
+	vec2_t text_size = renderer->get_text_size(renderer->m_defualt_font, title).add(0, 2);
 
-	// check if mouse is hovering the bounds of the multi combo box.
-	if (g_input.get()->mouse_hovering_rect(m_elements_pos + vec2_t(0, text_size.y), combo_size)) {
-		// check if mouse1 is pressed and change the state of the multi combo box.
+	if (g_input.get()->mouse_hovering_rect(node->m_elements_pos + vec2_t(0, text_size.y), combo_size)) {
 		if (g_input.get()->is_key_pressed(VK_LBUTTON))
 			m_multi_combo_info[m_multi_combo_id].in_use = !m_multi_combo_info[m_multi_combo_id].in_use;
 
-		// set this so we cannot drag our menu.
 		m_hovering_element = true;
 	}
 
-	// check if multi combo box is even visible and render if visible.
-	if (is_element_visible(m_elements_pos + vec2_t(0, text_size.y), combo_size)) {
-		// render our element.
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, title, m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
+	if (node->element_visible(node->m_elements_pos + vec2_t(0, text_size.y), combo_size)) {
+		renderer->text(renderer->m_defualt_font, title, node->m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
 
-		g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_inactive);
-		g_renderer.get()->rectangle(m_elements_pos + vec2_t(0, text_size.y) + vec2_t(1, 1), combo_size - vec2_t(2, 2), m_style->m_element_in_outline);
-		g_renderer.get()->rectangle(m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_outline);
+		renderer->filled_rectangle(node->m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_inactive);
+		renderer->rectangle(node->m_elements_pos + vec2_t(0, text_size.y) + vec2_t(1, 1), combo_size - vec2_t(2, 2), m_style->m_element_in_outline);
+		renderer->rectangle(node->m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_outline);
 
 		std::string active{ "empty" };
 		selected->resize(options.size());
@@ -37,47 +32,36 @@ void lucid_engine::ui::multi_combo_box(const char* title, std::vector<bool>* sel
 			}
 		}
 
-		g_renderer.get()->text(g_renderer.get()->m_defualt_font, active.c_str(), m_elements_pos + vec2_t(3, 1 + text_size.y), m_style->m_text_active);
+		renderer->text(renderer->m_defualt_font, active.c_str(), node->m_elements_pos + vec2_t(3, 1 + text_size.y), m_style->m_text_active);
 
-		// apply foreground to draw list type.
-		g_renderer.get()->set_draw_list(foreground_draw_list);
+		renderer->set_draw_list(foreground_draw_list);
 
-		// if the multi combo is opened then lopp through elements and handle them.
 		if (m_multi_combo_info[m_multi_combo_id].in_use) {
 			selected->resize(options.size());
 
-			// render background & outline.
-			g_renderer.get()->filled_rectangle(m_elements_pos + vec2_t(0, text_size.y) + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_inactive);
-			g_renderer.get()->rectangle(m_elements_pos + vec2_t(0, text_size.y) + vec2_t(1, combo_size.y + 1), vec2_t(combo_size.x - 2, -2 + combo_size.y * options.size()), m_style->m_element_in_outline);
-			g_renderer.get()->rectangle(m_elements_pos + vec2_t(0, text_size.y) + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_outline);
+			renderer->filled_rectangle(node->m_elements_pos + vec2_t(0, text_size.y) + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_inactive);
+			renderer->rectangle(node->m_elements_pos + vec2_t(0, text_size.y) + vec2_t(1, combo_size.y + 1), vec2_t(combo_size.x - 2, -2 + combo_size.y * options.size()), m_style->m_element_in_outline);
+			renderer->rectangle(node->m_elements_pos + vec2_t(0, text_size.y) + vec2_t(0, combo_size.y), vec2_t(combo_size.x, combo_size.y * options.size()), m_style->m_element_outline);
 
 			for (int i = 0; i < options.size(); i++) {
-				vec2_t bbox = m_elements_pos + vec2_t(0, combo_size.y * (i + 1)) + vec2_t(0, text_size.y);
+				vec2_t bbox = node->m_elements_pos + vec2_t(0, combo_size.y * (i + 1)) + vec2_t(0, text_size.y);
 
-				// check for new selected & set hover state.
 				if (g_input.get()->mouse_hovering_rect(bbox, combo_size)) {
-					// check if mouse1 is pressed and change the value of the multi combo box.
-					if (g_input.get()->is_key_pressed(VK_LBUTTON)) {
-						// change value of current selected object.
+					if (g_input.get()->is_key_pressed(VK_LBUTTON))
 						selected->at(i) = !selected->at(i);
-					}
 
-					// set this so we cannot drag our menu.
 					m_hovering_popup = true;
 				}
 
-				g_renderer.get()->text(g_renderer.get()->m_defualt_font, options.at(i), bbox + vec2_t(3, 1), selected->at(i) ? m_style->m_accent : m_style->m_text_inactive);
+				renderer->text(renderer->m_defualt_font, options.at(i), bbox + vec2_t(3, 1), selected->at(i) ? m_style->m_accent : m_style->m_text_inactive);
 			}
 
-			// close our element if we click outside of it.
 			if (g_input.get()->is_key_pressed(VK_LBUTTON))
 				m_multi_combo_info[m_multi_combo_id].in_use = false;
 		}
 
-		// restore draw list to default.
-		g_renderer.get()->set_draw_list(default_draw_list);
+		renderer->set_draw_list(default_draw_list);
 	}
 
-	// apply new position.
-	m_elements_pos += vec2_t(0, text_size.y + combo_size.y + m_style->m_group_spacing);
+	node->m_elements_pos += vec2_t(0, text_size.y + combo_size.y + m_style->m_group_spacing);
 }

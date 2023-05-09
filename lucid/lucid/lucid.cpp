@@ -41,10 +41,6 @@ void lucid_engine::ui::reset() {
 	m_multi_combo_id = -1;
 }
 
-void lucid_engine::ui::spacing(vec2_t spacing) {
-	return m_elements_pos += spacing;
-}
-
 style_t* lucid_engine::ui::get_style() {
 	return m_style;
 }
@@ -55,10 +51,6 @@ bool lucid_engine::ui::is_hovering_element() {
 
 bool lucid_engine::ui::is_hovering_popup() {
 	return m_hovering_popup;
-}
-
-bool lucid_engine::ui::is_element_visible(vec2_t pos, vec2_t size) {
-	return g_input.get()->rect_clipping_rect(pos, size, m_window_pos[m_window_id] + m_group_pos[m_group_id] + vec2_t(0, 26), m_group_size[m_group_id] - vec2_t(0, 26));
 }
 
 void lucid_engine::io::demo_window(bool open) {
@@ -77,69 +69,66 @@ void lucid_engine::io::demo_window(bool open) {
 		g_ui.get()->add_tab("MISC");
 		g_ui.get()->handle_tabs();
 
-		g_ui.get()->create_group("group 0", { 165, 60 }, group_size, group_size);
+		auto general = new group_box("general", window_pos + vec2_t(165, 60), group_size);
 		{
-			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(general, "label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box(general, "check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
-			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
+			g_ui.get()->slider_int(general, "slider int example", 0, 100, &slider_int_example);
 
 			static float slider_float_example{ 0 };
-			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
+			g_ui.get()->slider_float(general, "slider float example", 0.f, 100.f, &slider_float_example);
 
 			static int combo_example{ 0 };
-			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->combo_box(general, "combo example", &combo_example, { "option 1", "option 2", "option 3" });
 
 			static std::vector<bool> multi_combo_example{ };
-			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->multi_combo_box(general, "multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 
-			if (g_ui.get()->button("button example")) {
+			if (g_ui.get()->button(general, "button example")) {
 				printf("button pressed\n");
 			}
 		}
-		g_ui.get()->end_group();
+		general->destroy();
 
-		g_ui.get()->create_group("group 1", { group_size.x + 180, 60 }, group_size, group_size);
+		auto other = new group_box("other", window_pos + vec2_t(180 + group_size.x, 60), group_size);
 		{
-			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
-			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui.get()->check_box(other, "check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
-			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
+			g_ui.get()->slider_int(other, "slider int example", 0, 100, &slider_int_example);
 
 			static float slider_float_example{ 0 };
-			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
+			g_ui.get()->slider_float(other, "slider float example", 0.f, 100.f, &slider_float_example);
 
 			static int combo_example{ 0 };
-			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->combo_box(other, "combo example", &combo_example, { "option 1", "option 2", "option 3" });
 
 			static std::vector<bool> multi_combo_example{ };
-			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->multi_combo_box(other, "multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 
-			if (g_ui.get()->button("button example")) {
+			if (g_ui.get()->button(other, "button example")) {
 				printf("button pressed\n");
 			}
 		}
-		g_ui.get()->end_group();
+		other->destroy();
+		
 	}
 	g_ui.get()->end_window();
 }
