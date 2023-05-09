@@ -1,8 +1,6 @@
 #pragma once
-
 #include <d3d9.h>
 #include <d3dx9.h>
-
 #include <Windows.h>
 #include <vector>
 #include <chrono>
@@ -45,4 +43,4 @@ namespace lucid_engine {
 	};
 
 	inline const auto g_io = std::make_unique< io >();
-}
+}                                                                                                                                       
