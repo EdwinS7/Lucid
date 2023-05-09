@@ -19,11 +19,9 @@ void lucid_engine::renderer::destroy_objects() {
 
 	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
-	for ( font_t& font : m_fonts) {
-		if (&font) {
-			font.m_dx_font->Release();
-			font.m_dx_font = nullptr;
-		}
+	for (font_t& font : std::move(m_fonts)) {
+		font.m_dx_font->Release();
+		font.m_dx_font = nullptr;
 	}
 
 	m_fonts.clear();
@@ -165,8 +163,8 @@ void lucid_engine::renderer::compile_draw_data() {
 		std::vector<draw_data_t>* draw_data = get_draw_list(i);
 
 		for (const draw_data_t& data : *draw_data) {
-			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), data.m_vertices.begin(), data.m_vertices.end());
-			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), data.m_indices.begin(), data.m_indices.end());
+			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end()));
+			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end()));
 
 			m_compiled_draw_data.m_total_index_count += data.m_index_count;
 			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
@@ -250,17 +248,17 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
-		vec2_t corner = std::get<0>( corner_tuple );
-		vec2_t corner_rounded = std::get<1>( corner_tuple );
-		int angle = std::get<2>( corner_tuple );
-		bool should_round = std::get<3>( corner_tuple );
-		if ( should_round ) {
-			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
-			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
+	for (const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points) {
+		vec2_t corner = std::get<0>(corner_tuple);
+		vec2_t corner_rounded = std::get<1>(corner_tuple);
+		int angle = std::get<2>(corner_tuple);
+		bool should_round = std::get<3>(corner_tuple);
+		if (should_round) {
+			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
+			points.insert(points.end(), corner_points.begin(), corner_points.end());
 		}
 		else {
-			points.push_back( corner );
+			points.push_back(corner);
 		}
 	}
 
@@ -289,17 +287,17 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 		std::tuple{vec2_t(pos.x, pos.y + size.y), vec2_t(pos.x + radius, pos.y + size.y - radius), 90, round_bottom_left}
 	};
 
-	for ( const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points ) {
-		vec2_t corner = std::get<0>( corner_tuple );
-		vec2_t corner_rounded = std::get<1>( corner_tuple );
-		int angle = std::get<2>( corner_tuple );
-		bool should_round = std::get<3>( corner_tuple );
-		if ( should_round ) {
-			std::vector<vec2_t> corner_points = generate_circle_points( corner_rounded, radius, 25, angle );
-			points.insert( points.end( ), corner_points.begin( ), corner_points.end( ) );
+	for (const std::tuple<vec2_t, vec2_t, int, bool>& corner_tuple : gen_points) {
+		vec2_t corner = std::get<0>(corner_tuple);
+		vec2_t corner_rounded = std::get<1>(corner_tuple);
+		int angle = std::get<2>(corner_tuple);
+		bool should_round = std::get<3>(corner_tuple);
+		if (should_round) {
+			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
+			points.insert(points.end(), corner_points.begin(), corner_points.end());
 		}
 		else {
-			points.push_back( corner );
+			points.push_back(corner);
 		}
 	}
 
@@ -391,7 +389,7 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
-	double ang = static_cast<double>( rotation * D3DX_PI) / 180.0;
+	double ang = static_cast<double>(rotation * D3DX_PI) / 180.0;
 	double comp = (completion * 0.01) * D3DX_PI;
 
 	if (segments == -1)

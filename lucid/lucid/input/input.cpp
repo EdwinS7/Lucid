@@ -44,10 +44,11 @@ bool lucid_engine::input::is_key_held(int key) {
 	return m_key_info[key].m_on && m_key_info[key].m_style == key_style::key_hold;
 }
 
-std::map<int, bool> old_frame_key_pressed{ };
 bool lucid_engine::input::is_key_pressed(int key) {
 	if (g_ui->is_hovering_popup())
 		return false;
+
+	static std::unordered_map<int, bool> old_frame_key_pressed { };
 
 	const auto it = m_key_info.find(key);
 	if (it == m_key_info.end())

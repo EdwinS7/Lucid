@@ -6,6 +6,7 @@
 #include <chrono>
 #include <format>
 #include <map>
+#include <unordered_map>
 
 /* lucid engine backend */
 #include "renderer/structures/color.h"
