@@ -57,11 +57,11 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("Lucid", { 50, 50 }, { 680, 430 }, { 680, 430 });
+	g_ui.get()->create_window("LUCID", { 50, 50 }, { 680, 430 }, { 680, 430 });
 	{
 		vec2_t window_pos = g_ui.get()->get_window_pos();
 		vec2_t window_size = g_ui.get()->get_window_size();
-		vec2_t group_size = { (window_size.x - 195) * 0.5, window_size.y - 100 };
+		vec2_t group_size = { (window_size.x - 195) * 0.5, window_size.y - 75};
 
 		g_ui.get()->add_tab("GENERAL");
 		g_ui.get()->add_tab("OTHER");

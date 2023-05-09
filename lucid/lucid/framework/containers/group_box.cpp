@@ -14,14 +14,14 @@ void group_box::handle_render() {
 	auto style = lucid_engine::g_ui.get()->get_style();
 
 	//background
-	renderer->filled_rounded_rectangle(m_pos + vec2_t(0, style->m_group_header_size), m_size - vec2_t(0, style->m_group_header_size), style->m_group_background, style->m_group_rounding, corner_bottom);
+	renderer->filled_rectangle(m_pos + vec2_t(0, style->m_group_header_size), m_size - vec2_t(0, style->m_group_header_size), style->m_group_background);
 
 	//header
-	renderer->filled_rounded_rectangle(m_pos, vec2_t(m_size.x, style->m_group_header_size), style->m_group_header, style->m_group_rounding, corner_top);
+	renderer->filled_rectangle(m_pos, vec2_t(m_size.x, style->m_group_header_size), style->m_group_header);
 	renderer->filled_rectangle(m_pos + vec2_t(0, style->m_group_header_size), vec2_t(m_size.x, 1), style->m_accent);
 
 	//border
-	renderer->rounded_rectangle(m_pos, m_size, style->m_group_outline, style->m_group_rounding);
+	renderer->rectangle(m_pos, m_size, style->m_group_outline);
 
 	//title
 	renderer->text(renderer->m_defualt_font, m_title, m_pos + vec2_t(4, 6), style->m_text_active);

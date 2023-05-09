@@ -4,16 +4,16 @@
 #include "containers/containers.h"
 
 struct style_t {
-	float	m_alpha{ 255.f };
+	float		m_alpha{ 255.f };
 
-	int		m_window_rounding{ 5 },
+	int			m_window_rounding{ 5 },
 				m_group_rounding{ 5 },
 				m_element_rounding{ 0 },
 				m_group_header_size{ 25 },
 				m_group_padding{ 10 },
 				m_group_spacing{ 4 };
 
-	color_t m_accent{ color_t(124, 110, 255) },
+	color_t		m_accent{ color_t(255, 150, 150) },
 
 				m_window_background{ color_t(20, 20, 20) },
 				m_window_outline{ color_t(35, 35, 35) },
