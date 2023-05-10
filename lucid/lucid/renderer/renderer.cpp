@@ -16,7 +16,6 @@ void lucid_engine::renderer::destroy_objects() {
 
 	if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
 	if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
-
 	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
 	for (font_t& font : std::move(m_fonts)) {
@@ -56,28 +55,16 @@ void lucid_engine::renderer::render_draw_data() {
 	if (g_graphics.get()->m_direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
 		return;
 
-	if (state_block->Capture() < 0) {
+	if (state_block->Capture() < 0)
 		throw std::runtime_error{ "render_draw_data error (state_block->Capture)" };
-		state_block->Release();
-		return;
-	}
 
 	vertex_t* vertex_data{ };
 	std::uint32_t* index_data{ };
-	if (m_vertex_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t)),
-		(void**)&vertex_data, D3DLOCK_DISCARD) < 0) {
+	if (m_vertex_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t)), (void**)&vertex_data, D3DLOCK_DISCARD) < 0)
 		throw std::runtime_error{ "render_draw_data error (vtx_buffer->Lock)" };
-		state_block->Release();
-		return;
-	}
 
-	if (m_index_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t)),
-		(void**)&index_data, D3DLOCK_DISCARD) < 0) {
+	if (m_index_buffer->Lock(0, (UINT)(m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t)), (void**)&index_data, D3DLOCK_DISCARD) < 0)
 		throw std::runtime_error{ "render_draw_data error (idx_buffer->Lock)" };
-		m_vertex_buffer->Unlock();
-		state_block->Release();
-		return;
-	}
 
 	memcpy(vertex_data, m_compiled_draw_data.m_vertices.data(), m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t));
 	memcpy(index_data, m_compiled_draw_data.m_indices.data(), m_compiled_draw_data.m_total_index_count * sizeof(std::uint32_t));

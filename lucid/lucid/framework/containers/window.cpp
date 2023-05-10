@@ -29,7 +29,8 @@ containers::window::window(const char* title, vec2_t pos, vec2_t min_size, vec2_
 	lucid_engine::g_ui.get()->m_window = this;
 }
 
-void containers::window::handle_render() {
+void containers::window::handle_render()
+{
 	auto& window_id = lucid_engine::g_ui.get()->m_window_id;
 	auto style = lucid_engine::g_ui.get()->get_style();
 	auto renderer = lucid_engine::g_renderer.get();
@@ -38,6 +39,9 @@ void containers::window::handle_render() {
 
 	//background
 	renderer->filled_rectangle(m_pos, m_size, style->m_window_background);
+
+	//resize triangle
+	renderer->polygon({m_pos + m_size - vec2_t(10, 0), m_pos + m_size - vec2_t(0, 10), m_pos + m_size}, style->m_accent);
 
 	//side bar
 	renderer->filled_rectangle(m_pos, vec2_t(150, m_size.y), style->m_panel_background);
