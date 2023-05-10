@@ -57,19 +57,17 @@ void lucid_engine::io::demo_window(bool open) {
 	if (!open)
 		return;
 
-	g_ui.get()->create_window("LUCID", { 50, 50 }, { 680, 430 }, { 680, 430 });
+	auto window = new containers::window("LUCID", { 50, 50 }, { 680, 430 }, { 680, 430 });
 	{
-		vec2_t window_pos = g_ui.get()->get_window_pos();
-		vec2_t window_size = g_ui.get()->get_window_size();
-		vec2_t group_size = { (window_size.x - 195) * 0.5, window_size.y - 75};
-
 		g_ui.get()->add_tab("GENERAL");
 		g_ui.get()->add_tab("OTHER");
 		g_ui.get()->add_tab("COLORS");
 		g_ui.get()->add_tab("MISC");
 		g_ui.get()->handle_tabs();
 
-		auto general = new group_box("general", window_pos + vec2_t(165, 60), group_size);
+		vec2_t group_size = { (window->m_size.x - 195) * 0.5, window->m_size.y - 75 };
+
+		auto general = new containers::group_box("general", window->m_pos + vec2_t(165, 60), group_size);
 		{
 			g_ui.get()->label(general, "label example", g_ui.get()->get_style()->m_accent);
 
@@ -94,7 +92,7 @@ void lucid_engine::io::demo_window(bool open) {
 		}
 		general->destroy();
 
-		auto other = new group_box("other", window_pos + vec2_t(180 + group_size.x, 60), group_size);
+		auto other = new containers::group_box("other", window->m_pos + vec2_t(180 + group_size.x, 60), group_size);
 		{
 			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
 			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
@@ -130,5 +128,5 @@ void lucid_engine::io::demo_window(bool open) {
 		other->destroy();
 		
 	}
-	g_ui.get()->end_window();
+	window->destroy();
 }

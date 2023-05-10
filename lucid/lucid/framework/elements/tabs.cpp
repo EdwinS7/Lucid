@@ -13,8 +13,8 @@ void lucid_engine::ui::add_tab(const char* title) {
 
 void lucid_engine::ui::handle_tabs() {
 	// get the draw position and fix the draw position to work with the amount of m_tabs. (center)
-	draw_position.x = m_window_pos[m_window_id].x;
-	draw_position.y = m_window_pos[m_window_id].y + 56;
+	draw_position.x = m_window->m_pos.x;
+	draw_position.y = m_window->m_pos.y + 56;
 
 	// each m_tab in our vector.
 	for (int i = 0; i < m_tabs.size(); i++) {

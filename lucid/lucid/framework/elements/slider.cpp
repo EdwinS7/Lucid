@@ -1,6 +1,6 @@
 #include "../framework.h"
 
-void lucid_engine::ui::slider_int(group_box* node, const char* title, int min, int max, int* value) {
+void lucid_engine::ui::slider_int(containers::group_box* node, const char* title, int min, int max, int* value) {
 	auto renderer = g_renderer.get();
 	m_slider_id++;
 
@@ -34,7 +34,7 @@ void lucid_engine::ui::slider_int(group_box* node, const char* title, int min, i
 	node->m_elements_pos += vec2_t(0, text_size.y + slider_size.y + m_style->m_group_spacing);
 }
 
-void lucid_engine::ui::slider_float(group_box* node, const char* title, float min, float max, float* value) {
+void lucid_engine::ui::slider_float(containers::group_box* node, const char* title, float min, float max, float* value) {
 	auto renderer = g_renderer.get();
 	m_slider_id++;
 

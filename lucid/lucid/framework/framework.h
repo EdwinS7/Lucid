@@ -53,38 +53,39 @@ struct combo_info_t {
 namespace lucid_engine {
 	class ui {
 	public:
-		int	m_window_id{ -1 },
-			m_group_id{ -1 };
+		containers::group_box*	m_group{ };
+		containers::window*		m_window{ };
+
+		int			m_window_id{ -1 },
+					m_group_id{ -1 };
+
+		bool		m_hovering_element{ false },
+					m_hovering_popup{ false };
 
 		bool is_hovering_element();
 		bool is_hovering_popup();
 
-		vec2_t handle_dragging();
+		vec2_t handle_dragging(containers::window* node);
 		bool is_dragging();
 		bool is_this_dragging();
 
-		vec2_t handle_resizing();
+		vec2_t handle_resizing(containers::window* node);
 		bool is_resizing();
 		bool is_this_resizing();
-
-		void create_window(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size);
-		void end_window();
 
 		void set_tabs_pos(vec2_t pos);
 		void add_tab(const char* title);
 		void handle_tabs();
 		int get_tab_index();
 
-		void spacing(vec2_t spacing = vec2_t(0, 10));
-
-		bool button(group_box* node, const char* title);
-		void slider_int(group_box* node, const char* title, int min, int max, int* value);
-		void slider_float(group_box* node, const char* title, float min, float max, float* value);
-		void check_box(group_box* node, const char* title, bool* state);
-		void label(group_box* node, const char* title, color_t color);
+		bool button(containers::group_box* node, const char* title);
+		void slider_int(containers::group_box* node, const char* title, int min, int max, int* value);
+		void slider_float(containers::group_box* node, const char* title, float min, float max, float* value);
+		void check_box(containers::group_box* node, const char* title, bool* state);
+		void label(containers::group_box* node, const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
-		void combo_box(group_box* node, const char* title, int* value, std::vector<const char*> options);
-		void multi_combo_box(group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options);
+		void combo_box(containers::group_box* node, const char* title, int* value, std::vector<const char*> options);
+		void multi_combo_box(containers::group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();
@@ -94,11 +95,6 @@ namespace lucid_engine {
 		void reset();
 
 	private:
-		std::map<int, bool>				m_this_window_setup{ };
-		std::map<int, vec2_t>			m_window_pos{ },
-										m_window_min_size{ },
-										m_window_size{ };
-
 		std::vector<tab_info_t>			m_tabs;
 		int								m_tab{ 0 };
 
@@ -107,11 +103,9 @@ namespace lucid_engine {
 
 		std::map<int, combo_info_t>		m_combo_info{ },
 										m_multi_combo_info{ };
+
 		int								m_combo_id{ 0 },
 										m_multi_combo_id{ 0 };
-
-		bool							m_hovering_element{ false };
-		bool							m_hovering_popup{ false };
 
 		style_t*						m_style = new style_t;
 

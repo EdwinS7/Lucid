@@ -1,6 +1,6 @@
 #include "../framework.h"
 
-void lucid_engine::ui::multi_combo_box(group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options) {
+void lucid_engine::ui::multi_combo_box(containers::group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options) {
 	auto renderer = g_renderer.get();
 	m_multi_combo_id++;
 

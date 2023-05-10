@@ -1,7 +1,7 @@
 #include "../framework.h"
 
 vec2_t check_box_size = { 10, 10 };
-void lucid_engine::ui::check_box(group_box* node, const char* title, bool* state) {
+void lucid_engine::ui::check_box(containers::group_box* node, const char* title, bool* state) {
 	auto renderer = g_renderer.get();
 
 	vec2_t text_size = renderer->get_text_size(renderer->m_defualt_font, title);

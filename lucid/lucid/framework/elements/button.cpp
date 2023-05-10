@@ -1,6 +1,6 @@
 #include "../framework.h"
 
-bool lucid_engine::ui::button(group_box* node, const char* title) {
+bool lucid_engine::ui::button(containers::group_box* node, const char* title) {
 	auto renderer = g_renderer.get();
 
 	vec2_t text_size = renderer->get_text_size(renderer->m_defualt_font, title);

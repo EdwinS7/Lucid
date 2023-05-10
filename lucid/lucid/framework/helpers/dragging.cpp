@@ -8,16 +8,16 @@ struct dragging_info {
 
 std::map<int, dragging_info> info;
 
-vec2_t lucid_engine::ui::handle_dragging() {
+vec2_t lucid_engine::ui::handle_dragging(containers::window* node) {
 	bool another_dragging = std::ranges::any_of(info, [this](const auto& item) {
 		return m_window_id != item.first && item.second.dragging;
 	});
 
 	if (is_resizing() || another_dragging)
-		return m_window_pos[m_window_id];
+		return node->m_pos;
 
 	bool held = g_input.get()->is_key_held(VK_LBUTTON);
-	bool inside_bounds = g_input.get()->mouse_hovering_rect(m_window_pos[m_window_id], m_window_size[m_window_id]);
+	bool inside_bounds = g_input.get()->mouse_hovering_rect(node->m_pos, node->m_size);
 
 	dragging_info& window_info = info[m_window_id];
 	if (!window_info.outside_bounds && ((held && !inside_bounds) || m_hovering_element || is_hovering_popup()))
@@ -26,14 +26,14 @@ vec2_t lucid_engine::ui::handle_dragging() {
 		window_info.outside_bounds = false;
 
 	if (!window_info.dragging && !window_info.outside_bounds && held && inside_bounds) {
-		window_info.difference = g_input.get()->m_mouse_pos - m_window_pos[m_window_id];
+		window_info.difference = g_input.get()->m_mouse_pos - node->m_pos;
 		window_info.dragging = true;
 	}
 	else if (window_info.dragging && !held)
 		window_info.dragging = false;
 
 	if (!window_info.dragging)
-		return m_window_pos[m_window_id];
+		return node->m_pos;
 
 	vec2_t new_pos = g_input.get()->m_mouse_pos - window_info.difference;
 

@@ -1,17 +1,21 @@
 #include "../../lucid.h"
 
-group_box::group_box(const char* title, vec2_t pos, vec2_t size) {
+containers::group_box::group_box(const char* title, vec2_t pos, vec2_t size) {
+	lucid_engine::g_ui.get()->m_group_id++;
+
 	m_title = title;
 	m_pos = pos;
 	m_size = size;
 
 	handle_input();
 	handle_render();
+
+	lucid_engine::g_ui.get()->m_group = this;
 }
 
-void group_box::handle_render() {
-	auto renderer = lucid_engine::g_renderer.get();
+void containers::group_box::handle_render() {
 	auto style = lucid_engine::g_ui.get()->get_style();
+	auto renderer = lucid_engine::g_renderer.get();
 
 	//background
 	renderer->filled_rectangle(m_pos + vec2_t(0, style->m_group_header_size), m_size - vec2_t(0, style->m_group_header_size), style->m_group_background);
@@ -32,20 +36,17 @@ void group_box::handle_render() {
 
 std::map<int, double> m_scroll{}, m_scroll_lerp{};
 
-void group_box::handle_input() {
-	int& m_group_id = lucid_engine::g_ui.get()->m_group_id;
+void containers::group_box::handle_input() {
+	auto m_group_id = lucid_engine::g_ui.get()->m_group_id;
 	auto style = lucid_engine::g_ui.get()->get_style();
 	auto input = lucid_engine::g_input.get();
-
-	//new group, assign new id.
-	m_group_id++;
 
 	//are we hovering our group box? (used for should scroll conditions).
 	m_hovered = input->mouse_hovering_rect(m_pos, m_size);
 	m_elements_pos = m_pos + vec2_t(style->m_group_padding * 2, style->m_group_header_size + style->m_group_padding + m_scroll_lerp[m_group_id]);
 }
 
-void group_box::destroy() {
+void containers::group_box::destroy() {
 	auto m_group_id = lucid_engine::g_ui.get()->m_group_id;
 	auto style = lucid_engine::g_ui.get()->get_style();
 	auto renderer = lucid_engine::g_renderer.get();
@@ -72,7 +73,7 @@ void group_box::destroy() {
 	delete this;
 }
 
-bool group_box::element_visible(vec2_t pos, vec2_t size) {
+bool containers::group_box::element_visible(vec2_t pos, vec2_t size) {
 	auto style = lucid_engine::g_ui.get()->get_style();
 	auto input = lucid_engine::g_input.get();
 

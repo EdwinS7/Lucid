@@ -1,55 +1,72 @@
 #include "../framework.h"
 
-void lucid_engine::ui::create_window(const char* title, vec2_t pos, vec2_t min_size, vec2_t default_size) {
-	m_window_id++;
+std::map<int, bool>     window_setup{ };
+std::map<int, vec2_t>	window_pos{ },
+						window_size{ };
 
-	// check for invalid paramaters and set paramaters.
-	if (!m_this_window_setup[m_window_id]) {
-		m_window_pos[m_window_id] = pos;
+containers::window::window(const char* title, vec2_t pos, vec2_t min_size, vec2_t size, bool open) {
+	auto& window_id = lucid_engine::g_ui.get()->m_window_id;
+	window_id++;
 
-		if (min_size > default_size)
-			throw std::runtime_error{ "create_window error (default window size < min window size)" };
+	m_title = title;
+	m_pos = pos;
+	m_size = size;
+	m_min_size = min_size;
+	m_open = open;
 
-		m_window_min_size[m_window_id] = min_size;
-		m_window_size[m_window_id] = default_size;
-		m_this_window_setup[m_window_id] = true;
+	if (!window_setup[window_id]) {
+		window_pos[window_id] = m_pos;
+		window_size[window_id] = m_size;
+		window_setup[window_id] = true;
+	}
+	else {
+		m_pos = window_pos[window_id];
+		m_size = window_size[window_id];
 	}
 
-	// calculate text size for title.
-	vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, title);
+	handle_render();
 
-	// render our window.
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id], m_window_size[m_window_id], m_style->m_window_background);
-
-	// side bar.
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id], vec2_t(150, m_window_size[m_window_id].y), m_style->m_panel_background);
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(150, 0), vec2_t(1, m_window_size[m_window_id].y), m_style->m_group_outline);
-
-	// top bar.
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id], vec2_t(m_window_size[m_window_id].x, 45), m_style->m_window_header);
-	g_renderer.get()->filled_rectangle(m_window_pos[m_window_id] + vec2_t(0, 44), vec2_t(m_window_size[m_window_id].x, 1), m_style->m_window_outline);
-
-	// outline.
-	g_renderer.get()->rectangle(m_window_pos[m_window_id], m_window_size[m_window_id], m_style->m_window_outline);
-
-	// text.
-	g_renderer.get()->text(g_renderer.get()->m_logo_font, title, m_window_pos[m_window_id] + vec2_t(6, -1), m_style->m_text_active);
+	lucid_engine::g_ui.get()->m_window = this;
 }
 
-void lucid_engine::ui::end_window() {
-	// handle dragging and resizing.
-	m_window_size[m_window_id] = handle_resizing();
-	m_window_pos[m_window_id] = handle_dragging();
+void containers::window::handle_render() {
+	auto& window_id = lucid_engine::g_ui.get()->m_window_id;
+	auto style = lucid_engine::g_ui.get()->get_style();
+	auto renderer = lucid_engine::g_renderer.get();
 
-	// prepare for next window/frame.
-	m_hovering_element = false;
-	m_hovering_popup = false;
+	vec2_t text_size = renderer->get_text_size(renderer->m_defualt_font, m_title);
+
+	//background
+	renderer->filled_rectangle(m_pos, m_size, style->m_window_background);
+
+	//side bar
+	renderer->filled_rectangle(m_pos, vec2_t(150, m_size.y), style->m_panel_background);
+	renderer->filled_rectangle(m_pos + vec2_t(150, 0), vec2_t(1, m_size.y), style->m_group_outline);
+
+	//header
+	renderer->filled_rectangle(m_pos, vec2_t(m_size.x, 45), style->m_window_header);
+	renderer->filled_rectangle(m_pos + vec2_t(0, 44), vec2_t(m_size.x, 1), style->m_window_outline);
+
+	//border
+	renderer->rectangle(m_pos, m_size, style->m_window_outline);
+
+	//title
+	renderer->text(renderer->m_logo_font, m_title, m_pos + vec2_t(6, -1), style->m_text_active);
 }
 
-vec2_t lucid_engine::ui::get_window_pos() {
-	return m_window_pos[m_window_id];
-}
+void containers::window::destroy() {
+	auto& window_id = lucid_engine::g_ui.get()->m_window_id;
 
-vec2_t lucid_engine::ui::get_window_size() {
-	return m_window_size[m_window_id];
+	//handle dragging and resizing.
+	window_size[window_id] = lucid_engine::g_ui.get()->handle_resizing(this);
+	window_pos[window_id] = lucid_engine::g_ui.get()->handle_dragging(this);
+	m_size = window_size[window_id];
+	m_pos = window_pos[window_id];
+
+	//reset references.
+	lucid_engine::g_ui.get()->m_hovering_element = false;
+	lucid_engine::g_ui.get()->m_hovering_popup = false;
+
+	//dereference our window.
+	delete this;
 }
