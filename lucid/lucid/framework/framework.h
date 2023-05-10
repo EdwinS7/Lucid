@@ -78,14 +78,14 @@ namespace lucid_engine {
 		void handle_tabs();
 		int get_tab_index();
 
-		bool button(containers::group_box* node, const char* title);
-		void slider_int(containers::group_box* node, const char* title, int min, int max, int* value);
-		void slider_float(containers::group_box* node, const char* title, float min, float max, float* value);
-		void check_box(containers::group_box* node, const char* title, bool* state);
-		void label(containers::group_box* node, const char* title, color_t color);
+		bool button(const char* title);
+		void slider_int(const char* title, int min, int max, int* value);
+		void slider_float(const char* title, float min, float max, float* value);
+		void check_box(const char* title, bool* state);
+		void label(const char* title, color_t color);
 		void popup(const char* title, vec2_t pos, color_t color);
-		void combo_box(containers::group_box* node, const char* title, int* value, std::vector<const char*> options);
-		void multi_combo_box(containers::group_box* node, const char* title, std::vector<bool>* selected, std::vector<const char*> options);
+		void combo_box(const char* title, int* value, std::vector<const char*> options);
+		void multi_combo_box(const char* title, std::vector<bool>* selected, std::vector<const char*> options);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();

@@ -69,24 +69,24 @@ void lucid_engine::io::demo_window(bool open) {
 
 		auto general = new containers::group_box("general", window->m_pos + vec2_t(165, 60), group_size);
 		{
-			g_ui.get()->label(general, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
-			g_ui.get()->check_box(general, "check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
-			g_ui.get()->slider_int(general, "slider int example", 0, 100, &slider_int_example);
+			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
 
 			static float slider_float_example{ 0 };
-			g_ui.get()->slider_float(general, "slider float example", 0.f, 100.f, &slider_float_example);
+			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
 
 			static int combo_example{ 0 };
-			g_ui.get()->combo_box(general, "combo example", &combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
 
 			static std::vector<bool> multi_combo_example{ };
-			g_ui.get()->multi_combo_box(general, "multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 
-			if (g_ui.get()->button(general, "button example")) {
+			if (g_ui.get()->button("button example")) {
 				printf("button pressed\n");
 			}
 		}
@@ -94,34 +94,34 @@ void lucid_engine::io::demo_window(bool open) {
 
 		auto other = new containers::group_box("other", window->m_pos + vec2_t(180 + group_size.x, 60), group_size);
 		{
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
-			g_ui.get()->label(other, "label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
-			g_ui.get()->check_box(other, "check box example", &checkbox_example);
+			g_ui.get()->check_box("check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
-			g_ui.get()->slider_int(other, "slider int example", 0, 100, &slider_int_example);
+			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
 
 			static float slider_float_example{ 0 };
-			g_ui.get()->slider_float(other, "slider float example", 0.f, 100.f, &slider_float_example);
+			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
 
 			static int combo_example{ 0 };
-			g_ui.get()->combo_box(other, "combo example", &combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
 
 			static std::vector<bool> multi_combo_example{ };
-			g_ui.get()->multi_combo_box(other, "multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 
-			if (g_ui.get()->button(other, "button example")) {
+			if (g_ui.get()->button("button example")) {
 				printf("button pressed\n");
 			}
 		}
