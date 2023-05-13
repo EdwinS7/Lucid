@@ -1,11 +1,11 @@
 #include "lucid.h"
 
 void lucid_engine::io::create() {
-	g_input.get()->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
+	g_input->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
 }
 
 void lucid_engine::io::update() {
-	g_input.get()->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
+	g_input->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
 
 	std::chrono::steady_clock::time_point high_resolution_clock = std::chrono::high_resolution_clock::now();
 	m_real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
@@ -28,9 +28,9 @@ void lucid_engine::io::update() {
 }
 
 void lucid_engine::io::reset() {
-	g_input.get()->m_mouse_wheel_delta = 0.f;
-	g_input.get()->m_key_info = {};
-	g_ui.get()->reset();
+	g_input->m_mouse_wheel_delta = 0.f;
+	g_input->m_key_info = {};
+	g_ui->reset();
 }
 
 void lucid_engine::ui::reset() {
@@ -59,34 +59,34 @@ void lucid_engine::io::demo_window(bool open) {
 
 	auto window = new containers::window("LUCID", { 50, 50 }, { 680, 430 }, { 680, 430 });
 	{
-		g_ui.get()->add_tab("GENERAL");
-		g_ui.get()->add_tab("OTHER");
-		g_ui.get()->add_tab("COLORS");
-		g_ui.get()->add_tab("MISC");
-		g_ui.get()->handle_tabs();
+		g_ui->add_tab("GENERAL");
+		g_ui->add_tab("OTHER");
+		g_ui->add_tab("COLORS");
+		g_ui->add_tab("MISC");
+		g_ui->handle_tabs();
 
 		vec2_t group_size = { (window->m_size.x - 195) * 0.5, window->m_size.y - 75 };
 
 		auto general = new containers::group_box("general", window->m_pos + vec2_t(165, 60), group_size);
 		{
-			g_ui.get()->label("label example", g_ui.get()->get_style()->m_accent);
+			g_ui->label("label example", g_ui->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
-			g_ui.get()->check_box("check box example", &checkbox_example);
+			g_ui->check_box("check box example", &checkbox_example);
 
 			static int slider_int_example{ 0 };
-			g_ui.get()->slider_int("slider int example", 0, 100, &slider_int_example);
+			g_ui->slider_int("slider int example", 0, 100, &slider_int_example);
 
 			static float slider_float_example{ 0 };
-			g_ui.get()->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
+			g_ui->slider_float("slider float example", 0.f, 100.f, &slider_float_example);
 
 			static int combo_example{ 0 };
-			g_ui.get()->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
+			g_ui->combo_box("combo example", &combo_example, { "option 1", "option 2", "option 3" });
 
 			static std::vector<bool> multi_combo_example{ };
-			g_ui.get()->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+			g_ui->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
 
-			if (g_ui.get()->button("button example")) {
+			if (g_ui->button("button example")) {
 				printf("button pressed\n");
 			}
 		}

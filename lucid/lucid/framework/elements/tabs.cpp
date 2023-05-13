@@ -19,31 +19,31 @@ void lucid_engine::ui::handle_tabs() {
 	// each m_tab in our vector.
 	for (int i = 0; i < m_tabs.size(); i++) {
 		// calculate text sizes.
-		vec2_t text_size = g_renderer.get()->get_text_size(g_renderer.get()->m_defualt_font, m_tabs[i].m_title);
+		vec2_t text_size = g_renderer->get_text_size(g_renderer->m_defualt_font, m_tabs[i].m_title);
 
 		// check for hovering affect and used for click detection.
-		bool hovered = g_input.get()->mouse_hovering_rect(draw_position, {148, 30});
+		bool hovered = g_input->mouse_hovering_rect(draw_position, {148, 30});
 
 		// render our box and text(icon & bio).
 		if (m_tab == i) {
-			g_renderer.get()->filled_gradient(draw_position + vec2_t(2, 0), vec2_t(146, 30), m_style->m_window_outline, m_style->m_window_outline.override_alpha(0));
-			g_renderer.get()->filled_rectangle(draw_position, vec2_t(2, 30), m_style->m_accent);
+			g_renderer->filled_gradient(draw_position + vec2_t(2, 0), vec2_t(146, 30), m_style->m_window_outline, m_style->m_window_outline.override_alpha(0));
+			g_renderer->filled_rectangle(draw_position, vec2_t(2, 30), m_style->m_accent);
 
-			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(15, (30 * 0.5) - text_size.y * 0.5), m_style->m_accent);
+			g_renderer->text(g_renderer->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(15, (30 * 0.5) - text_size.y * 0.5), m_style->m_accent);
 		}
 		else {
 			if (hovered) {
-				g_renderer.get()->filled_gradient(draw_position + vec2_t(2, 0), vec2_t(146, 30), m_style->m_window_outline.override_alpha(150), m_style->m_window_outline.override_alpha(0));
-				g_renderer.get()->filled_rectangle(draw_position, vec2_t(2, 30), m_style->m_accent.override_alpha(150));
+				g_renderer->filled_gradient(draw_position + vec2_t(2, 0), vec2_t(146, 30), m_style->m_window_outline.override_alpha(150), m_style->m_window_outline.override_alpha(0));
+				g_renderer->filled_rectangle(draw_position, vec2_t(2, 30), m_style->m_accent.override_alpha(150));
 			}
 
-			g_renderer.get()->text(g_renderer.get()->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(15, (30 * 0.5) - text_size.y * 0.5), m_style->m_text_inactive);
+			g_renderer->text(g_renderer->m_defualt_font, m_tabs[i].m_title, draw_position + vec2_t(15, (30 * 0.5) - text_size.y * 0.5), m_style->m_text_inactive);
 		}
 
 		// check if mouse is hovering the bounds of this m_tab.
 		if (hovered) {
 			// check if mouse1 is pressed and change the m_tab to this m_tab.
-			if (g_input.get()->is_key_pressed(VK_LBUTTON))
+			if (g_input->is_key_pressed(VK_LBUTTON))
 				m_tab = i;
 
 			// set this so we cannot drag our menu.

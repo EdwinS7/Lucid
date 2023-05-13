@@ -1,7 +1,7 @@
 #include "renderer.h"
 
 void lucid_engine::renderer::create_objects() {
-	if (!g_graphics.get()->m_direct_3d_device)
+	if (!g_graphics->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
 	m_defualt_font = create_font("Segoe UI", 13, 400, true);
@@ -9,7 +9,7 @@ void lucid_engine::renderer::create_objects() {
 }
 
 void lucid_engine::renderer::destroy_objects() {
-	if (!g_graphics.get()->m_direct_3d_device)
+	if (!g_graphics->m_direct_3d_device)
 		return;
 
 	if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
@@ -24,7 +24,7 @@ void lucid_engine::renderer::destroy_objects() {
 }
 
 font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, bool anti_aliased) {
-	m_fonts.push_back(font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, anti_aliased));
+	m_fonts.push_back(font_t(g_graphics->m_direct_3d_device, font_name.c_str(), size, weight, anti_aliased));
 	return m_fonts.back();
 }
 
@@ -103,8 +103,8 @@ std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t 
 }
 
 void lucid_engine::renderer::render_draw_data() {
-	m_screen_data = RECT(0, 0, (LONG)g_window.get()->get_window_size().x, (LONG)g_window.get()->get_window_size().y);
-	g_graphics.get()->setup_render_states();
+	m_screen_data = RECT(0, 0, (LONG)g_window->get_window_size().x, (LONG)g_window->get_window_size().y);
+	g_graphics->setup_render_states();
 	compile_draw_data();
 
 	if (!m_vertex_buffer || m_compiled_draw_data.m_total_vertex_count * sizeof(vertex_t) > m_vertex_buffer_size) {
@@ -112,7 +112,7 @@ void lucid_engine::renderer::render_draw_data() {
 
 		m_vertex_buffer_size = m_compiled_draw_data.m_total_vertex_count + 5000;
 
-		if (g_graphics.get()->m_direct_3d_device->CreateVertexBuffer(m_vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
+		if (g_graphics->m_direct_3d_device->CreateVertexBuffer(m_vertex_buffer_size * sizeof(vertex_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX1, D3DPOOL_DEFAULT, &m_vertex_buffer, nullptr) < 0)
 			throw std::runtime_error{ "render_draw_data error (CreateVertexBuffer)" };
 	}
@@ -122,13 +122,13 @@ void lucid_engine::renderer::render_draw_data() {
 
 		m_index_buffer_size = m_compiled_draw_data.m_total_index_count + 10000;
 
-		if (g_graphics.get()->m_direct_3d_device->CreateIndexBuffer(m_index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
+		if (g_graphics->m_direct_3d_device->CreateIndexBuffer(m_index_buffer_size * sizeof(std::uint32_t), D3DUSAGE_DYNAMIC |
 			D3DUSAGE_WRITEONLY, D3DFMT_INDEX32, D3DPOOL_DEFAULT, &m_index_buffer, nullptr) < 0)
 			throw std::runtime_error{ "render_draw_data error (CreateIndexBuffer)" };
 	}
 
 	IDirect3DStateBlock9* state_block{ };
-	if (g_graphics.get()->m_direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
+	if (g_graphics->m_direct_3d_device->CreateStateBlock(D3DSBT_ALL, &state_block) < 0)
 		return;
 
 	if (state_block->Capture() < 0)
@@ -148,8 +148,8 @@ void lucid_engine::renderer::render_draw_data() {
 	m_vertex_buffer->Unlock();
 	m_index_buffer->Unlock();
 
-	g_graphics.get()->m_direct_3d_device->SetStreamSource(0, m_vertex_buffer, 0, sizeof(vertex_t));
-	g_graphics.get()->m_direct_3d_device->SetIndices(m_index_buffer);
+	g_graphics->m_direct_3d_device->SetStreamSource(0, m_vertex_buffer, 0, sizeof(vertex_t));
+	g_graphics->m_direct_3d_device->SetIndices(m_index_buffer);
 
 	int start_vertex = 0, start_index = 0;
 	for (int i = 0; i < 3; ++i) {

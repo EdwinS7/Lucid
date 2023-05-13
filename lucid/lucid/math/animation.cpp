@@ -1,11 +1,11 @@
 #include "../lucid.h"
 
 double func_linear(double x, double to, double speed_multiplier) {
-	return std::clamp(x * lucid_engine::g_io.get()->m_delta_time * speed_multiplier, x, to);
+	return std::clamp(x * lucid_engine::g_io->m_delta_time * speed_multiplier, x, to);
 }
 
 double func_lerp(double from, double to, double speed_multiplier) {
-	return from + (to - from) * lucid_engine::g_io.get()->m_delta_time * speed_multiplier;
+	return from + (to - from) * lucid_engine::g_io->m_delta_time * speed_multiplier;
 }
 
 double lucid_engine::math::animate(animation_type animation, double from, double to, double speed_multiplier) {
