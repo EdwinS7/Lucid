@@ -4,10 +4,8 @@ void lucid_engine::renderer::create_objects() {
 	if (!g_graphics.get()->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
-	D3DXCreateSprite(g_graphics.get()->m_direct_3d_device, &m_font_sprite);
-
-	m_defualt_font = create_font("Segoe UI", 13, 400, font_flags_t(true, false, false));
-	m_logo_font = create_font("Verdana", 46, 500, font_flags_t(true, false, false));
+	m_defualt_font = create_font("Segoe UI", 13, 400, true);
+	m_logo_font = create_font("Verdana", 46, 500, true);
 }
 
 void lucid_engine::renderer::destroy_objects() {
@@ -16,7 +14,6 @@ void lucid_engine::renderer::destroy_objects() {
 
 	if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
 	if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
-	if (m_font_sprite) { m_font_sprite->Release(); m_font_sprite = nullptr; }
 
 	for (font_t& font : std::move(m_fonts)) {
 		font.m_dx_font->Release();
@@ -24,6 +21,85 @@ void lucid_engine::renderer::destroy_objects() {
 	}
 
 	m_fonts.clear();
+}
+
+font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, bool anti_aliased) {
+	m_fonts.push_back(font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, anti_aliased));
+	return m_fonts.back();
+}
+
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
+	if (vertices.empty())
+		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
+
+	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
+
+	for (unsigned int i = 0; i < vertices.size(); ++i)
+		indices[i] = i;
+
+	std::vector<draw_data_t>* draw_list = get_draw_list();
+	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
+}
+
+std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
+	draw_list_t draw_list = draw_list_t(id);
+
+	if (id == -1)
+		draw_list = m_draw_list;
+
+	switch (draw_list) {
+	case background_draw_list:
+		return &m_background_draw_data;
+	case default_draw_list:
+		return &m_default_draw_data;
+	case foreground_draw_list:
+		return &m_foreground_draw_data;
+	}
+
+	throw std::runtime_error{ "get_draw_list error (invalid draw_list)" };
+}
+
+void lucid_engine::renderer::set_draw_list(draw_list_t draw_list) {
+	m_draw_list = draw_list;
+}
+
+void lucid_engine::renderer::reset_draw_list() {
+	m_compiled_draw_data = {};
+	m_foreground_draw_data.clear();
+	m_background_draw_data.clear();
+	m_default_draw_data.clear();
+}
+
+void lucid_engine::renderer::compile_draw_data() {
+	for (int i = 0; i < 3; ++i) {
+		std::vector<draw_data_t>* draw_data = get_draw_list(i);
+
+		for (const draw_data_t& data : *draw_data) {
+			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end()));
+			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end()));
+
+			m_compiled_draw_data.m_total_index_count += data.m_index_count;
+			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
+		}
+	}
+}
+
+std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
+	std::vector<vec2_t> points;
+
+	double ang = static_cast<double>(rotation * D3DX_PI) / 180.0;
+	double comp = (completion * 0.01) * D3DX_PI;
+
+	if (segments == -1)
+		segments = std::clamp(radius, 8, 128);
+
+	for (int i = 0; i <= segments; ++i) {
+		double theta = ang + 2.0 * comp * static_cast<double>(i) / static_cast<double>(segments);
+
+		points.emplace_back(vec2_t(pos.x + radius * cosf(theta), pos.y + radius * sinf(theta)));
+	}
+
+	return points;
 }
 
 void lucid_engine::renderer::render_draw_data() {
@@ -99,69 +175,7 @@ void lucid_engine::renderer::render_draw_data() {
 
 	state_block->Apply();
 	state_block->Release();
-
 	reset_draw_list();
-}
-
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
-	if (vertices.empty())
-		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
-
-	std::vector<unsigned int> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
-
-	for (unsigned int i = 0; i < vertices.size(); ++i)
-		indices[i] = i;
-
-	std::vector<draw_data_t>* draw_list = get_draw_list();
-	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
-}
-
-std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
-	draw_list_t draw_list = draw_list_t(id);
-
-	if (id == -1)
-		draw_list = m_draw_list;
-
-	switch (draw_list) {
-	case background_draw_list:
-		return &m_background_draw_data;
-	case default_draw_list:
-		return &m_default_draw_data;
-	case foreground_draw_list:
-		return &m_foreground_draw_data;
-	}
-
-	throw std::runtime_error{ "get_draw_list error (invalid draw_list)" };
-}
-
-void lucid_engine::renderer::set_draw_list(draw_list_t draw_list) {
-	m_draw_list = draw_list;
-}
-
-void lucid_engine::renderer::reset_draw_list() {
-	m_compiled_draw_data = {};
-	m_foreground_draw_data.clear();
-	m_background_draw_data.clear();
-	m_default_draw_data.clear();
-}
-
-void lucid_engine::renderer::compile_draw_data() {
-	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t>* draw_data = get_draw_list(i);
-
-		for (const draw_data_t& data : *draw_data) {
-			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end()));
-			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end()));
-
-			m_compiled_draw_data.m_total_index_count += data.m_index_count;
-			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
-		}
-	}
-}
-
-font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, const font_flags_t font_flags) {
-	m_fonts.push_back(font_t(g_graphics.get()->m_direct_3d_device, font_name.c_str(), size, weight, font_flags));
-	return m_fonts.back();
 }
 
 void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
@@ -373,24 +387,6 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
 }
 
-std::vector<vec2_t> lucid_engine::renderer::generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
-	std::vector<vec2_t> points;
-
-	double ang = static_cast<double>(rotation * D3DX_PI) / 180.0;
-	double comp = (completion * 0.01) * D3DX_PI;
-
-	if (segments == -1)
-		segments = std::clamp(radius, 8, 128);
-
-	for (int i = 0; i <= segments; ++i) {
-		double theta = ang + 2.0 * comp * static_cast<double>(i) / static_cast<double>(segments);
-
-		points.emplace_back(vec2_t(pos.x + radius * cosf(theta), pos.y + radius * sinf(theta)));
-	}
-
-	return points;
-}
-
 void lucid_engine::renderer::circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color) {
 	std::vector<vec2_t> points = generate_circle_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
@@ -448,4 +444,4 @@ void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
 
 void lucid_engine::renderer::pop_clip() {
 	m_clip_info.pop_back();
-}
+} 

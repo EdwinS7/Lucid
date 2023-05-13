@@ -1,7 +1,7 @@
 #pragma once
-
 #include "../lucid.h"
 
+// settings
 #define CIRCLE_SEGMENTS 64
 
 enum corner_flags {
@@ -29,19 +29,17 @@ enum draw_list_t {
 namespace lucid_engine {
 	class renderer {
 	public:
-		std::vector<font_t>		 m_fonts{ };
-		font_t                   m_defualt_font{ };
-		font_t                   m_logo_font{ };
+		std::vector<font_t>	m_fonts{ };
+		font_t				m_defualt_font{ };
+		font_t				m_logo_font{ };
 
 		void create_objects();
 		void destroy_objects();
-		void render_draw_data();
-
+		font_t create_font(const std::string font_name, int size, int weight = 400, bool anti_aliased = false);
 		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
 		std::vector<draw_data_t>* get_draw_list(int id = -1);
 		void set_draw_list(draw_list_t draw_list);
-
-		font_t create_font(const std::string font_name, int size, int weight = 400, const font_flags_t font_flags = font_flags_t());
+		void render_draw_data();
 
 		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
 		void polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
@@ -69,16 +67,15 @@ namespace lucid_engine {
 		int							m_vertex_buffer_size{ 5000 },
 									m_index_buffer_size{ 10000 };
 
+		IDirect3DVertexBuffer9*		m_vertex_buffer{ };
+		IDirect3DIndexBuffer9*		m_index_buffer{ };
+
 		compiled_draw_data_t		m_compiled_draw_data{ };
 		std::vector<draw_data_t>	m_default_draw_data{ },
 									m_background_draw_data{ },
 									m_foreground_draw_data{ };
 
-		IDirect3DVertexBuffer9*		m_vertex_buffer{ };
-		IDirect3DIndexBuffer9*		m_index_buffer{ };
-
 		LPDIRECT3DTEXTURE9			m_font_texture{ };
-		LPD3DXSPRITE				m_font_sprite{ };
 
 		std::vector<RECT>			m_clip_info{ };
 

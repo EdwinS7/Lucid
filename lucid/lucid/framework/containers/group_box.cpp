@@ -53,7 +53,6 @@ void containers::group_box::destroy() {
 	auto input = lucid_engine::g_input.get();
 	auto math = lucid_engine::g_math.get();
 	auto ui = lucid_engine::g_ui.get();
-	auto io = lucid_engine::g_io.get();
 
 	//get the range for how much we can scroll and how how we need to get their from current scroll amount.
 	double scoll_to_bottom = (m_pos.y + style->m_group_header_size + style->m_group_padding) + m_size.y - style->m_group_header_size - style->m_group_padding * 2;
