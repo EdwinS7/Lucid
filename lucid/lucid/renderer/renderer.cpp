@@ -4,8 +4,11 @@ void lucid_engine::renderer::create_objects() {
 	if (!g_graphics->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
-	m_defualt_font = create_font("Segoe UI", 13, 400, true);
-	m_logo_font = create_font("Verdana", 46, 500, true);
+	create_font(&m_defualt_font, "Segoe UI", 9, FW_NORMAL, true);
+	create_font(&m_logo_font, "Verdana", 32, FW_MEDIUM, true);
+
+	for (font_t* font : m_fonts)
+		build_font(*font);
 }
 
 void lucid_engine::renderer::destroy_objects() {
@@ -15,20 +18,108 @@ void lucid_engine::renderer::destroy_objects() {
 	if (m_vertex_buffer) { m_vertex_buffer->Release(); m_vertex_buffer = nullptr; }
 	if (m_index_buffer) { m_index_buffer->Release(); m_index_buffer = nullptr; }
 
-	for (font_t& font : std::move(m_fonts)) {
-		font.m_dx_font->Release();
-		font.m_dx_font = nullptr;
+	for (auto& font : m_font_map) {
+		for (auto& character : font.second) {
+			character.second.texture->Release();
+			character.second.texture = nullptr;
+		}
 	}
 
+	for (texture_t& texture : std::move(m_textures)) {
+		texture.m_texture->Release();
+		texture.m_texture = nullptr;
+	}
+
+	m_font_map.clear();
 	m_fonts.clear();
 }
 
-font_t lucid_engine::renderer::create_font(const std::string font_name, const int size, const int weight, bool anti_aliased) {
-	m_fonts.push_back(font_t(g_graphics->m_direct_3d_device, font_name.c_str(), size, weight, anti_aliased));
-	return m_fonts.back();
+void lucid_engine::renderer::build_font(font_t& font) {
+	if (FT_Init_FreeType(&m_freetype)) throw std::runtime_error{ "failed to init freetype" };
+	if (FT_New_Face(m_freetype, font.m_font_path.c_str(), 0, &m_freetype_face)) throw std::runtime_error{ "failed to init freetype" };
+
+	D3DDEVICE_CREATION_PARAMETERS params;
+	g_graphics->m_direct_3d_device->GetCreationParameters(&params);
+	FT_Set_Char_Size(m_freetype_face, font.m_size * 64, 0, GetDpiForWindow(params.hFocusWindow), 0);
+	FT_Select_Charmap(m_freetype_face, FT_ENCODING_UNICODE);
+
+	unsigned int font_index = font.m_index;
+
+	for (char i = ' '; i < 127; i++) {
+		FT_Load_Char(m_freetype_face, i, font.m_antialiased ? FT_LOAD_RENDER : FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
+		vec2_t size{ 0, 0 };
+
+		size.x = m_freetype_face->glyph->bitmap.width ? m_freetype_face->glyph->bitmap.width : 16;
+		size.y = m_freetype_face->glyph->bitmap.rows ? m_freetype_face->glyph->bitmap.rows : 16;
+
+		if (g_graphics->m_direct_3d_device->CreateTexture(size.x, size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8, D3DPOOL_DEFAULT, &m_font_map[font_index][i].texture, NULL) != D3D_OK)
+			throw std::runtime_error{ "failed to create texture" };
+
+		D3DLOCKED_RECT lock_rect;
+		m_font_map[font_index][i].texture->LockRect(0, &lock_rect, nullptr, D3DLOCK_DISCARD);
+
+		unsigned char* src_pixels = m_freetype_face->glyph->bitmap.buffer;
+		unsigned char* dest_pixels = (unsigned char*)lock_rect.pBits;
+
+		if (src_pixels && dest_pixels) {
+			switch (m_freetype_face->glyph->bitmap.pixel_mode) {
+			case FT_PIXEL_MODE_MONO:
+				for (uint32_t y = 0; y < size.y; y++, src_pixels += m_freetype_face->glyph->bitmap.pitch, dest_pixels += lock_rect.Pitch)
+				{
+					uint8_t bits = 0;
+					const uint8_t* bits_ptr = src_pixels;
+					for (uint32_t x = 0; x < size.x; x++, bits <<= 1)
+					{
+						if ((x & 7) == 0)
+							bits = *bits_ptr++;
+						dest_pixels[x] = (bits & 0x80) ? 255 : 0;
+					}
+				}
+				break;
+			case FT_PIXEL_MODE_GRAY:
+				for (UINT i = 0; i < size.y; ++i) {
+					memcpy(dest_pixels, src_pixels, size.x);
+
+					src_pixels += m_freetype_face->glyph->bitmap.pitch;
+					dest_pixels += lock_rect.Pitch;
+				}
+				break;
+			}
+		}
+
+		m_font_map[font_index][i].texture->UnlockRect(0);
+
+		D3DSURFACE_DESC desc;
+		m_font_map[font_index][i].texture->GetLevelDesc(0, &desc);
+		m_font_map[font_index][i].size_x = size.x;
+		m_font_map[font_index][i].size_y = size.y;
+		m_font_map[font_index][i].bearing_x = m_freetype_face->glyph->bitmap_left;
+		m_font_map[font_index][i].bearing_y = m_freetype_face->glyph->bitmap_top;
+		m_font_map[font_index][i].advance = m_freetype_face->glyph->advance.x;
+		m_font_map[font_index][i].exists = true;
+	}
+
+	FT_Done_Face(m_freetype_face);
+	FT_Done_FreeType(m_freetype);
 }
 
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, const text_info_t& text_info) {
+texture_t lucid_engine::renderer::create_texture(BYTE texture[], vec2_t size) {
+	m_textures.push_back(texture_t(g_graphics->m_direct_3d_device, texture, size));
+	return m_textures.back();
+}
+
+texture_t lucid_engine::renderer::create_texture(std::string file_name, vec2_t size) {
+	m_textures.push_back(texture_t(g_graphics->m_direct_3d_device, file_name, size));
+	return m_textures.back();
+}
+
+void lucid_engine::renderer::create_font(font_t* font, const char* title, int size, int weight, bool anti_aliased) {
+	*font = font_t(title, size, weight, anti_aliased);
+	font->m_index = m_fonts.size();
+	m_fonts.push_back(font);
+}
+
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, texture_t texture) {
 	if (vertices.empty())
 		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
 
@@ -37,8 +128,7 @@ void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std
 	for (unsigned int i = 0; i < vertices.size(); ++i)
 		indices[i] = i;
 
-	std::vector<draw_data_t>* draw_list = get_draw_list();
-	draw_list->emplace_back(draw_data_t{ type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, text_info, m_clip_info });
+	get_draw_list()->emplace_back(draw_data_t{type, vertices, indices, static_cast<int>(vertices.size()), static_cast<int>(indices.size()), anti_alias, texture, m_clip_info});
 }
 
 std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(int id) {
@@ -75,8 +165,13 @@ void lucid_engine::renderer::compile_draw_data() {
 		std::vector<draw_data_t>* draw_data = get_draw_list(i);
 
 		for (const draw_data_t& data : *draw_data) {
-			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end()));
-			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end()));
+			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), 
+				std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end())
+			);
+
+			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), 
+				std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end())
+			);
 
 			m_compiled_draw_data.m_total_index_count += data.m_index_count;
 			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
@@ -152,22 +247,18 @@ void lucid_engine::renderer::render_draw_data() {
 	g_graphics->m_direct_3d_device->SetIndices(m_index_buffer);
 
 	int start_vertex = 0, start_index = 0;
-	for (int i = 0; i < 3; ++i) {
+	for (int i = 0; i <= draw_list_t::foreground_draw_list; ++i) {
 		for (auto& data : *get_draw_list(i)) {
 			g_graphics->m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, data.m_anti_alias);
+			g_graphics->m_direct_3d_device->SetTexture(0, data.m_texture.m_texture);
 
 			if (!data.m_clips.empty() && i == draw_list_t::default_draw_list)
 				g_graphics->m_direct_3d_device->SetScissorRect(&data.m_clips.back());
 			else
 				g_graphics->m_direct_3d_device->SetScissorRect(&m_screen_data);
 
-			if (data.m_text_info.m_setup) {
-				RECT rect = { (LONG)data.m_text_info.m_pos.x, (LONG)data.m_text_info.m_pos.y, 0, 0 };
-				data.m_text_info.m_font.m_dx_font->DrawTextA(nullptr, data.m_text_info.m_string.c_str(), -1, &rect, DT_LEFT | DT_NOCLIP, color_t::translate(data.m_text_info.m_color));
-			}
-			else
-				g_graphics->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
-
+			g_graphics->m_direct_3d_device->DrawIndexedPrimitive(data.m_draw_type, start_vertex, 0, data.m_vertex_count, start_index, data.m_index_count * 0.3333333333333333);
+			
 			start_vertex += data.m_vertex_count;
 			start_index += data.m_index_count;
 		}
@@ -220,13 +311,24 @@ void lucid_engine::renderer::rectangle(const vec2_t pos, const vec2_t size, cons
 
 void lucid_engine::renderer::filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color) {
 	std::vector<vertex_t> vertices = {
-		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color)),
-		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color)),
-		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
-		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color), 0.f, 0.f),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color), 1.f, 0.f),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color), 1.f, 1.f),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color), 0.f, 1.f)
 	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
+}
+
+void lucid_engine::renderer::texture(texture_t texture, const vec2_t pos, const vec2_t size, const color_t color) {
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color), 0.f, 0.f),
+		vertex_t(pos.x + size.x, pos.y, 0.f, 1.f, color_t::translate(color), 1.f, 0.f),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color), 1.f, 1.f),
+		vertex_t(pos.x, pos.y + size.y, 0.f, 1.f, color_t::translate(color), 0.f, 1.f)
+	};
+
+	write_vertex(D3DPT_TRIANGLEFAN, vertices, false, texture);
 }
 
 void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
@@ -254,6 +356,7 @@ void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t si
 		vec2_t corner_rounded = std::get<1>(corner_tuple);
 		int angle = std::get<2>(corner_tuple);
 		bool should_round = std::get<3>(corner_tuple);
+
 		if (should_round) {
 			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
 			points.insert(points.end(), corner_points.begin(), corner_points.end());
@@ -293,6 +396,7 @@ void lucid_engine::renderer::filled_rounded_rectangle(const vec2_t pos, const ve
 		vec2_t corner_rounded = std::get<1>(corner_tuple);
 		int angle = std::get<2>(corner_tuple);
 		bool should_round = std::get<3>(corner_tuple);
+
 		if (should_round) {
 			std::vector<vec2_t> corner_points = generate_circle_points(corner_rounded, radius, 25, angle);
 			points.insert(points.end(), corner_points.begin(), corner_points.end());
@@ -421,21 +525,49 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, true);
 }
 
-void lucid_engine::renderer::text(const font_t font, const std::string string, const vec2_t pos, const color_t color) {
-	std::vector<vertex_t> vertices = {
-		vertex_t(pos.x, pos.y, 0.f, 1.f, color_t::translate(color))
-	};
+void lucid_engine::renderer::text(font_t font, const std::string string, const vec2_t pos, const color_t color) {
+	auto& char_set = m_font_map[font.m_index];
+	const auto bounds = get_text_size(font, string);
+	auto clr = color_t::translate(color);
 
-	write_vertex(D3DPT_TRIANGLEFAN, vertices, true, text_info_t(font, string, pos, color));
+	float add = 0.f;
+	for (const auto letter : string) {
+		if (!isprint(letter) || letter == ' ') {
+			add += char_set[letter].advance / 64.f;
+			continue;
+		}
+
+		const auto& glyph = char_set[letter];
+		const float w = static_cast<float>(glyph.size_x) + 0.5f;
+		const float h = static_cast<float>(glyph.size_y) + 0.5f;
+		const float x_pos = static_cast<float>(pos.x + add + glyph.bearing_x) - 0.5f;
+		const float y_pos = static_cast<float>(pos.y + bounds.y - glyph.bearing_y) - 0.5f;
+
+		const std::vector<vertex_t> vertices = {
+			{x_pos, y_pos, 0.f, 1.f, clr, 0.f, 0.f},
+			{x_pos + w, y_pos, 0.f, 1.f, clr, 1.f, 0.f},
+			{x_pos + w, y_pos + h, 0.f, 1.f, clr, 1.f, 1.f},
+			{x_pos, y_pos + h, 0.f, 1.f, clr, 0.f, 1.f}
+		};
+
+		write_vertex(D3DPT_TRIANGLEFAN, vertices, false, glyph.texture);
+		add += glyph.advance / 64.f;
+	}
 }
 
 vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::string string) {
-	RECT text_clip; 
+	vec2_t pos{ 0, 0 };
 
-	font.m_dx_font->DrawTextA(0, string.c_str(),
-		strlen(string.c_str()), &text_clip, DT_CALCRECT, D3DCOLOR_ARGB(0, 0, 0, 0));
+	std::map<char, character_t>& char_set = m_font_map[font.m_index];
 
-	return vec2_t(text_clip.right - text_clip.left, text_clip.bottom - text_clip.top);
+	for (size_t i = 0; i < string.size(); i++) {
+		character_t& glyph = char_set[string[i]];
+
+		pos.y = std::max(static_cast<unsigned int>(pos.y), glyph.size_y);
+		pos.x += (float)(glyph.advance / 64);
+	}
+
+	return pos;
 }
 
 void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
@@ -444,4 +576,4 @@ void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
 
 void lucid_engine::renderer::pop_clip() {
 	m_clip_info.pop_back();
-} 
+}

@@ -75,16 +75,16 @@
     <OutDir>..\Output\Debug\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
     <TargetName>Lucid</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include;$(ProjectDir)libs;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(ProjectDir)libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(ProjectDir)lucid/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(ProjectDir)lucid/include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Output\Release\</OutDir>
     <IntDir>..\Output\Object\</IntDir>
     <TargetName>Lucid</TargetName>
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(DXSDK_DIR)Include;$(ProjectDir)lucid/include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(DXSDK_DIR)Lib/x86;$(ProjectDir)lucid/include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -114,7 +114,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies);d3d9.lib;d3dx9.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);d3d9.lib;d3dx9.lib;freetype.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -133,7 +133,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>$(CoreLibraryDependencies);d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(CoreLibraryDependencies);d3d9.lib;d3dx9.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -196,21 +196,122 @@
     <ClInclude Include="lucid\framework\containers\containers.h" />
     <ClInclude Include="lucid\framework\framework.h" />
     <ClInclude Include="lucid\graphics\graphics.h" />
+    <ClInclude Include="lucid\include\freetype\config\ftconfig.h" />
+    <ClInclude Include="lucid\include\freetype\config\ftheader.h" />
+    <ClInclude Include="lucid\include\freetype\config\ftmodule.h" />
+    <ClInclude Include="lucid\include\freetype\config\ftoption.h" />
+    <ClInclude Include="lucid\include\freetype\config\ftstdlib.h" />
+    <ClInclude Include="lucid\include\freetype\config\integer-types.h" />
+    <ClInclude Include="lucid\include\freetype\config\mac-support.h" />
+    <ClInclude Include="lucid\include\freetype\config\public-macros.h" />
+    <ClInclude Include="lucid\include\freetype\freetype.h" />
+    <ClInclude Include="lucid\include\freetype\ftadvanc.h" />
+    <ClInclude Include="lucid\include\freetype\ftbbox.h" />
+    <ClInclude Include="lucid\include\freetype\ftbdf.h" />
+    <ClInclude Include="lucid\include\freetype\ftbitmap.h" />
+    <ClInclude Include="lucid\include\freetype\ftbzip2.h" />
+    <ClInclude Include="lucid\include\freetype\ftcache.h" />
+    <ClInclude Include="lucid\include\freetype\ftchapters.h" />
+    <ClInclude Include="lucid\include\freetype\ftcid.h" />
+    <ClInclude Include="lucid\include\freetype\ftcolor.h" />
+    <ClInclude Include="lucid\include\freetype\ftdriver.h" />
+    <ClInclude Include="lucid\include\freetype\fterrdef.h" />
+    <ClInclude Include="lucid\include\freetype\fterrors.h" />
+    <ClInclude Include="lucid\include\freetype\ftfntfmt.h" />
+    <ClInclude Include="lucid\include\freetype\ftgasp.h" />
+    <ClInclude Include="lucid\include\freetype\ftglyph.h" />
+    <ClInclude Include="lucid\include\freetype\ftgxval.h" />
+    <ClInclude Include="lucid\include\freetype\ftgzip.h" />
+    <ClInclude Include="lucid\include\freetype\ftimage.h" />
+    <ClInclude Include="lucid\include\freetype\ftincrem.h" />
+    <ClInclude Include="lucid\include\freetype\ftlcdfil.h" />
+    <ClInclude Include="lucid\include\freetype\ftlist.h" />
+    <ClInclude Include="lucid\include\freetype\ftlogging.h" />
+    <ClInclude Include="lucid\include\freetype\ftlzw.h" />
+    <ClInclude Include="lucid\include\freetype\ftmac.h" />
+    <ClInclude Include="lucid\include\freetype\ftmm.h" />
+    <ClInclude Include="lucid\include\freetype\ftmodapi.h" />
+    <ClInclude Include="lucid\include\freetype\ftmoderr.h" />
+    <ClInclude Include="lucid\include\freetype\ftotval.h" />
+    <ClInclude Include="lucid\include\freetype\ftoutln.h" />
+    <ClInclude Include="lucid\include\freetype\ftparams.h" />
+    <ClInclude Include="lucid\include\freetype\ftpfr.h" />
+    <ClInclude Include="lucid\include\freetype\ftrender.h" />
+    <ClInclude Include="lucid\include\freetype\ftsizes.h" />
+    <ClInclude Include="lucid\include\freetype\ftsnames.h" />
+    <ClInclude Include="lucid\include\freetype\ftstroke.h" />
+    <ClInclude Include="lucid\include\freetype\ftsynth.h" />
+    <ClInclude Include="lucid\include\freetype\ftsystem.h" />
+    <ClInclude Include="lucid\include\freetype\fttrigon.h" />
+    <ClInclude Include="lucid\include\freetype\fttypes.h" />
+    <ClInclude Include="lucid\include\freetype\ftwinfnt.h" />
+    <ClInclude Include="lucid\include\freetype\internal\autohint.h" />
+    <ClInclude Include="lucid\include\freetype\internal\cffotypes.h" />
+    <ClInclude Include="lucid\include\freetype\internal\cfftypes.h" />
+    <ClInclude Include="lucid\include\freetype\internal\compiler-macros.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftcalc.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftdebug.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftdrv.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftgloadr.h" />
+    <ClInclude Include="lucid\include\freetype\internal\fthash.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftmemory.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftmmtypes.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftobjs.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftpsprop.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftrfork.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftserv.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftstream.h" />
+    <ClInclude Include="lucid\include\freetype\internal\fttrace.h" />
+    <ClInclude Include="lucid\include\freetype\internal\ftvalid.h" />
+    <ClInclude Include="lucid\include\freetype\internal\psaux.h" />
+    <ClInclude Include="lucid\include\freetype\internal\pshints.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svbdf.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svcfftl.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svcid.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svfntfmt.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svgldict.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svgxval.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svkern.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svmetric.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svmm.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svotval.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svpfr.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svpostnm.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svprop.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svpscmap.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svpsinfo.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svsfnt.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svttcmap.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svtteng.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svttglyf.h" />
+    <ClInclude Include="lucid\include\freetype\internal\services\svwinfnt.h" />
+    <ClInclude Include="lucid\include\freetype\internal\sfnt.h" />
+    <ClInclude Include="lucid\include\freetype\internal\svginterface.h" />
+    <ClInclude Include="lucid\include\freetype\internal\t1types.h" />
+    <ClInclude Include="lucid\include\freetype\internal\tttypes.h" />
+    <ClInclude Include="lucid\include\freetype\internal\wofftypes.h" />
+    <ClInclude Include="lucid\include\freetype\otsvg.h" />
+    <ClInclude Include="lucid\include\freetype\t1tables.h" />
+    <ClInclude Include="lucid\include\freetype\ttnameid.h" />
+    <ClInclude Include="lucid\include\freetype\tttables.h" />
+    <ClInclude Include="lucid\include\freetype\tttags.h" />
+    <ClInclude Include="lucid\include\ft2build.h" />
     <ClInclude Include="lucid\input\input.h" />
     <ClInclude Include="lucid\lucid.h" />
     <ClInclude Include="lucid\math\math.h" />
+    <ClInclude Include="lucid\renderer\font.h" />
     <ClInclude Include="lucid\renderer\structures\color.h" />
     <ClInclude Include="lucid\renderer\structures\compiled_draw_data.h" />
     <ClInclude Include="lucid\renderer\structures\draw_data.h" />
     <ClInclude Include="lucid\renderer\structures\font.h" />
-    <ClInclude Include="lucid\renderer\structures\rect.h" />
     <ClInclude Include="lucid\renderer\renderer.h" />
+    <ClInclude Include="lucid\renderer\structures\glyph.h" />
+    <ClInclude Include="lucid\renderer\structures\texture.h" />
     <ClInclude Include="lucid\renderer\structures\text_flags.h" />
-    <ClInclude Include="lucid\renderer\structures\text_info.h" />
     <ClInclude Include="lucid\renderer\structures\vector2d.h" />
     <ClInclude Include="lucid\renderer\structures\vector3d.h" />
-    <ClInclude Include="lucid\renderer\structures\vector4d.h" />
     <ClInclude Include="lucid\renderer\structures\vertex.h" />
+    <ClInclude Include="lucid\renderer\textures.h" />
     <ClInclude Include="lucid\window\wnd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

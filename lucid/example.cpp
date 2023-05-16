@@ -18,6 +18,7 @@ int main() {
 
         g_graphics->begin_scene({ 156, 129, 98 });
         {
+            //g_renderer->text(g_renderer->m_defualt_font, "test lol", {0, 0}, {255, 255, 255, 255});
             g_io->demo_window(true);
         }
         g_renderer->render_draw_data();

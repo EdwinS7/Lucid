@@ -43,7 +43,7 @@ void  lucid_engine::graphics::setup_render_states() {
     m_direct_3d_device->SetRenderState(D3DRS_SRGBWRITEENABLE, FALSE);
     m_direct_3d_device->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, FALSE);
 
-    m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_MODULATE);
+    m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLOROP, D3DTOP_SELECTARG2);
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLORARG1, D3DTA_TEXTURE);
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_COLORARG2, D3DTA_DIFFUSE);
     m_direct_3d_device->SetTextureStageState(0, D3DTSS_ALPHAOP, D3DTOP_MODULATE);
@@ -55,7 +55,7 @@ void  lucid_engine::graphics::setup_render_states() {
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 
-    m_direct_3d_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE);
+    m_direct_3d_device->SetFVF(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1);
     m_direct_3d_device->SetTexture(NULL, NULL);
     m_direct_3d_device->SetVertexShader(nullptr);
     m_direct_3d_device->SetPixelShader(nullptr);

@@ -94,10 +94,9 @@ void lucid_engine::io::demo_window(bool open) {
 
 		auto other = new containers::group_box("other", window->m_pos + vec2_t(180 + group_size.x, 60), group_size);
 		{
-
+			// empty.
 		}
 		other->destroy();
-		
 	}
 	window->destroy();
 }

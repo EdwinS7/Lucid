@@ -26,17 +26,31 @@ enum draw_list_t {
 	foreground_draw_list
 };
 
+struct character_t {
+	IDirect3DTexture9* texture = nullptr;
+	unsigned int size_x, size_y;
+	int bearing_x, bearing_y;
+	int advance;
+	bool exists = false;
+};
+
 namespace lucid_engine {
 	class renderer {
 	public:
-		std::vector<font_t>	m_fonts{ };
-		font_t				m_defualt_font{ };
-		font_t				m_logo_font{ };
+		std::vector<texture_t>						m_textures{ };
+
+		std::vector<font_t*>						m_fonts{ };
+		std::map<int, std::map<char, character_t>>	m_font_map;
+		font_t										m_defualt_font{ };
+		font_t										m_logo_font{ };
 
 		void create_objects();
 		void destroy_objects();
-		font_t create_font(const std::string font_name, int size, int weight = 400, bool anti_aliased = false);
-		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, const text_info_t& text_info = text_info_t());
+		void build_font(font_t& font);
+		texture_t create_texture(BYTE texture[], vec2_t size);
+		texture_t create_texture(std::string file_name, vec2_t size);
+		void create_font(font_t* font, const char* title, int size, int weight = FW_NORMAL, bool anti_aliased = false);
+		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, texture_t texture = texture_t());
 		std::vector<draw_data_t>* get_draw_list(int id = -1);
 		void set_draw_list(draw_list_t draw_list);
 		void render_draw_data();
@@ -46,6 +60,7 @@ namespace lucid_engine {
 		void polygon(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
 		void rectangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void texture(texture_t texture, const vec2_t pos, const vec2_t size, const color_t color);
 		void rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_flags::corner_all);
 		void filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_flags::corner_all);
 		void gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical = false);
@@ -58,8 +73,8 @@ namespace lucid_engine {
 		void circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
 		void filled_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
 		void gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2);
-		void text(const font_t font, const std::string string, const vec2_t pos, const color_t color);
-		vec2_t get_text_size(const font_t font, const std::string string);
+		void text(font_t font, const std::string string, const vec2_t pos, const color_t color);
+		vec2_t get_text_size(font_t font, const std::string string);
 		void push_clip(const vec2_t pos, const vec2_t size);
 		void pop_clip();
 
@@ -82,6 +97,9 @@ namespace lucid_engine {
 		draw_list_t					m_draw_list{ default_draw_list };
 
 		RECT                        m_screen_data{ };
+
+		FT_Library					m_freetype;
+		FT_Face						m_freetype_face;
 
 		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
 		void compile_draw_data();
