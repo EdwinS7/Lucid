@@ -541,7 +541,7 @@ void lucid_engine::renderer::text(font_t font, const std::string string, const v
 		const float w = static_cast<float>(glyph.size_x) + 0.5f;
 		const float h = static_cast<float>(glyph.size_y) + 0.5f;
 		const float x_pos = static_cast<float>(pos.x + add + glyph.bearing_x) - 0.5f;
-		const float y_pos = static_cast<float>(pos.y + bounds.y - glyph.bearing_y) - 0.5f;
+		const float y_pos = static_cast<float>(pos.y + (bounds.y * 0.75f) - glyph.bearing_y) - 0.5f;
 
 		const std::vector<vertex_t> vertices = {
 			{x_pos, y_pos, 0.f, 1.f, clr, 0.f, 0.f},
