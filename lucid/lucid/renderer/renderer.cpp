@@ -5,7 +5,7 @@ void lucid_engine::renderer::create_objects() {
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
 	create_font(&m_defualt_font, "Segoe UI", 9, FW_NORMAL, true);
-	create_font(&m_logo_font, "Verdana", 32, FW_MEDIUM, true);
+	create_font(&m_logo_font, "Arial", 32, FW_NORMAL, true);
 
 	for (font_t* font : m_fonts)
 		build_font(*font);
@@ -559,11 +559,13 @@ vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::strin
 	vec2_t pos{ 0, 0 };
 
 	std::map<char, character_t>& char_set = m_font_map[font.m_index];
+	D3DSURFACE_DESC desc;
 
 	for (size_t i = 0; i < string.size(); i++) {
 		character_t& glyph = char_set[string[i]];
 
-		pos.y = std::max(static_cast<unsigned int>(pos.y), glyph.size_y);
+		glyph.texture->GetLevelDesc(0, &desc);
+		pos.y = std::max(pos.y, static_cast<double>(font.m_size * 1.5f));
 		pos.x += (float)(glyph.advance / 64);
 	}
 
