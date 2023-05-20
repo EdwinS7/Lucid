@@ -52,6 +52,7 @@ void  lucid_engine::graphics::setup_render_states() {
     m_direct_3d_device->SetTextureStageState(1, D3DTSS_COLOROP, D3DTOP_DISABLE);
     m_direct_3d_device->SetTextureStageState(1, D3DTSS_ALPHAOP, D3DTOP_DISABLE);
 
+    m_direct_3d_device->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_NONE);
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR);
     m_direct_3d_device->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR);
 

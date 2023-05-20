@@ -5,6 +5,8 @@ void lucid_engine::io::create() {
 }
 
 void lucid_engine::io::update() {
+	reset();
+
 	g_input->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
 
 	std::chrono::steady_clock::time_point high_resolution_clock = std::chrono::high_resolution_clock::now();

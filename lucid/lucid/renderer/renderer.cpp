@@ -47,12 +47,11 @@ void lucid_engine::renderer::build_font(font_t& font) {
 
 	for (char i = ' '; i < 127; i++) {
 		FT_Load_Char(m_freetype_face, i, font.m_antialiased ? FT_LOAD_RENDER : FT_LOAD_RENDER | FT_LOAD_TARGET_MONO);
-		vec2_t size{ 0, 0 };
+		
+		unsigned int width = m_freetype_face->glyph->bitmap.width ? m_freetype_face->glyph->bitmap.width : 16;
+		unsigned int height = m_freetype_face->glyph->bitmap.rows ? m_freetype_face->glyph->bitmap.rows : 16;
 
-		size.x = m_freetype_face->glyph->bitmap.width ? m_freetype_face->glyph->bitmap.width : 16;
-		size.y = m_freetype_face->glyph->bitmap.rows ? m_freetype_face->glyph->bitmap.rows : 16;
-
-		if (g_graphics->m_direct_3d_device->CreateTexture(size.x, size.y, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8, D3DPOOL_DEFAULT, &m_font_map[font_index][i].texture, NULL) != D3D_OK)
+		if (g_graphics->m_direct_3d_device->CreateTexture(width, height, 1, D3DUSAGE_DYNAMIC, D3DFMT_A8, D3DPOOL_DEFAULT, &m_font_map[font_index][i].texture, NULL) != D3D_OK)
 			throw std::runtime_error{ "failed to create texture" };
 
 		D3DLOCKED_RECT lock_rect;
@@ -64,11 +63,11 @@ void lucid_engine::renderer::build_font(font_t& font) {
 		if (src_pixels && dest_pixels) {
 			switch (m_freetype_face->glyph->bitmap.pixel_mode) {
 			case FT_PIXEL_MODE_MONO:
-				for (uint32_t y = 0; y < size.y; y++, src_pixels += m_freetype_face->glyph->bitmap.pitch, dest_pixels += lock_rect.Pitch)
+				for (uint32_t y = 0; y < height; y++, src_pixels += m_freetype_face->glyph->bitmap.pitch, dest_pixels += lock_rect.Pitch)
 				{
 					uint8_t bits = 0;
 					const uint8_t* bits_ptr = src_pixels;
-					for (uint32_t x = 0; x < size.x; x++, bits <<= 1)
+					for (uint32_t x = 0; x < width; x++, bits <<= 1)
 					{
 						if ((x & 7) == 0)
 							bits = *bits_ptr++;
@@ -77,8 +76,8 @@ void lucid_engine::renderer::build_font(font_t& font) {
 				}
 				break;
 			case FT_PIXEL_MODE_GRAY:
-				for (UINT i = 0; i < size.y; ++i) {
-					memcpy(dest_pixels, src_pixels, size.x);
+				for (UINT i = 0; i < height; ++i) {
+					memcpy(dest_pixels, src_pixels, width);
 
 					src_pixels += m_freetype_face->glyph->bitmap.pitch;
 					dest_pixels += lock_rect.Pitch;
@@ -91,8 +90,8 @@ void lucid_engine::renderer::build_font(font_t& font) {
 
 		D3DSURFACE_DESC desc;
 		m_font_map[font_index][i].texture->GetLevelDesc(0, &desc);
-		m_font_map[font_index][i].size_x = size.x;
-		m_font_map[font_index][i].size_y = size.y;
+		m_font_map[font_index][i].size_x = width;
+		m_font_map[font_index][i].size_y = height;
 		m_font_map[font_index][i].bearing_x = m_freetype_face->glyph->bitmap_left;
 		m_font_map[font_index][i].bearing_y = m_freetype_face->glyph->bitmap_top;
 		m_font_map[font_index][i].advance = m_freetype_face->glyph->advance.x;
@@ -526,50 +525,54 @@ void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int c
 }
 
 void lucid_engine::renderer::text(font_t font, const std::string string, const vec2_t pos, const color_t color) {
-	auto& char_set = m_font_map[font.m_index];
-	const auto bounds = get_text_size(font, string);
-	auto clr = color_t::translate(color);
+	vec2_t bounds = get_text_size(font, string);
+	auto char_set = m_font_map[font.m_index];
 
 	float add = 0.f;
 	for (const auto letter : string) {
-		if (!isprint(letter) || letter == ' ') {
-			add += char_set[letter].advance / 64.f;
+		auto should_draw = [](const char letter) {
+			return isprint(letter) && letter != ' ';
+		};
+
+		if (!should_draw) {
+			add += char_set[letter].advance / 64;
 			continue;
 		}
 
-		const auto& glyph = char_set[letter];
-		const float w = static_cast<float>(glyph.size_x) + 0.5f;
-		const float h = static_cast<float>(glyph.size_y) + 0.5f;
-		const float x_pos = static_cast<float>(pos.x + add + glyph.bearing_x) - 0.5f;
-		const float y_pos = static_cast<float>(pos.y + (bounds.y * 0.75f) - glyph.bearing_y) - 0.5f;
+		character_t& glyph = char_set[letter];
+		float w = static_cast<float>(glyph.size_x);
+		float h = static_cast<float>(glyph.size_y);
+		float x_pos = static_cast<float>(pos.x + add + glyph.bearing_x) - 0.45f;
+		float y_pos = static_cast<float>(pos.y + (bounds.y * 0.75f) - glyph.bearing_y) - 0.45f;
 
 		const std::vector<vertex_t> vertices = {
-			{x_pos, y_pos, 0.f, 1.f, clr, 0.f, 0.f},
-			{x_pos + w, y_pos, 0.f, 1.f, clr, 1.f, 0.f},
-			{x_pos + w, y_pos + h, 0.f, 1.f, clr, 1.f, 1.f},
-			{x_pos, y_pos + h, 0.f, 1.f, clr, 0.f, 1.f}
+			{x_pos, y_pos, 0.f, 1.f, color_t::translate(color), 0.f, 0.f},
+			{x_pos + w, y_pos, 0.f, 1.f, color_t::translate(color), 1.f, 0.f},
+			{x_pos + w, y_pos + h, 0.f, 1.f, color_t::translate(color), 1.f, 1.f},
+			{x_pos, y_pos + h, 0.f, 1.f, color_t::translate(color), 0.f, 1.f}
 		};
 
 		write_vertex(D3DPT_TRIANGLEFAN, vertices, false, glyph.texture);
-		add += glyph.advance / 64.f;
+
+		add += glyph.advance / 64;
 	}
 }
 
 vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::string string) {
-	vec2_t pos{ 0, 0 };
+	D3DSURFACE_DESC desc{ };
+	vec2_t size{ 0, 0 };
 
 	std::map<char, character_t>& char_set = m_font_map[font.m_index];
-	D3DSURFACE_DESC desc;
 
-	for (size_t i = 0; i < string.size(); i++) {
-		character_t& glyph = char_set[string[i]];
-
+	for (auto& letter : string) {
+		character_t& glyph = char_set[letter];
 		glyph.texture->GetLevelDesc(0, &desc);
-		pos.y = std::max(pos.y, static_cast<double>(font.m_size * 1.5f));
-		pos.x += (float)(glyph.advance / 64);
+
+		size.y = std::max(size.y, static_cast<double>(font.m_size * 1.5f));
+		size.x += static_cast<double>((glyph.advance / 64));
 	}
 
-	return pos;
+	return size;
 }
 
 void lucid_engine::renderer::push_clip(const vec2_t pos, const vec2_t size) {
