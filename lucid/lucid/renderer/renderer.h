@@ -29,8 +29,7 @@ enum draw_list_t {
 struct character_t {
 	IDirect3DTexture9* texture = nullptr;
 	unsigned int size_x, size_y;
-	int bearing_x, bearing_y;
-	int advance;
+	int bearing_x, bearing_y, advance;
 	bool exists = false;
 };
 

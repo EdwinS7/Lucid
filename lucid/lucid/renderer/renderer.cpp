@@ -540,10 +540,10 @@ void lucid_engine::renderer::text(font_t font, const std::string string, const v
 		}
 
 		character_t& glyph = char_set[letter];
-		float w = static_cast<float>(glyph.size_x);
-		float h = static_cast<float>(glyph.size_y);
-		float x_pos = static_cast<float>(pos.x + add + glyph.bearing_x) - 0.45f;
-		float y_pos = static_cast<float>(pos.y + (bounds.y * 0.75f) - glyph.bearing_y) - 0.45f;
+		float w = roundf(static_cast<float>(glyph.size_x));
+		float h = roundf(static_cast<float>(glyph.size_y));
+		float x_pos = roundf(static_cast<float>(pos.x + add + glyph.bearing_x)) - 0.5f;
+		float y_pos = roundf(static_cast<float>(pos.y + (bounds.y * 0.75f) - glyph.bearing_y)) - 0.5f;
 
 		const std::vector<vertex_t> vertices = {
 			{x_pos, y_pos, 0.f, 1.f, color_t::translate(color), 0.f, 0.f},
