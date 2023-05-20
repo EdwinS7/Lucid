@@ -27,10 +27,9 @@ enum draw_list_t {
 };
 
 struct character_t {
-	IDirect3DTexture9* texture = nullptr;
-	unsigned int size_x, size_y;
-	int bearing_x, bearing_y, advance;
-	bool exists = false;
+	LPDIRECT3DTEXTURE9	m_texture = nullptr;
+	vec2_t				m_size, m_bearing;
+	int					m_advance;
 };
 
 namespace lucid_engine {

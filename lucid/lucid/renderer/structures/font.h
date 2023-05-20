@@ -35,7 +35,7 @@ struct font_t {
 		m_font_path = std::string(str_buffer) + '\\' + str_path;
 	}
 
-	unsigned int	m_index;
+	uint32_t		m_index;
 
 	char*			m_family;
 	std::string		m_font_path;
