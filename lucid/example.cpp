@@ -18,14 +18,10 @@ int main() {
 
         g_graphics->begin_scene({ 156, 129, 98 });
         {
-            vec2_t text_size = g_renderer->get_text_size(g_renderer->m_defualt_font, "big nigger test balls");
-            g_renderer->filled_rectangle({ 0, 0 }, text_size, { 0, 0, 0, 255 });
-            g_renderer->text(g_renderer->m_defualt_font, "big nigger test balls", {0, 0}, {255, 255, 255, 255});
             g_io->demo_window(true);
         }
         g_renderer->render_draw_data();
         g_graphics->end_scene();
-
         g_io->reset();
     }
 
