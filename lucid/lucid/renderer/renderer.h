@@ -32,49 +32,57 @@ struct character_t {
 	int					m_advance;
 };
 
+#define string_t std::map<int, std::map<char, character_t>>
+
 namespace lucid_engine {
 	class renderer {
 	public:
-		std::vector<texture_t>						m_textures{ };
-
-		std::vector<font_t*>						m_fonts{ };
-		std::map<int, std::map<char, character_t>>	m_font_map;
-		font_t										m_defualt_font{ };
-		font_t										m_logo_font{ };
-
 		void create_objects();
 		void destroy_objects();
+
 		void build_font(font_t& font);
+		void create_font(font_t* font, const char* title, int size, int weight = FW_NORMAL, bool anti_aliased = false);
+
 		texture_t create_texture(BYTE texture[], vec2_t size);
 		texture_t create_texture(std::string file_name, vec2_t size);
-		void create_font(font_t* font, const char* title, int size, int weight = FW_NORMAL, bool anti_aliased = false);
-		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, texture_t texture = texture_t());
+
 		std::vector<draw_data_t>* get_draw_list(draw_list_t draw_list);
 		void set_draw_list(draw_list_t draw_list);
+		
 		void render_draw_data();
 
 		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
+
 		void polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
 		void polygon(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
+
 		void rectangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void texture(texture_t texture, const vec2_t pos, const vec2_t size, const color_t color);
 		void rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_flags::corner_all);
 		void filled_rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, int radius, const corner_flags flags = corner_flags::corner_all);
+
 		void gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical = false);
 		void filled_gradient(const vec2_t pos, const vec2_t size, const color_t left, const color_t right, const bool vertical = false);
 		void gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left);
 		void filled_gradient_four(const vec2_t pos, const vec2_t size, const color_t top_left, const color_t top_right, const color_t bottom_right, const color_t bottom_left);
+
 		void triangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void filled_triangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2);
+
 		void circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
 		void filled_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);
 		void gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2);
+
 		void text(font_t font, const std::string string, const vec2_t pos, const color_t color);
 		vec2_t get_text_size(font_t font, const std::string string);
+
 		void push_clip(const vec2_t pos, const vec2_t size);
 		void pop_clip();
+
+		font_t	m_defualt_font{ };
+		font_t	m_logo_font{ };
 
 	private:
 		int							m_vertex_buffer_size{ 5000 },
@@ -88,7 +96,10 @@ namespace lucid_engine {
 									m_background_draw_data{ },
 									m_foreground_draw_data{ };
 
-		LPDIRECT3DTEXTURE9			m_font_texture{ };
+		std::vector<texture_t>		m_textures{ };
+
+		std::vector<font_t*>		m_fonts{ };
+		string_t					m_font_map{ };
 
 		std::vector<RECT>			m_clip_info{ };
 
@@ -100,8 +111,10 @@ namespace lucid_engine {
 		FT_Face						m_freetype_face;
 
 		std::vector<vec2_t> generate_arc_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
-		void compile_draw_data();
+		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, texture_t texture = texture_t());
+
 		void reset_draw_list();
+		void compile_draw_data();
 
 	};
 

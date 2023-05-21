@@ -34,6 +34,12 @@ void lucid_engine::renderer::destroy_objects() {
 	m_fonts.clear();
 }
 
+void lucid_engine::renderer::create_font(font_t* font, const char* title, int size, int weight, bool anti_aliased) {
+	*font = font_t(title, size, weight, anti_aliased);
+	font->m_index = m_fonts.size();
+	m_fonts.push_back(font);
+}
+
 void lucid_engine::renderer::build_font(font_t& font) {
 	if (FT_Init_FreeType(&m_freetype) || FT_New_Face(m_freetype, font.m_font_path.c_str(), 0, &m_freetype_face))
 		throw std::runtime_error{ "failed to init freetype" };
@@ -111,27 +117,6 @@ texture_t lucid_engine::renderer::create_texture(std::string file_name, vec2_t s
 	return m_textures.back();
 }
 
-void lucid_engine::renderer::create_font(font_t* font, const char* title, int size, int weight, bool anti_aliased) {
-	*font = font_t(title, size, weight, anti_aliased);
-	font->m_index = m_fonts.size();
-	m_fonts.push_back(font);
-}
-
-void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, texture_t texture) {
-	if (vertices.empty())
-		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
-
-	std::vector<uint32_t> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
-
-	for (uint32_t i = 0; i < vertices.size(); ++i)
-		indices[i] = i;
-
-	get_draw_list(m_draw_list)->emplace_back(draw_data_t{type, vertices, indices,
-		static_cast<int>(vertices.size()), static_cast<int>(indices.size()),
-		draw_command_t(anti_alias, texture, m_clip_info)}
-	);
-}
-
 std::vector<draw_data_t>* lucid_engine::renderer::get_draw_list(draw_list_t draw_list) {
 	switch (draw_list) {
 	case background_draw_list:
@@ -156,25 +141,6 @@ void lucid_engine::renderer::reset_draw_list() {
 	m_default_draw_data.clear();
 }
 
-void lucid_engine::renderer::compile_draw_data() {
-	for (int i = 0; i < 3; ++i) {
-		std::vector<draw_data_t>* draw_data = get_draw_list(draw_list_t(i));
-
-		for (const draw_data_t& data : *draw_data) {
-			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(), 
-				std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end())
-			);
-
-			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(), 
-				std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end())
-			);
-
-			m_compiled_draw_data.m_total_index_count += data.m_index_count;
-			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
-		}
-	}
-}
-
 std::vector<vec2_t> lucid_engine::renderer::generate_arc_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments) {
 	std::vector<vec2_t> points;
 
@@ -191,6 +157,40 @@ std::vector<vec2_t> lucid_engine::renderer::generate_arc_points(const vec2_t pos
 	}
 
 	return points;
+}
+
+void lucid_engine::renderer::compile_draw_data() {
+	for (int i = 0; i < 3; ++i) {
+		std::vector<draw_data_t>* draw_data = get_draw_list(draw_list_t(i));
+
+		for (const draw_data_t& data : *draw_data) {
+			m_compiled_draw_data.m_vertices.insert(m_compiled_draw_data.m_vertices.end(),
+				std::make_move_iterator(data.m_vertices.begin()), std::make_move_iterator(data.m_vertices.end())
+			);
+
+			m_compiled_draw_data.m_indices.insert(m_compiled_draw_data.m_indices.end(),
+				std::make_move_iterator(data.m_indices.begin()), std::make_move_iterator(data.m_indices.end())
+			);
+
+			m_compiled_draw_data.m_total_index_count += data.m_index_count;
+			m_compiled_draw_data.m_total_vertex_count += data.m_vertex_count;
+		}
+	}
+}
+
+void lucid_engine::renderer::write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias, texture_t texture) {
+	if (vertices.empty())
+		throw std::runtime_error{ "write_vertex error { vertices is empty }" };
+
+	std::vector<uint32_t> indices(type == D3DPT_LINESTRIP ? vertices.size() * 3 - 1 : vertices.size() * 3);
+
+	for (uint32_t i = 0; i < vertices.size(); ++i)
+		indices[i] = i;
+
+	get_draw_list(m_draw_list)->emplace_back(draw_data_t{type, vertices, indices,
+		static_cast<int>(vertices.size()), static_cast<int>(indices.size()),
+		draw_command_t(anti_alias, texture, m_clip_info)}
+	);
 }
 
 void lucid_engine::renderer::render_draw_data() {
