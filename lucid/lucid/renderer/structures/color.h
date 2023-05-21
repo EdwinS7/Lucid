@@ -10,11 +10,11 @@ struct color_t {
 	color_t(uint8_t r, uint8_t g, uint8_t b, uint8_t a = 255)
 		: r(r), g(g), b(b), a(a) {}
 
-	D3DCOLOR translate() {
+	DWORD translate() {
 		return D3DCOLOR_RGBA(r, g, b, a);
 	}
 
-	static D3DCOLOR translate(color_t clr) {
+	static DWORD translate(color_t clr) {
 		return D3DCOLOR_RGBA(clr.r, clr.g, clr.b, clr.a);
 	}
 

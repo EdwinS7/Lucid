@@ -49,7 +49,7 @@ namespace lucid_engine {
 		texture_t create_texture(std::string file_name, vec2_t size);
 		void create_font(font_t* font, const char* title, int size, int weight = FW_NORMAL, bool anti_aliased = false);
 		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, texture_t texture = texture_t());
-		std::vector<draw_data_t>* get_draw_list(int id = -1);
+		std::vector<draw_data_t>* get_draw_list(draw_list_t draw_list);
 		void set_draw_list(draw_list_t draw_list);
 		void render_draw_data();
 
@@ -99,7 +99,7 @@ namespace lucid_engine {
 		FT_Library					m_freetype;
 		FT_Face						m_freetype_face;
 
-		std::vector<vec2_t> generate_circle_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
+		std::vector<vec2_t> generate_arc_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
 		void compile_draw_data();
 		void reset_draw_list();
 

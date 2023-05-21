@@ -2,10 +2,12 @@
 
 struct vertex_t {
     float x, y, z, rhw;
-    D3DCOLOR color;
+    DWORD color;
+
+    /* texture coordinates */
     float u, v;
 
     vertex_t() {}
-    vertex_t(float _x, float _y, float _z, float _rhw, D3DCOLOR _color, float _u = 0.f, float _v = 0.f)
-        : x(_x), y(_y), z(_z), rhw(_rhw), color(_color), u(_u), v(_v) {}
+    vertex_t(float x, float y, float z, DWORD color, float u = 0.f, float v = 0.f, float rhw = 1.f)
+        : x(x), y(y), z(z), color(color), u(u), v(v), rhw(rhw) {}
 };
