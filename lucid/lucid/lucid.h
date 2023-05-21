@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <cassert>
 #include <shlobj.h>
+#include <array>
 
 // freetype
 #include "include/ft2build.h"

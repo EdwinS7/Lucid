@@ -15,25 +15,23 @@ bool lucid_engine::input::button_behavior(int key, key_style style, vec2_t pos, 
 }
 
 bool lucid_engine::input::rect_clipping_rect(vec2_t pos, vec2_t size, vec2_t _pos, vec2_t _size) {
-	const std::vector points = {
-		vec2_t{pos.x, pos.y},
-		vec2_t{pos.x + size.x, pos.y},
-		vec2_t{pos.x, pos.y + size.y},
-		vec2_t{pos.x + size.x, pos.y + size.y}
+	const std::array<vec2_t, 4> points = {
+		vec2_t{ pos.x, pos.y },
+		vec2_t{ pos.x + size.x, pos.y },
+		vec2_t{ pos.x, pos.y + size.y },
+		vec2_t{ pos.x + size.x, pos.y + size.y }
 	};
 
-	const auto is_hovering_point = [&](const vec2_t& point) {
-		return point_hovering_rect(point, _pos, _size);
-	};
+	for (const vec2_t& point : points) {
+		if (point_hovering_rect(point, _pos, _size))
+			return true;
+	}
 
-	return std::ranges::any_of(points, is_hovering_point);
+	return false;
 }
 
 bool lucid_engine::input::point_hovering_rect(vec2_t point, vec2_t pos, vec2_t size) {
-	if ((point.x >= pos.x && point.x <= pos.x + size.x) && (point.y >= pos.y && point.y <= pos.y + size.y))
-		return true;
-
-	return false;
+	return (point.x >= pos.x && point.x <= pos.x + size.x && point.y >= pos.y && point.y <= pos.y + size.y);
 }
 
 bool lucid_engine::input::mouse_hovering_rect(vec2_t pos, vec2_t size) {
