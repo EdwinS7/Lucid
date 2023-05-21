@@ -311,7 +311,6 @@
     <ClInclude Include="lucid\renderer\structures\vector2d.h" />
     <ClInclude Include="lucid\renderer\structures\vector3d.h" />
     <ClInclude Include="lucid\renderer\structures\vertex.h" />
-    <ClInclude Include="lucid\renderer\textures.h" />
     <ClInclude Include="lucid\window\wnd.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
