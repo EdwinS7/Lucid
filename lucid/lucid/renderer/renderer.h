@@ -69,6 +69,7 @@ namespace lucid_engine {
 
 		void triangle(const vec2_t pos, const vec2_t size, const color_t color);
 		void filled_triangle(const vec2_t pos, const vec2_t size, const color_t color);
+		void filled_rounded_triangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius);
 		void gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2);
 
 		void circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color);

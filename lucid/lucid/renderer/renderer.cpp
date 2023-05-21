@@ -477,6 +477,33 @@ void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
+void lucid_engine::renderer::filled_rounded_triangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius) {
+	if (radius < 0.5f) {
+		filled_triangle(pos, size, color);
+		return;
+	}
+
+	std::vector<vec2_t> points;
+
+	std::initializer_list<std::tuple<vec2_t, float>> gen_points = {
+		std::tuple{vec2_t(pos.x + size.x * 0.5 - radius * 0.5, pos.y + radius * 0.5), 200.f},
+		std::tuple{vec2_t(pos.x + size.x - radius, pos.y + size.y - radius), 320.f},
+		std::tuple{vec2_t(pos.x, pos.y + size.y - radius), 80.f}
+	};
+
+	for (const std::tuple<vec2_t, float>& point : gen_points) {
+		vec2_t corner_rounded = std::get<0>(point);
+		int angle = std::get<1>(point);
+
+		std::vector<vec2_t> corner_points = generate_arc_points(corner_rounded, radius, 33, angle);
+		points.insert(points.end(), corner_points.begin(), corner_points.end());
+	}
+
+	points.emplace_back(points.front());
+
+	polygon(points, color, true);
+}
+
 void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x + size.x * 0.5, pos.y, 0.f, color_t::translate(color2)),
