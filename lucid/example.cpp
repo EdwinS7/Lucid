@@ -20,7 +20,6 @@ int main() {
 
         g_graphics->begin_scene({ 156, 129, 98 });
         {
-            g_renderer->filled_rounded_triangle({ 25, 25 }, { 200, 200 }, { 255, 0, 0, 255 }, 10.f);
             g_io->demo_window(true);
         }
         g_renderer->render_draw_data();
