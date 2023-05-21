@@ -12,9 +12,8 @@
 
 // freetype
 #include "include/ft2build.h"
-
-#include FT_BITMAP_H
 #include FT_FREETYPE_H
+#include FT_BITMAP_H
 
 // data structures
 #include "renderer/structures/color.h"
@@ -48,6 +47,8 @@ namespace lucid_engine {
 
 		int	  m_frame_rate{ 0 },
 			  m_frame_rate_average{ 0 };
+
+		float m_elapsed_time{ 0.f };
 
 	};
 

@@ -5,16 +5,18 @@ void lucid_engine::io::create() {
 }
 
 void lucid_engine::io::update() {
-	reset();
-
 	g_input->m_cursor_style = LoadCursor(NULL, IDC_ARROW);
 
-	std::chrono::steady_clock::time_point high_resolution_clock = std::chrono::high_resolution_clock::now();
-	m_real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
+	static std::chrono::steady_clock::time_point entry_high_resolution_clock = std::chrono::high_resolution_clock::now();
+	m_elapsed_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(entry_high_resolution_clock - entry_high_resolution_clock).count());
 
-	static std::chrono::steady_clock::time_point old_frame_time = std::chrono::high_resolution_clock::now();
-	m_delta_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock - old_frame_time).count());
-	old_frame_time = high_resolution_clock;
+	std::chrono::steady_clock::time_point high_resolution_clock = std::chrono::high_resolution_clock::now();
+	static std::chrono::steady_clock::time_point frame_time = std::chrono::high_resolution_clock::now();
+
+	m_real_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock.time_since_epoch()).count());
+	m_delta_time = static_cast<float>(std::chrono::duration_cast<std::chrono::duration<double>>(high_resolution_clock - frame_time).count());
+
+	frame_time = high_resolution_clock;
 
 	m_frame_rate = static_cast<int>(1.f / m_delta_time);
 	

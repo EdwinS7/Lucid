@@ -13,7 +13,7 @@ void lucid_engine::ui::combo_box(const char* title, int* value, std::vector<cons
 		m_hovering_element = true;
 	}
 
-	if (m_group->element_visible(m_group->m_elements_pos + vec2_t(0, text_size.y), combo_size)) {
+	if (m_group->element_visible(m_group->m_elements_pos, combo_size + vec2_t(0, text_size.y))) {
 		g_renderer->text(g_renderer->m_defualt_font, title, m_group->m_elements_pos - vec2_t(0, 2), m_style->m_text_inactive);
 
 		g_renderer->filled_rectangle(m_group->m_elements_pos + vec2_t(0, text_size.y), combo_size, m_style->m_element_inactive);

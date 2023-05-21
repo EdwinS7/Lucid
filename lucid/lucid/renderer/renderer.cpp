@@ -539,14 +539,18 @@ void lucid_engine::renderer::text(font_t font, const std::string string, const v
 		}
 
 		character_t& glyph = char_set[letter];
-		vec2_t letter_size{ round(glyph.m_size.x), round(glyph.m_size.y) };
-		vec2_t letter_pos { round(pos.x + add + glyph.m_bearing.x) + 0.5f, round(pos.y + (bounds.y * 0.75f) - glyph.m_bearing.y) + 0.5f };
+
+		float	x = round(static_cast<float>(pos.x) + add + glyph.m_bearing.x) + 0.5f,
+				y = round(static_cast<float>(pos.y) + (bounds.y * 0.75f) - glyph.m_bearing.y) + 0.5f;
+
+		float	w = round(static_cast<float>(glyph.m_size.x)),
+				h = round(static_cast<float>(glyph.m_size.y));
 
 		const std::vector<vertex_t> vertices = {
-			{static_cast<float>(letter_pos.x), static_cast<float>(letter_pos.y), 0.f, 1.f, color_t::translate(color), 0.f, 0.f},
-			{static_cast<float>(letter_pos.x + letter_size.x), static_cast<float>(letter_pos.y), 0.f, 1.f, color_t::translate(color), 1.f, 0.f},
-			{static_cast<float>(letter_pos.x + letter_size.x), static_cast<float>(letter_pos.y + letter_size.y), 0.f, 1.f, color_t::translate(color), 1.f, 1.f},
-			{static_cast<float>(letter_pos.x), static_cast<float>(letter_pos.y + letter_size.y), 0.f, 1.f, color_t::translate(color), 0.f, 1.f}
+			{x, y, 0.f, 1.f, color_t::translate(color), 0.f, 0.f},
+			{x + w, y, 0.f, 1.f, color_t::translate(color), 1.f, 0.f},
+			{x + w, y + h, 0.f, 1.f, color_t::translate(color), 1.f, 1.f},
+			{x, y + h, 0.f, 1.f, color_t::translate(color), 0.f, 1.f}
 		};
 
 		write_vertex(D3DPT_TRIANGLEFAN, vertices, false, glyph.m_texture);

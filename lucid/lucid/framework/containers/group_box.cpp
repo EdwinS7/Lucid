@@ -54,7 +54,7 @@ void containers::group_box::destroy() {
 
 	// can we scroll? conditions & absolute value.
 	if (m_elements_pos.y - scoll_to_bottom  >= 0 && !lucid_engine::g_ui->is_dragging() && !lucid_engine::g_ui->is_resizing() && m_hovered)
-		m_scroll[group_id] = std::clamp(m_scroll[group_id] + (double)lucid_engine::g_input->m_mouse_wheel_delta, scrollable + m_scroll[group_id], 0.0);
+		m_scroll[group_id] = std::clamp(m_scroll[group_id] + lucid_engine::g_input->m_mouse_wheel_delta, scrollable + m_scroll[group_id], 0.0);
 
 	// apply lerped value (animated).
 	m_scroll_lerp[group_id] = lucid_engine::g_math->animate(animation_type::lerp, m_scroll_lerp[group_id], m_scroll[group_id], 8);
