@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="example.cpp" />
+    <ClCompile Include="lucid\framework\elements\bullet.cpp" />
     <ClCompile Include="lucid\framework\elements\button.cpp" />
     <ClCompile Include="lucid\framework\elements\check_box.cpp" />
     <ClCompile Include="lucid\framework\elements\combo.cpp" />

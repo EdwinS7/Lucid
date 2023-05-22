@@ -9,9 +9,9 @@ enum animation_type {
 namespace lucid_engine {
 	class math {
 	public:
-		double map(float x, float in_min, float in_max, float out_min, float out_max);
-		double animate(animation_type animation, double from, double to, double speed_multiplier = 1.f);
-
+		float map(float x, float in_min, float in_max, float out_min, float out_max);
+		float animate(animation_type animation, float from, float to, float speed_multiplier = 1.f);
+		float bezier(float p0, float p1, float p2, float t);
 	};
 
 	inline const auto g_math = std::make_unique< math >();

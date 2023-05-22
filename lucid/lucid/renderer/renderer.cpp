@@ -276,6 +276,21 @@ void lucid_engine::renderer::line(const vec2_t from, const vec2_t to, const colo
 	write_vertex(D3DPT_LINELIST, vertices, anti_alias);
 }
 
+void lucid_engine::renderer::bezier_line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias) {
+	std::vector<vertex_t> vertices;
+
+	for (float i = 0; i <= BEZIER_SEGMENTS; ++i) {
+		float t = i / BEZIER_SEGMENTS;
+		
+		float x = g_math->bezier(from.x, to.x, from.x + (to.x - from.x), t);
+		float y = g_math->bezier(from.y, to.y, from.y + (to.y - from.y), t * t * (3.0f - 2.0f * t));
+
+		vertices.emplace_back(x, y, 0.f, color_t::translate(color));
+	}
+
+	write_vertex(D3DPT_LINESTRIP, vertices, anti_alias);
+}
+
 void lucid_engine::renderer::polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias) {
 	std::vector<vertex_t> vertices;
 
@@ -327,6 +342,20 @@ void lucid_engine::renderer::texture(texture_t texture, const vec2_t pos, const 
 	};
 
 	write_vertex(D3DPT_TRIANGLEFAN, vertices, false, texture);
+}
+
+void lucid_engine::renderer::gradient_filled_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2)
+{
+	std::vector<vertex_t> vertices = {
+		vertex_t(pos.x + size.x * 0.5f, pos.y + size.y * 0.5f, 0.f, color_t::translate(color2)),
+		vertex_t(pos.x, pos.y, 0.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y, 0.f, color_t::translate(color)),
+		vertex_t(pos.x + size.x, pos.y + size.y, 0.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y + size.y, 0.f, color_t::translate(color)),
+		vertex_t(pos.x, pos.y, 0.f, color_t::translate(color))
+	};
+
+	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
 void lucid_engine::renderer::rounded_rectangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius, const corner_flags flags) {
@@ -477,6 +506,33 @@ void lucid_engine::renderer::filled_triangle(const vec2_t pos, const vec2_t size
 	write_vertex(D3DPT_TRIANGLEFAN, vertices);
 }
 
+void lucid_engine::renderer::rounded_triangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius) {
+	if (radius < 0.5f) {
+		triangle(pos, size, color);
+		return;
+	}
+
+	std::vector<vec2_t> points;
+
+	std::initializer_list<std::tuple<vec2_t, float>> gen_points = {
+		std::tuple{vec2_t(pos.x + size.x * 0.5 - radius * 0.5, pos.y + radius * 0.5), 200.f},
+		std::tuple{vec2_t(pos.x + size.x - radius, pos.y + size.y - radius), 320.f},
+		std::tuple{vec2_t(pos.x, pos.y + size.y - radius), 80.f}
+	};
+
+	for (const std::tuple<vec2_t, float>& point : gen_points) {
+		vec2_t corner_rounded = std::get<0>(point);
+		int angle = std::get<1>(point);
+
+		std::vector<vec2_t> corner_points = generate_arc_points(corner_rounded, radius, 33, angle);
+		points.insert(points.end(), corner_points.begin(), corner_points.end());
+	}
+
+	points.emplace_back(points.front());
+
+	polyline(points, color, true);
+}
+
 void lucid_engine::renderer::filled_rounded_triangle(const vec2_t pos, const vec2_t size, const color_t color, const int radius) {
 	if (radius < 0.5f) {
 		filled_triangle(pos, size, color);
@@ -501,10 +557,10 @@ void lucid_engine::renderer::filled_rounded_triangle(const vec2_t pos, const vec
 
 	points.emplace_back(points.front());
 
-	polygon(points, color, true);
+	polygon(points, color);
 }
 
-void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2) {
+void lucid_engine::renderer::gradient_filled_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2) {
 	std::vector<vertex_t> vertices = {
 		vertex_t(pos.x + size.x * 0.5, pos.y, 0.f, color_t::translate(color2)),
 		vertex_t(pos.x + size.x * 0.5, pos.y + size.y * 0.5, 0.f, color_t::translate(color)),
@@ -514,6 +570,9 @@ void lucid_engine::renderer::gradient_triangle(const vec2_t pos, const vec2_t si
 	};
 
 	write_vertex(D3DPT_TRIANGLESTRIP, vertices);
+}
+
+void lucid_engine::renderer::gradient_filled_rounded_triangle(const vec2_t pos, const vec2_t size, const color_t color, const color_t color2, const int radius) {
 }
 
 void lucid_engine::renderer::circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color) {
@@ -539,6 +598,28 @@ void lucid_engine::renderer::filled_circle(const vec2_t pos, int radius, int com
 }
 
 void lucid_engine::renderer::gradient_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2) {
+	std::vector<vec2_t> points = generate_arc_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
+	std::vector<vertex_t> vertices;
+
+	const float halfCircle = static_cast<float>(points.size()) / 2.0f;
+	const float fadeStart = halfCircle / static_cast<float>(points.size() - 1);
+
+	for (size_t i = 0; i < points.size(); ++i) {
+		const float t = static_cast<float>(i) / static_cast<float>(points.size() - 1);
+		float interpolatedT = t;
+
+		if (t > fadeStart && t <= 1.0f) {
+			interpolatedT = 1.0f - ((t - fadeStart) / (1.0f - fadeStart));
+		}
+
+		const color_t gradient_color = color_t::interpolate(color, color2, interpolatedT);
+		vertices.emplace_back(vertex_t(points[i].x, points[i].y, 0.f, color_t::translate(gradient_color)));
+	}
+
+	write_vertex(D3DPT_LINESTRIP, vertices, true);
+}
+
+void lucid_engine::renderer::gradient_filled_circle(const vec2_t pos, int radius, int completion, int rotation, const color_t color, const color_t color2) {
 	std::vector<vec2_t> points = generate_arc_points(pos, radius, completion, rotation, CIRCLE_SEGMENTS);
 	std::vector<vertex_t> vertices;
 

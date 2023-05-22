@@ -20,6 +20,7 @@ int main() {
 
         g_graphics->begin_scene({ 156, 129, 98 });
         {
+            g_renderer->gradient_circle({ 100, 100 }, 50, 100, 0, { 255, 255, 255, 255 }, { 255, 0, 0, 255 });
             g_io->demo_window(true);
         }
         g_renderer->render_draw_data();

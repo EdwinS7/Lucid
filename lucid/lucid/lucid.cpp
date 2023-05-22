@@ -74,6 +74,7 @@ void lucid_engine::io::demo_window(bool open) {
 		auto general = new containers::group_box("general", window->m_pos + vec2_t(165, 60), group_size);
 		{
 			g_ui->label("label example", g_ui->get_style()->m_accent);
+			g_ui->bullet("bullet example", g_ui->get_style()->m_accent);
 
 			static bool checkbox_example{ false };
 			g_ui->check_box("check box example", &checkbox_example);

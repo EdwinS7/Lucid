@@ -54,7 +54,7 @@ void containers::window::handle_render()
 	lucid_engine::g_renderer->rectangle(m_pos, m_size, style->m_window_outline);
 
 	// title
-	lucid_engine::g_renderer->text(lucid_engine::g_renderer->m_logo_font, m_title, m_pos + vec2_t(6, 2), style->m_text_active);
+	lucid_engine::g_renderer->gradient_text(lucid_engine::g_renderer->m_logo_font, m_title, m_pos + vec2_t(6, 2), style->m_accent, style->m_text_active);
 }
 
 void containers::window::destroy() {
