@@ -17,3 +17,35 @@ Lucid Engine is a powerful and high-performance game engine designed to power de
 ## Contact us
 [<img src="https://droplr.com/wp-content/uploads/2020/06/iconfinder_discord_2308078.png" width=5% height=5%>](https://discord.gg/cUpvKPATkk)
 [<img src="https://www.robinson-ries.com/wp-content/uploads/2018/12/youtube-icon-logo-png-512.png" width=5% height=5%>](https://www.youtube.com/@EdwnHvH)
+
+# Renderer :
+
+| Published | Feature | Completion |
+| - | - | - |
+| ✔️:  | Optimization | ![img](https://progress-bar.dev/60) |
+| :x:  | Shaders | ![img](https://progress-bar.dev/0) |
+| ✔️:  | Clipping | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Draw List | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Line | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Bezier line | ![img](https://progress-bar.dev/80) |
+| ✔️:  | Polyline | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Polygon | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Rectangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Rectangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Gradient Filled Rectangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Rounded Rectangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Rounded Rectangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Texture rendering | ![img](https://progress-bar.dev/60) |
+| ✔️:  | Gradient | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Gradient | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Gradient Four | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Gradient Four | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Triangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Triangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Gradient Triangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Gradient Triangle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Circle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Circle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Gradient Circle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Filled Graient Circle | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Text | ![img](https://progress-bar.dev/90) |
