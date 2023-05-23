@@ -3,7 +3,7 @@
 
 // settings
 #define CIRCLE_SEGMENTS 64
-#define BEZIER_SEGMENTS 128
+#define BEZIER_SEGMENTS 64
 
 enum corner_flags {
 	corner_none = 0 << 0,
@@ -53,7 +53,7 @@ namespace lucid_engine {
 		void render_draw_data();
 
 		void line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
-		void bezier_line(const vec2_t from, const vec2_t to, const color_t color, const bool anti_alias = false);
+		void bezier_line(const vec2_t from, const vec2_t control, const vec2_t to, const color_t color, const bool anti_alias = false);
 
 		void polyline(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
 		void polygon(const std::vector<vec2_t>& points, const color_t color, const bool anti_alias = false);
@@ -118,6 +118,7 @@ namespace lucid_engine {
 		FT_Face						m_freetype_face;
 
 		std::vector<vec2_t> generate_arc_points(const vec2_t pos, const int radius, const int completion, const int rotation, int segments = -1);
+		std::vector<vec2_t> generate_arc_points_bezier(const vec2_t from, const vec2_t control, const vec2_t end, const int completion, const int rotation);
 		void write_vertex(const D3DPRIMITIVETYPE type, const std::vector<vertex_t>& vertices, bool anti_alias = false, texture_t texture = texture_t());
 
 		void reset_draw_list();

@@ -11,7 +11,8 @@ namespace lucid_engine {
 	public:
 		float map(float x, float in_min, float in_max, float out_min, float out_max);
 		float animate(animation_type animation, float from, float to, float speed_multiplier = 1.f);
-		float bezier(float p0, float p1, float p2, float t);
+		float bezier(float start, float control, float end, float parameter);
+		vec2_t bezier_vec2_t(vec2_t start, vec2_t control, vec2_t end, float parameter);
 	};
 
 	inline const auto g_math = std::make_unique< math >();
