@@ -18,6 +18,16 @@ Lucid Engine is a powerful and high-performance game engine designed to power de
 [<img src="https://droplr.com/wp-content/uploads/2020/06/iconfinder_discord_2308078.png" width=5% height=5%>](https://discord.gg/cUpvKPATkk)
 [<img src="https://www.robinson-ries.com/wp-content/uploads/2018/12/youtube-icon-logo-png-512.png" width=5% height=5%>](https://www.youtube.com/@EdwnHvH)
 
+# Graphics :
+
+| Published | Library | Completion |
+| - | - | - |
+| ✔️:  | DirectX 9 | ![img](https://progress-bar.dev/100) |
+| :x:  | DirectX 11 | ![img](https://progress-bar.dev/0) |
+| :x:  | DirectX 12 | ![img](https://progress-bar.dev/0) |
+| :x:  | OpenGL | ![img](https://progress-bar.dev/0) |
+| :x:  | Vulkan | ![img](https://progress-bar.dev/0) |
+
 # Renderer :
 
 | Published | Feature | Completion |
@@ -49,3 +59,15 @@ Lucid Engine is a powerful and high-performance game engine designed to power de
 | ✔️:  | Gradient Circle | ![img](https://progress-bar.dev/100) |
 | ✔️:  | Filled Graient Circle | ![img](https://progress-bar.dev/100) |
 | ✔️:  | Text | ![img](https://progress-bar.dev/90) |
+
+# Input :
+
+| Published | Feature | Completion |
+| - | - | - |
+| ✔️:  | Optimization | ![img](https://progress-bar.dev/20) |
+| ✔️:  | Button Behavior | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Rect Clipping Rect | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Point Hovering Rect | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Mouse Hovering Rect | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Is Key Held | ![img](https://progress-bar.dev/100) |
+| ✔️:  | Is Key Pressed | ![img](https://progress-bar.dev/100) |
