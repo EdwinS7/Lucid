@@ -32,7 +32,7 @@ Lucid Engine is a powerful and high-performance game engine designed to power de
 
 | Published | Feature | Completion |
 | - | - | - |
-| ✔️:  | Optimization | ![img](https://progress-bar.dev/60) |
+| ✔️:  | Optimization | ![img](https://progress-bar.dev/90) |
 | :x:  | Shaders | ![img](https://progress-bar.dev/0) |
 | ✔️:  | Clipping | ![img](https://progress-bar.dev/100) |
 | ✔️:  | Draw List | ![img](https://progress-bar.dev/100) |
