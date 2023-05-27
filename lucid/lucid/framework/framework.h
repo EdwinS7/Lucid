@@ -50,6 +50,12 @@ struct combo_info_t {
 	bool in_use{ false };
 };
 
+struct text_box_info_t {
+	bool in_use{ false };
+	float press_time{ 0.f };
+
+};
+
 namespace lucid_engine {
 	class ui {
 	public:
@@ -87,6 +93,7 @@ namespace lucid_engine {
 		void popup(const char* title, vec2_t pos, color_t color);
 		void combo_box(const char* title, int* value, std::vector<const char*> options);
 		void multi_combo_box(const char* title, std::vector<bool>* selected, std::vector<const char*> options);
+		bool text_box(const char* title, std::string& data);
 
 		vec2_t get_window_pos();
 		vec2_t get_window_size();
@@ -105,8 +112,11 @@ namespace lucid_engine {
 		std::map<int, combo_info_t>		m_combo_info{ },
 										m_multi_combo_info{ };
 
+		std::map<int, text_box_info_t>	m_text_box_info{ };
+
 		int								m_combo_id{ 0 },
-										m_multi_combo_id{ 0 };
+										m_multi_combo_id{ 0 },
+										m_text_box_id{ 0 };
 
 		style_t*						m_style = new style_t;
 

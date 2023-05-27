@@ -181,6 +181,7 @@
     <ClCompile Include="lucid\framework\elements\popup.cpp" />
     <ClCompile Include="lucid\framework\elements\slider.cpp" />
     <ClCompile Include="lucid\framework\containers\group_box.cpp" />
+    <ClCompile Include="lucid\framework\elements\text_box.cpp" />
     <ClCompile Include="lucid\framework\helpers\dragging.cpp" />
     <ClCompile Include="lucid\framework\helpers\resizing.cpp" />
     <ClCompile Include="lucid\framework\elements\tabs.cpp" />

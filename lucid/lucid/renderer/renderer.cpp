@@ -4,7 +4,7 @@ void lucid_engine::renderer::create_objects() {
 	if (!g_graphics->m_direct_3d_device)
 		throw std::runtime_error{ "create_objects error { device is not setup }" };
 
-	create_font(&m_defualt_font, "Segoe UI", 9, FW_NORMAL, true);
+	create_font(&m_defualt_font, "Segoe UI", 9, FW_NORMAL, false);
 	create_font(&m_logo_font, "Arial", 32, FW_NORMAL, true);
 
 	for (font_t* font : m_fonts)
@@ -658,6 +658,9 @@ void lucid_engine::renderer::gradient_filled_circle(const vec2_t pos, int radius
 }
 
 void lucid_engine::renderer::text(font_t font, const std::string string, const vec2_t pos, const color_t color) {
+	if (string.empty())
+		return;
+
 	vec2_t bounds = get_text_size(font, string);
 	auto char_set = m_font_map[font.m_index];
 
@@ -694,15 +697,15 @@ void lucid_engine::renderer::text(font_t font, const std::string string, const v
 }
 
 vec2_t lucid_engine::renderer::get_text_size(const font_t font, const std::string string) {
-	D3DSURFACE_DESC desc{ };
+	if (string.empty())
+		return vec2_t(0, 0);
+
 	vec2_t size{ 0, 0 };
 
 	std::map<char, character_t>& char_set = m_font_map[font.m_index];
 
 	for (auto& letter : string) {
 		character_t& glyph = char_set[letter];
-		glyph.m_texture->GetLevelDesc(0, &desc);
-
 		size.y = std::max(size.y, static_cast<double>(font.m_size * 1.5f));
 		size.x += static_cast<double>((glyph.m_advance / 64));
 	}

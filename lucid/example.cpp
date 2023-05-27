@@ -18,7 +18,7 @@ int main() {
 
         g_window->set_window_title(std::vformat("lucid engine {} fps", std::make_format_args(g_io->m_frame_rate_average)).c_str());
 
-        g_graphics->begin_scene({ 156, 129, 98 });
+        g_graphics->begin_scene({ 0, 0, 0 });
         {
             g_io->demo_window(true);
         }

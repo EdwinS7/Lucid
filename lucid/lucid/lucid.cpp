@@ -43,6 +43,7 @@ void lucid_engine::ui::reset() {
 	m_slider_id = -1;
 	m_combo_id = -1;
 	m_multi_combo_id = -1;
+	m_text_box_id = -1;
 }
 
 style_t* lucid_engine::ui::get_style() {
@@ -90,6 +91,9 @@ void lucid_engine::io::demo_window(bool open) {
 
 			static std::vector<bool> multi_combo_example{ };
 			g_ui->multi_combo_box("multi combo example", &multi_combo_example, { "option 1", "option 2", "option 3" });
+
+			static std::string text_box_example{ "default text" };
+			g_ui->text_box("text box example", text_box_example);
 
 			if (g_ui->button("button example")) {
 				printf("button pressed\n");

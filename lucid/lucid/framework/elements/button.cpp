@@ -2,7 +2,7 @@
 
 bool lucid_engine::ui::button(const char* title) {
 	vec2_t text_size = g_renderer->get_text_size(g_renderer->m_defualt_font, title);
-	vec2_t button_size = vec2_t(m_group->m_size.x - m_style->m_group_padding * 4, 16);
+	vec2_t button_size = vec2_t(m_group->m_size.x - m_style->m_group_padding * 4, text_size.y + 4);
 
 	if (!m_group->element_visible(m_group->m_elements_pos, button_size)) {
 		m_group->m_elements_pos += vec2_t(0, button_size.y + m_style->m_group_spacing);
