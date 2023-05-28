@@ -33,7 +33,6 @@ void lucid_engine::io::update() {
 
 void lucid_engine::io::reset() {
 	g_input->m_mouse_wheel_delta = 0.f;
-	g_input->m_key_info = {};
 	g_ui->reset();
 }
 

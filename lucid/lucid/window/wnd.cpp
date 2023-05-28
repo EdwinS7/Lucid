@@ -3,73 +3,83 @@
 #define GET_X_LPARAM(lp) ((int)(short)LOWORD(lp))
 #define GET_Y_LPARAM(lp) ((int)(short)HIWORD(lp))
 
-LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-    static std::map<int, key_data> key_state;
-    float mouse_wheel_delta = 0.0f;
+LRESULT WINAPI WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	float mouse_wheel_delta = 0.0f;
+	key_style state = key_style::key_none;
+	key_style keyboard_state = key_style::key_none;
+	int keyboard_key = 0;
+	int key = 0;
 
-    switch (msg) {
-    case WM_SIZE:
-        if (lucid_engine::g_graphics->m_direct_3d_device && wParam != SIZE_MINIMIZED) {
-            lucid_engine::g_graphics->m_direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
-            lucid_engine::g_graphics->m_direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
-            lucid_engine::g_graphics->reset_device();
-        }
-        return 0;
+	switch (uMsg) {
+	case WM_SIZE:
+		if (lucid_engine::g_graphics->m_direct_3d_device && wParam != SIZE_MINIMIZED) {
+			lucid_engine::g_graphics->m_direct_3d_paramaters.BackBufferWidth = LOWORD(lParam);
+			lucid_engine::g_graphics->m_direct_3d_paramaters.BackBufferHeight = HIWORD(lParam);
+			lucid_engine::g_graphics->reset_device();
+		}
+		return false;
+	case WM_MBUTTONDBLCLK:
+	case WM_MBUTTONDOWN:
+	case WM_MBUTTONUP:
+		state = uMsg == WM_MBUTTONUP ? key_style::key_up : key_style::key_down;
+		key = VK_MBUTTON;
+		break;
+	case WM_RBUTTONDBLCLK:
+	case WM_RBUTTONDOWN:
+	case WM_RBUTTONUP:
+		state = uMsg == WM_RBUTTONUP ? key_style::key_up : key_style::key_down;
+		key = VK_RBUTTON;
+		break;
+	case WM_LBUTTONDBLCLK:
+	case WM_LBUTTONDOWN:
+	case WM_LBUTTONUP:
+		state = uMsg == WM_LBUTTONUP ? key_style::key_up : key_style::key_down;
+		key = VK_LBUTTON;
+		break;
+	case WM_XBUTTONDBLCLK:
+	case WM_XBUTTONDOWN:
+	case WM_XBUTTONUP:
+		state = uMsg == WM_XBUTTONUP ? key_style::key_up : key_style::key_down;
+		key = (HIWORD(wParam) == XBUTTON1 ? VK_XBUTTON1 : VK_XBUTTON2);
+		break;
+	case WM_KEYDOWN:
+	case WM_SYSKEYDOWN:
+		keyboard_key = wParam;
+		keyboard_state = key_style::key_down;
+		break;
+	case WM_KEYUP:
+	case WM_SYSKEYUP:
+		keyboard_key = wParam;
+		keyboard_state = key_style::key_up;
+		break;
+	case WM_MOUSEMOVE:
+		lucid_engine::g_input->m_mouse_pos = vec2_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+		break;
 
-    case WM_LBUTTONDOWN:
-    case WM_LBUTTONUP:
-        key_state[VK_LBUTTON].m_on = (msg == WM_LBUTTONDOWN);
-        break;
+	case WM_MOUSEWHEEL:
+		mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0.0f ? 8.0f : -8.0f;
+		lucid_engine::g_input->m_mouse_wheel_delta = mouse_wheel_delta;
+		break;
 
-    case WM_RBUTTONDOWN:
-    case WM_RBUTTONUP:
-        key_state[VK_RBUTTON].m_on = (msg == WM_RBUTTONDOWN);
-        break;
+	case WM_SETCURSOR:
+		SetCursor(lucid_engine::g_input->m_cursor_style);
+		break;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
 
-    case WM_MBUTTONDOWN:
-    case WM_MBUTTONUP:
-        key_state[VK_MBUTTON].m_on = (msg == WM_MBUTTONDOWN);
-        break;
+	if (state == key_style::key_up && lucid_engine::g_input->m_key_info[key] == key_style::key_down)
+		lucid_engine::g_input->m_key_info[key] = key_style::key_press;
+	else
+		lucid_engine::g_input->m_key_info[key] = state;
 
-    case WM_XBUTTONDOWN:
-    case WM_XBUTTONUP:
-        key_state[VK_XBUTTON1].m_on = (GET_XBUTTON_WPARAM(wParam) == XBUTTON1);
-        key_state[VK_XBUTTON2].m_on = (GET_XBUTTON_WPARAM(wParam) == XBUTTON2);
-        break;
+	if (keyboard_state == key_style::key_up && lucid_engine::g_input->m_key_info[key] == key_style::key_down)
+		lucid_engine::g_input->m_key_info[keyboard_key] = key_style::key_press;
+	else
+		lucid_engine::g_input->m_key_info[keyboard_key] = keyboard_state;
 
-    case WM_KEYDOWN:
-    case WM_KEYUP:
-    case WM_SYSKEYDOWN:
-    case WM_SYSKEYUP:
-        if (wParam <= 256) {
-            bool held = (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN);
-
-            key_state[static_cast<int>(wParam)].m_style = (held ? key_style::key_hold : key_style::key_press);
-            key_state[static_cast<int>(wParam)].m_on = true;
-        }
-        break;
-
-    case WM_MOUSEMOVE:
-        lucid_engine::g_input->m_mouse_pos = vec2_t(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
-        break;
-
-    case WM_MOUSEWHEEL:
-        mouse_wheel_delta = GET_WHEEL_DELTA_WPARAM(wParam) > 0.0f ? 8.0f : -8.0f;
-        lucid_engine::g_input->m_mouse_wheel_delta = mouse_wheel_delta;
-        break;
-
-    case WM_SETCURSOR:
-        SetCursor(lucid_engine::g_input->m_cursor_style);
-        break;
-
-    case WM_DESTROY:
-        PostQuitMessage(0);
-        return 0;
-    }
-
-    lucid_engine::g_input->m_key_info = key_state;
-
-    return DefWindowProc(hWnd, msg, wParam, lParam);
+    return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
 bool lucid_engine::window::create_window(const char* title, int x, int y, int w, int h) {

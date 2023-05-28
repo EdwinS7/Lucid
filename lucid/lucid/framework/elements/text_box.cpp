@@ -87,10 +87,10 @@ bool lucid_engine::ui::text_box(const char* title, std::string& data) {
 	g_renderer->rectangle(m_group->m_elements_pos + vec2_t(1, text_size.y + 1), text_box_size - vec2_t(2, 2), m_style->m_element_in_outline);
 	g_renderer->rectangle(m_group->m_elements_pos + vec2_t(0, text_size.y), text_box_size, m_style->m_element_outline);
 
-	//g_renderer->push_clip(m_group->m_elements_pos, text_box_size + vec2_t(0, text_size.y));
-	g_renderer->text(g_renderer->m_defualt_font, title, m_group->m_elements_pos - vec2_t(0, 2), m_text_box_info[m_text_box_id].in_use ? m_style->m_accent : m_style->m_text_active);
-	g_renderer->text(g_renderer->m_defualt_font, data.c_str(), m_group->m_elements_pos + vec2_t(6, text_size.y + 3), m_style->m_accent);
-	//g_renderer->pop_clip();
+	g_renderer->push_clip(m_group->m_elements_pos, text_box_size + vec2_t(0, text_size.y));
+	g_renderer->text(g_renderer->m_defualt_font, title, m_group->m_elements_pos - vec2_t(0, 2), m_text_box_info[m_text_box_id].in_use ? m_style->m_accent : data.empty() ? m_style->m_text_inactive : m_style->m_text_active);
+	g_renderer->text(g_renderer->m_defualt_font, data.c_str(), m_group->m_elements_pos + vec2_t(2, text_size.y + 2), m_style->m_text_active);
+	g_renderer->pop_clip();
 
 	m_group->m_elements_pos += vec2_t(0, text_size.y + text_box_size.y + m_style->m_group_spacing);
 }
