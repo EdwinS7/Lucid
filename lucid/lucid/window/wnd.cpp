@@ -74,7 +74,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 	else
 		lucid_engine::g_input->m_key_info[key] = state;
 
-	if (keyboard_state == key_style::key_up && lucid_engine::g_input->m_key_info[key] == key_style::key_down)
+	if (keyboard_state == key_style::key_up && lucid_engine::g_input->m_key_info[keyboard_key] == key_style::key_down)
 		lucid_engine::g_input->m_key_info[keyboard_key] = key_style::key_press;
 	else
 		lucid_engine::g_input->m_key_info[keyboard_key] = keyboard_state;
