@@ -67,5 +67,5 @@ Lucid Engine is a powerful and high-performance game engine designed to power de
 | ✔️:  | Is Key Pressed | ![img](https://progress-bar.dev/100) |
 
 ## Contact us
-[<img src="https://droplr.com/wp-content/uploads/2020/06/iconfinder_discord_2308078.png" width=5% height=5%>](https://discord.gg/cUpvKPATkk)
+[<img src="https://droplr.com/wp-content/uploads/2020/06/iconfinder_discord_2308078.png" width=5% height=5%>](https://discord.gg/bxXnvy6HFH)
 [<img src="https://www.robinson-ries.com/wp-content/uploads/2018/12/youtube-icon-logo-png-512.png" width=5% height=5%>](https://www.youtube.com/@EdwnHvH)
