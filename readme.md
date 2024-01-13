@@ -1,7 +1,5 @@
 # Lucid Engine
 
-![Lucid Engine Logo](https://cdn.discordapp.com/attachments/1083853423495106581/1109546291211546795/Lucid.png)
-
 Lucid Engine is a powerful and high-performance game engine designed to power developers with the tools they need to create immersive and visually stunning games. With Lucid Engine's optimized rendering pipeline, Lucid Engine takes your game development experience to new heights.
 
 ## Features
